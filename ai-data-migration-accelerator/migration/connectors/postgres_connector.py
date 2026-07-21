@@ -13,12 +13,14 @@ straightforward, keeping this connector complete rather than partially
 stubbed — but only tables/columns are exercised by Milestone 1's CLI flow.
 """
 
+
 from __future__ import annotations
 
 import logging
 from typing import Any
 
 from sqlalchemy import Engine, create_engine, text
+from sqlalchemy.engine import URL
 from sqlalchemy.exc import SQLAlchemyError
 
 from migration.connectors.base import BaseConnector, ConnectorError
@@ -36,9 +38,12 @@ class PostgresConnector(BaseConnector):
     # -- Lifecycle -----------------------------------------------------
 
     def connect(self) -> None:
-        url = (
-            f"postgresql+psycopg://{self.username}:{self.password}"
-            f"@{self.host}:{self.port}/{self.database}"
+        url =  URL.create(drivername="postgresql+psycopg",
+                             username=self.username,
+                                password=self.password,
+                                host=self.host,
+                                port=self.port,
+                                database=self.database,
         )
         try:
             self._engine = create_engine(url, pool_pre_ping=True)

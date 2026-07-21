@@ -6,11 +6,11 @@ source:
   type: postgres
   host: localhost
   port: 5432
-  database: sales
+  database: datamodel
   username: postgres
-  password: postgres
+  password: 'Visionet@1234'
   schema:
-    - public
+    - bronze
 
 target:
   type: snowflake
