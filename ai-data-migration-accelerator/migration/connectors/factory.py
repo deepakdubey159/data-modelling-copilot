@@ -2,9 +2,7 @@
 Connector factory.
 
 Single responsibility: given a validated `SourceConfig`, return the correct
-`BaseConnector` implementation. This is the one place that needs to change
-when a new source connector (Oracle, SQL Server, ...) is added — the
-orchestrator and CLI never need to know concrete connector classes exist.
+`BaseConnector` implementation.
 """
 
 from __future__ import annotations
@@ -20,6 +18,7 @@ class UnsupportedSourceError(Exception):
 
 def create_connector(source: SourceConfig) -> BaseConnector:
     """Instantiate the connector for the given source configuration."""
+
     if source.type == SourceType.POSTGRES:
         return PostgresConnector(
             host=source.host,

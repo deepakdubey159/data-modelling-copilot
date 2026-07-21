@@ -22,6 +22,7 @@ from rich.console import Console
 from rich.table import Table
 
 from migration.connectors.factory import UnsupportedSourceError, create_connector
+from migration.orchestrator.orchestrator import MigrationOrchestrator
 from migration.connectors.base import ConnectorError
 from migration.utils.config_loader import ConfigError, load_config
 from migration.utils.logging_setup import setup_logging
@@ -61,35 +62,24 @@ def run(argv: list[str] | None = None) -> int:
     logger.info("Loaded configuration for project '%s'", config.project.name)
 
     try:
-        connector = create_connector(config.source)
+        orchestrator = MigrationOrchestrator(config)
+        orchestrator.run()
     except UnsupportedSourceError as exc:
         console.print(f"[bold red]Unsupported source:[/bold red] {exc}")
         return 1
 
-    try:
-        connector.connect()
+    
     except ConnectorError as exc:
         console.print(f"[bold red]Connection failed:[/bold red] {exc}")
         return 1
 
-    try:
-        if not connector.validate_connection():
-            console.print("[bold red]Connection validation failed.[/bold red]")
-            return 1
 
-        console.print(
-            f"[bold green]Connected successfully[/bold green] to "
-            f"'{config.source.database}' at {config.source.host}:{config.source.port}"
-        )
 
-        tables = connector.extract_tables(config.source.schema_)
-        _print_discovered_tables(config.source.schema_, tables)
-
-    except ConnectorError as exc:
-        console.print(f"[bold red]Metadata extraction failed:[/bold red] {exc}")
+    except Exception  as exc:
+        logger.exception(exc)
+        console.print(f"[bold red]Unexpected error:[/bold red] {exc}")
         return 1
-    finally:
-        connector.disconnect()
+
 
     return 0
 
