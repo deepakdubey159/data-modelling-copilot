@@ -1,0 +1,33 @@
+project:
+  name: customer_migration
+  output_directory: output/
+
+source:
+  type: postgres
+  host: localhost
+  port: 5432
+  database: sales
+  username: postgres
+  password: postgres
+  schema:
+    - public
+
+target:
+  type: snowflake
+
+llm:
+  provider: openai
+  model: gpt-5.5
+  temperature: 0
+
+artifacts:
+  conceptual_model: true
+  logical_model: true
+  physical_model: true
+  ddl: true
+  dml: true
+  report: true
+  estimation: true
+
+logging:
+  level: INFO
