@@ -79,6 +79,28 @@ class OutputWriter:
 
         return output_file
 
+    def write_profile(
+        self,
+        profile: ProfilePackage,
+        run_directory: Path,
+     ) -> Path:
+        """
+        Writes profile.json
+        """
+
+        output_file = run_directory / "profile.json"
+
+        with open(output_file, "w", encoding="utf-8") as fp:
+
+            json.dump(
+                profile.model_dump(),
+                fp,
+                indent=4,
+                default=str,
+            )
+
+        return output_file
+
     def write_execution_summary(
         self,
         run_directory: Path,

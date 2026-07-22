@@ -108,6 +108,56 @@ class BaseConnector(ABC):
     def extract_statistics(self, schemas: list[str]) -> list[dict[str, Any]]:
         """Return table/column statistics (row counts, sizes, etc.)."""
 
+    # -- Data profiling --------------------------------------------------
+    # Unlike extract_*, these query actual table *data* (not catalog
+    # metadata), so they belong on the connector too: the SQL needed to
+    # compute a null percentage or a min/max is vendor-specific in the same
+    # way catalog introspection is. The profiler engine (Milestone 2,
+    # `migration/profiler/`) orchestrates calls to these but never builds
+    # SQL itself.
+
+    @abstractmethod
+    def profile_table(
+        self, schema: str, table: str, columns: list[dict[str, Any]]
+    ) -> dict[str, Any]:
+        """Return data-profiling statistics for one table.
+
+        `columns` is a list of ``{"name": ..., "data_type": ...}`` dicts
+        (from the canonical model) identifying which columns to profile.
+
+        Returns a dict shaped like::
+
+            {
+                "row_count": int,
+                "duplicate_row_count": int | None,
+                "columns": {
+                    "<column_name>": {
+                        "null_count": int,
+                        "distinct_count": int,
+                        "min_value": str | None,
+                        "max_value": str | None,
+                        "min_length": int | None,
+                        "max_length": int | None,
+                    },
+                    ...
+                },
+            }
+
+        `duplicate_row_count` may be ``None`` if it could not be computed
+        (e.g. the table contains a column type that can't participate in
+        ``DISTINCT``) — callers must treat that as "unknown," not zero.
+        """
+
+    @abstractmethod
+    def sample_column_values(
+        self, schema: str, table: str, column: str, limit: int = 200
+    ) -> list[Any]:
+        """Return up to `limit` non-null sample values from one column.
+
+        Used for lightweight pattern detection (email-like, UUID-like,
+        etc.) without scanning the whole table.
+        """
+
     # -- Context manager convenience -------------------------------------
 
     def __enter__(self) -> "BaseConnector":

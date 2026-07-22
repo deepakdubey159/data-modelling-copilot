@@ -21,6 +21,7 @@ llm:
   temperature: 0
 
 artifacts:
+  profile: true
   conceptual_model: true
   logical_model: true
   physical_model: true

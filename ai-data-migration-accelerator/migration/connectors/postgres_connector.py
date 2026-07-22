@@ -218,3 +218,134 @@ class PostgresConnector(BaseConnector):
             ORDER BY schemaname, relname
         """
         return self._query(sql, {"schemas": schemas})
+
+    # -- Data profiling ---------------------------------------------------
+    # These methods query actual row data (not catalog metadata), so unlike
+    # extract_*, identifiers here can't be parameterized with SQLAlchemy
+    # bind params — Postgres doesn't allow binding table/column names.
+    # `_quote_ident` is used everywhere an identifier is interpolated to
+    # guard against SQL injection via a malicious schema/table/column name.
+
+    @staticmethod
+    def _quote_ident(name: str) -> str:
+        """Double-quote a Postgres identifier, escaping embedded quotes."""
+        return '"' + name.replace('"', '""') + '"'
+
+    def profile_table(
+        self, schema: str, table: str, columns: list[dict[str, Any]]
+    ) -> dict[str, Any]:
+        engine = self._require_engine()
+        qualified_table = f"{self._quote_ident(schema)}.{self._quote_ident(table)}"
+
+        if not columns:
+            row_count = self._scalar(f"SELECT COUNT(*) FROM {qualified_table}")
+            return {"row_count": row_count, "duplicate_row_count": None, "columns": {}}
+
+        aggregate_exprs = ["COUNT(*) AS row_count"]
+        for col in columns:
+            col_ident = self._quote_ident(col["name"])
+            # One aggregate expression per column, packed into a single
+            # table scan rather than one round trip per column.
+            aggregate_exprs.append(
+                f'COUNT(*) FILTER (WHERE {col_ident} IS NULL) AS "{col["name"]}__null_count"'
+            )
+            aggregate_exprs.append(
+                f'COUNT(DISTINCT {col_ident}) AS "{col["name"]}__distinct_count"'
+            )
+            aggregate_exprs.append(f'MIN({col_ident}::text) AS "{col["name"]}__min_value"')
+            aggregate_exprs.append(f'MAX({col_ident}::text) AS "{col["name"]}__max_value"')
+            aggregate_exprs.append(
+                f'MIN(LENGTH({col_ident}::text)) AS "{col["name"]}__min_length"'
+            )
+            aggregate_exprs.append(
+                f'MAX(LENGTH({col_ident}::text)) AS "{col["name"]}__max_length"'
+            )
+
+        sql = f"SELECT {', '.join(aggregate_exprs)} FROM {qualified_table}"
+
+        try:
+            with engine.connect() as conn:
+                row = conn.execute(text(sql)).mappings().one()
+        except SQLAlchemyError as exc:
+            raise ConnectorError(
+                f"Profiling query failed for {schema}.{table}: {exc}"
+            ) from exc
+
+        row_count = row["row_count"]
+        column_stats: dict[str, Any] = {}
+        for col in columns:
+            name = col["name"]
+            column_stats[name] = {
+                "null_count": row[f"{name}__null_count"],
+                "distinct_count": row[f"{name}__distinct_count"],
+                "min_value": row[f"{name}__min_value"],
+                "max_value": row[f"{name}__max_value"],
+                "min_length": row[f"{name}__min_length"],
+                "max_length": row[f"{name}__max_length"],
+            }
+
+        duplicate_row_count = self._duplicate_row_count(qualified_table, columns, row_count)
+
+        return {
+            "row_count": row_count,
+            "duplicate_row_count": duplicate_row_count,
+            "columns": column_stats,
+        }
+
+    def _duplicate_row_count(
+        self, qualified_table: str, columns: list[dict[str, Any]], row_count: int
+    ) -> int | None:
+        """Best-effort full-row duplicate count.
+
+        Returns None (unknown) rather than raising if the table contains a
+        column type that can't be used with PARTITION BY (e.g. json/array),
+        since that's a routine occurrence, not an error worth failing the
+        whole profiling run over.
+        """
+        if row_count == 0:
+            return 0
+        if not columns:
+            return None
+
+        col_list = ", ".join(self._quote_ident(c["name"]) for c in columns)
+        sql = (
+            f"SELECT COUNT(*) - COUNT(*) FILTER (WHERE rn = 1) FROM ("
+            f"SELECT ROW_NUMBER() OVER (PARTITION BY {col_list}) AS rn "
+            f"FROM {qualified_table}) t"
+        )
+        try:
+            return self._scalar(sql)
+        except ConnectorError as exc:
+            logger.warning(
+                "Could not compute duplicate row count for %s (%s); leaving as unknown.",
+                qualified_table,
+                exc,
+            )
+            return None
+
+    def sample_column_values(
+        self, schema: str, table: str, column: str, limit: int = 200
+    ) -> list[Any]:
+        qualified_table = f"{self._quote_ident(schema)}.{self._quote_ident(table)}"
+        col_ident = self._quote_ident(column)
+        sql = (
+            f"SELECT {col_ident} FROM {qualified_table} "
+            f"WHERE {col_ident} IS NOT NULL LIMIT :limit"
+        )
+        engine = self._require_engine()
+        try:
+            with engine.connect() as conn:
+                result = conn.execute(text(sql), {"limit": limit})
+                return [row[0] for row in result]
+        except SQLAlchemyError as exc:
+            raise ConnectorError(
+                f"Sampling failed for {schema}.{table}.{column}: {exc}"
+            ) from exc
+
+    def _scalar(self, sql: str) -> Any:
+        engine = self._require_engine()
+        try:
+            with engine.connect() as conn:
+                return conn.execute(text(sql)).scalar_one()
+        except SQLAlchemyError as exc:
+            raise ConnectorError(f"Query failed: {sql}: {exc}") from exc

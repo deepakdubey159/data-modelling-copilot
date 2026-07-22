@@ -27,6 +27,7 @@ import logging
 from migration.connectors.factory import create_connector
 from migration.metadata.builder import MetadataBuilder
 from migration.output.writer import OutputWriter
+from migration.profiler.engine import DataProfiler
 
 logger = logging.getLogger(__name__)
 
@@ -78,14 +79,34 @@ class MigrationOrchestrator:
                 run_directory,
             )
 
-            writer.write_execution_summary(
-                run_directory,
-                source.database,
-            )
-
             logger.info(
                 "Metadata written to %s",
                 metadata_file,
+            )
+
+            profile_file = None
+
+            if hasattr(self.config.artifacts, "profile") and self.config.artifacts.profile:
+
+                logger.info("Profiling data...")
+
+                profiler = DataProfiler(connector=connector)
+
+                profile = profiler.profile(metadata.metadata)
+
+                profile_file = writer.write_profile(
+                    profile,
+                    run_directory,
+                )
+
+                logger.info(
+                    "Profile written to %s",
+                    profile_file,
+                )
+
+            writer.write_execution_summary(
+                run_directory,
+                source.database,
             )
 
             print()
@@ -97,6 +118,10 @@ class MigrationOrchestrator:
             print(f"Output Folder : {run_directory}")
 
             print(f"Metadata File : {metadata_file}")
+
+            if profile_file is not None:
+
+                print(f"Profile File  : {profile_file}")
 
             print("=" * 70)
 
