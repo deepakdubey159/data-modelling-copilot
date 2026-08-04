@@ -25,6 +25,7 @@ from datetime import datetime
 from pathlib import Path
 
 from migration.canonical.models import MetadataPackage
+from migration.profiler.models import ProfilePackage
 from migration.relationship.models import RelationshipPackage
 
 

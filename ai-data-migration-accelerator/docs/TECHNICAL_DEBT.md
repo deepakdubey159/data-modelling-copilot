@@ -88,7 +88,17 @@ This is dead-but-correct code, not a bug.
 
 ## TD-04 — `ProfilePackage` annotated but not imported in the writer
 
-**Status:** OPEN · **Severity:** Low · **File:** `migration/output/writer.py:85`
+**Status:** **RESOLVED** (Module 4) · **Severity:** Low · **File:** `migration/output/writer.py`
+
+**Resolution:** the missing import was added when `write_relationships` and the
+Module 4 wiring landed in the same file. Leaving one model properly imported
+beside an undefined one was worse than either consistent state, and `ruff`
+reported the undefined name as an `F821` error under the default ruleset once
+the file was linted. One line; no behaviour change.
+
+Original finding below.
+
+---
 
 `write_profile(self, profile: ProfilePackage, ...)` references a name that is
 never imported in that module. It survives only because

@@ -234,7 +234,47 @@ under a second.
 
 Design: `docs/MODULE_3_DESIGN.md`. Known gaps: `docs/TECHNICAL_DEBT.md`.
 
+## Milestone 4 — AI Conceptual Data Model Generator (delivered)
+
+`migration/conceptual/` generates `conceptual_model.json` and
+`conceptual_model.md` (toggle: `artifacts.conceptual_model`). This is the
+first AI-assisted module; the three engines before it stay fully
+deterministic and are unchanged.
+
+Pipeline: metadata + profile + relationships → **context builder** (compact,
+source-independent) → **prompt builder** (reusable template) → **Claude** →
+**parser** (validates and rejects) → **writer** (deterministic Markdown and
+Mermaid). The AI is asked only for business judgment; Markdown and the ER
+diagram are generated in code so the diagram cannot disagree with the model.
+
+`migration/llm/` holds the provider layer: `client.py` (`AnthropicClient`)
+and `factory.py`. The engines depend on a one-method `LLMClient` protocol,
+so every test runs with a stub and no API key.
+
+### Running the AI step
+
+```bash
+pip install -r requirements.txt          # now includes anthropic
+cp .env.example .env                     # then set ANTHROPIC_API_KEY=sk-ant-...
+python migrate.py --config config.yaml
+```
+
+Without a key the run still produces `metadata.json`, `profile.json` and
+`relationships.json`, and prints why the AI artifacts were skipped.
+
+**`llm.temperature` is deprecated and never sent.** Sampling parameters were
+removed from current Claude models — a request carrying one is rejected with
+a 400. The field is still accepted so existing config files load, and a
+config that sets it logs a warning. Use `llm.effort`
+(`low`/`medium`/`high`/`xhigh`/`max`) instead.
+
+69 new tests, none requiring an API key or a network call, including an
+end-to-end orchestrator run that asserts all five artifacts are produced.
+193 tests total, all passing.
+
 ## Next milestone (not started — awaiting approval)
 
-Milestone 4: Conceptual Model Generator — the first consumer of the AI
-service layer identified in `docs/AI_LAYER.md`.
+Milestone 5: Target Adapter and Type Mapping — the target-side abstraction
+(`BaseTargetAdapter`, capability matrix, declarative type-mapping profiles)
+that turns the canonical model into platform-specific physical models and
+DDL.
