@@ -25,6 +25,7 @@ from datetime import datetime
 from pathlib import Path
 
 from migration.canonical.models import MetadataPackage
+from migration.relationship.models import RelationshipPackage
 
 
 class OutputWriter:
@@ -94,6 +95,28 @@ class OutputWriter:
 
             json.dump(
                 profile.model_dump(),
+                fp,
+                indent=4,
+                default=str,
+            )
+
+        return output_file
+
+    def write_relationships(
+        self,
+        relationships: RelationshipPackage,
+        run_directory: Path,
+    ) -> Path:
+        """
+        Writes relationships.json
+        """
+
+        output_file = run_directory / "relationships.json"
+
+        with open(output_file, "w", encoding="utf-8") as fp:
+
+            json.dump(
+                relationships.model_dump(mode="json"),
                 fp,
                 indent=4,
                 default=str,

@@ -28,6 +28,7 @@ from migration.connectors.factory import create_connector
 from migration.metadata.builder import MetadataBuilder
 from migration.output.writer import OutputWriter
 from migration.profiler.engine import DataProfiler
+from migration.relationship.engine import RelationshipEngine
 
 logger = logging.getLogger(__name__)
 
@@ -84,6 +85,8 @@ class MigrationOrchestrator:
                 metadata_file,
             )
 
+            profile = None
+
             profile_file = None
 
             if hasattr(self.config.artifacts, "profile") and self.config.artifacts.profile:
@@ -104,6 +107,29 @@ class MigrationOrchestrator:
                     profile_file,
                 )
 
+            relationships_file = None
+
+            if getattr(self.config.artifacts, "relationships", True):
+
+                logger.info("Discovering relationships...")
+
+                engine = RelationshipEngine(
+                    metadata=metadata.metadata,
+                    profile=profile.profile if profile is not None else None,
+                )
+
+                relationships = engine.discover()
+
+                relationships_file = writer.write_relationships(
+                    relationships,
+                    run_directory,
+                )
+
+                logger.info(
+                    "Relationships written to %s",
+                    relationships_file,
+                )
+
             writer.write_execution_summary(
                 run_directory,
                 source.database,
@@ -122,6 +148,10 @@ class MigrationOrchestrator:
             if profile_file is not None:
 
                 print(f"Profile File  : {profile_file}")
+
+            if relationships_file is not None:
+
+                print(f"Relationships : {relationships_file}")
 
             print("=" * 70)
 

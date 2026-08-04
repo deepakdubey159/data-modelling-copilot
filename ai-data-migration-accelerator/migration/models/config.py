@@ -110,6 +110,7 @@ class LLMConfig(BaseModel):
 class ArtifactsConfig(BaseModel):
     """Toggles for which output artifacts to generate."""
     profile: bool = True
+    relationships: bool = True
     conceptual_model: bool = True
     logical_model: bool = True
     physical_model: bool = True

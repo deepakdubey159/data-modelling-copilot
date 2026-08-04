@@ -8,7 +8,7 @@ source:
   port: 5432
   database: datamodel
   username: postgres
-  password: 'Visionet@1234'
+  password: '12345'
   schema:
     - bronze
 

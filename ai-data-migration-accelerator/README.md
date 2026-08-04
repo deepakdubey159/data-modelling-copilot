@@ -205,12 +205,36 @@ feat(milestone-2): data profiler generating profile.json
   identifier-quoting safety)
 ```
 
+## Milestone 3 — Relationship Discovery (delivered)
+
+`migration/relationship/` generates `relationships.json` alongside the other
+artifacts (toggle: `artifacts.relationships`, defaults to `true`). It is a
+pure function of `metadata.json` + `profile.json` — no SQL, no connector, no
+database access, no source-specific logic — so it behaves identically
+regardless of which system produced the metadata.
+
+- Declared foreign keys, with composite keys reassembled from per-column
+  catalog rows and duplicate column pairs removed
+- Inferred relationships from naming conventions, scored against profile
+  statistics, with distinct-value inclusion violations treated as a hard
+  reject (a child cannot reference more distinct parents than exist)
+- Cardinality classification, distinguishing structural guarantees from
+  merely observed statistics
+- Junction/bridge table detection, separating pure link tables from
+  associative entities that carry their own attributes
+- Self-reference detection, dependency order grouped by depth, cycle
+  detection, and orphan tables
+- Plain-language `evidence` on every relationship, plus a stable `id`,
+  `discovery_method` and `confidence_band` — designed as input for the AI
+  layer (see `docs/AI_LAYER.md`)
+
+68 new tests, none requiring a database or even a fake connector. 96 tests
+total, all passing. Verified at scale: 10,000 tables / 120,000 columns in
+under a second.
+
+Design: `docs/MODULE_3_DESIGN.md`. Known gaps: `docs/TECHNICAL_DEBT.md`.
+
 ## Next milestone (not started — awaiting approval)
 
-Milestone 3: Relationship Discovery (`migration/relationship/`) — generate
-`relationships.json` from the canonical metadata's existing PK/FK data
-(explicit graph) plus inferred relationships from naming conventions and
-profiled value overlap (e.g. `profile.json` min/max + distinct stats can
-suggest likely FK candidates the source database never declared), building
-toward join paths and a dependency graph for the conceptual model generator
-in Milestone 4.
+Milestone 4: Conceptual Model Generator — the first consumer of the AI
+service layer identified in `docs/AI_LAYER.md`.
