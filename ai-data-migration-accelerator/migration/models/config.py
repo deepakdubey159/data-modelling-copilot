@@ -51,6 +51,20 @@ class LLMProvider(str, Enum):
     ANTHROPIC = "anthropic"
 
 
+class LLMEffort(str, Enum):
+    """How much reasoning effort the model should spend.
+
+    Replaces `temperature` as the tuning dial for current Claude models.
+    Higher effort means deeper reasoning at higher token cost.
+    """
+
+    LOW = "low"
+    MEDIUM = "medium"
+    HIGH = "high"
+    XHIGH = "xhigh"
+    MAX = "max"
+
+
 class LogLevel(str, Enum):
     DEBUG = "DEBUG"
     INFO = "INFO"
@@ -104,12 +118,37 @@ class LLMConfig(BaseModel):
 
     provider: LLMProvider
     model: str = Field(..., min_length=1)
-    temperature: float = Field(default=0.0, ge=0.0, le=2.0)
+
+    temperature: float | None = Field(default=None, ge=0.0, le=2.0)
+    """DEPRECATED - accepted for backward compatibility, never sent.
+
+    Sampling parameters (`temperature`, `top_p`, `top_k`) were removed from
+    current Claude models: a request carrying one is rejected with a 400.
+    The field is kept so existing config files keep loading, but the client
+    does not forward it. Use `effort` instead — that is the supported dial
+    for controlling how the model reasons. A config that sets this logs a
+    warning at startup.
+    """
+
+    max_tokens: int = Field(default=32000, gt=0)
+    """Hard ceiling on the response, covering reasoning and answer together.
+    Generous by default because a conceptual model for a large schema is a
+    long structured document and a truncated one is worthless."""
+
+    effort: LLMEffort = LLMEffort.HIGH
+    """Reasoning depth. `high` suits interpretive work like conceptual
+    modelling; drop to `medium` or `low` to cut cost on simpler engines."""
+
+    api_key_env: str = Field(default="ANTHROPIC_API_KEY", min_length=1)
+    """Name of the environment variable holding the API key. The key itself
+    is never read from config.yaml — that file is not git-ignored, and a key
+    committed to it is a key leaked."""
 
 
 class ArtifactsConfig(BaseModel):
     """Toggles for which output artifacts to generate."""
     profile: bool = True
+    relationships: bool = True
     conceptual_model: bool = True
     logical_model: bool = True
     physical_model: bool = True

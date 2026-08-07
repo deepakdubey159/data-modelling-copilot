@@ -24,19 +24,27 @@ from __future__ import annotations
 
 import logging
 
+from migration.conceptual.engine import ConceptualModelEngine
+from migration.conceptual.writer import ConceptualModelWriter
 from migration.connectors.factory import create_connector
 from migration.metadata.builder import MetadataBuilder
 from migration.output.writer import OutputWriter
 from migration.profiler.engine import DataProfiler
+from migration.relationship.engine import RelationshipEngine
 
 logger = logging.getLogger(__name__)
 
 
 class MigrationOrchestrator:
 
-    def __init__(self, config):
+    def __init__(self, config, llm_client=None):
 
         self.config = config
+
+        # Injected rather than constructed here, so a run without an AI
+        # provider configured still produces every deterministic artifact.
+        # Nothing in the deterministic pipeline depends on this being set.
+        self.llm_client = llm_client
 
     def run(self):
 
@@ -84,6 +92,8 @@ class MigrationOrchestrator:
                 metadata_file,
             )
 
+            profile = None
+
             profile_file = None
 
             if hasattr(self.config.artifacts, "profile") and self.config.artifacts.profile:
@@ -104,6 +114,69 @@ class MigrationOrchestrator:
                     profile_file,
                 )
 
+            relationships = None
+
+            relationships_file = None
+
+            if getattr(self.config.artifacts, "relationships", True):
+
+                logger.info("Discovering relationships...")
+
+                engine = RelationshipEngine(
+                    metadata=metadata.metadata,
+                    profile=profile.profile if profile is not None else None,
+                )
+
+                relationships = engine.discover()
+
+                relationships_file = writer.write_relationships(
+                    relationships,
+                    run_directory,
+                )
+
+                logger.info(
+                    "Relationships written to %s",
+                    relationships_file,
+                )
+
+            conceptual_files = None
+
+            if getattr(self.config.artifacts, "conceptual_model", True):
+
+                if self.llm_client is None:
+
+                    logger.warning(
+                        "Skipping conceptual model: no LLM client configured. "
+                        "All deterministic artifacts were still produced."
+                    )
+
+                else:
+
+                    logger.info("Generating conceptual model...")
+
+                    conceptual_engine = ConceptualModelEngine(
+                        client=self.llm_client,
+                        model_name=self.config.llm.model,
+                    )
+
+                    conceptual = conceptual_engine.generate(
+                        metadata,
+                        profile,
+                        relationships,
+                    )
+
+                    conceptual_files = ConceptualModelWriter().write(
+                        conceptual,
+                        run_directory,
+                    )
+
+                    logger.info(
+                        "Conceptual model written to %s, %s and %s",
+                        conceptual_files[0],
+                        conceptual_files[1],
+                        conceptual_files[2],
+                    )
+
             writer.write_execution_summary(
                 run_directory,
                 source.database,
@@ -122,6 +195,18 @@ class MigrationOrchestrator:
             if profile_file is not None:
 
                 print(f"Profile File  : {profile_file}")
+
+            if relationships_file is not None:
+
+                print(f"Relationships : {relationships_file}")
+
+            if conceptual_files is not None:
+
+                print(f"Conceptual    : {conceptual_files[0]}")
+
+                print(f"                {conceptual_files[1]}")
+
+                print(f"                {conceptual_files[2]}")
 
             print("=" * 70)
 

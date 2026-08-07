@@ -8,7 +8,9 @@ source:
   port: 5432
   database: datamodel
   username: postgres
-  password: 'Visionet@1234'
+  # Prefer the environment variable. Falls back to the literal below so an
+  # existing local setup keeps working; remove the default before sharing.
+  password: ${SOURCE_DB_PASSWORD:-12345}
   schema:
     - bronze
 
@@ -16,12 +18,23 @@ target:
   type: snowflake
 
 llm:
-  provider: openai
-  model: gpt-5.5
-  temperature: 0
+  provider: anthropic
+  model: claude-opus-5
+
+  # Reasoning depth: low | medium | high | xhigh | max.
+  # This replaces `temperature`, which current Claude models reject.
+  effort: low
+
+  # Ceiling on the response, covering reasoning and answer together.
+  max_tokens: 32000
+
+  # Environment variable holding the key. The key itself never goes in this
+  # file - config.yaml is not git-ignored.
+  api_key_env: ANTHROPIC_API_KEY
 
 artifacts:
   profile: true
+  relationships: true
   conceptual_model: true
   logical_model: true
   physical_model: true

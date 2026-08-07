@@ -22,6 +22,11 @@ from rich.console import Console
 from rich.table import Table
 
 from migration.connectors.factory import UnsupportedSourceError, create_connector
+from migration.llm.factory import (
+    MissingAPIKeyError,
+    UnsupportedProviderError,
+    create_llm_client,
+)
 from migration.orchestrator.orchestrator import MigrationOrchestrator
 from migration.connectors.base import ConnectorError
 from migration.utils.config_loader import ConfigError, load_config
@@ -44,12 +49,43 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     return parser.parse_args(argv)
 
 
+def _load_dotenv() -> None:
+    """Load a local .env so API keys and passwords resolve without exporting
+    them by hand. Absent file and absent package are both fine — the config
+    loader falls back to the real environment either way."""
+    try:
+        from dotenv import load_dotenv
+    except ImportError:
+        return
+    load_dotenv()
+
+
+def _build_llm_client(config):
+    """Build the LLM client, or return None with a clear explanation.
+
+    A missing key must not cost the user their metadata, profile and
+    relationship artifacts, so this degrades rather than aborting. The
+    deterministic pipeline has no dependency on the AI layer.
+    """
+    if not getattr(config.artifacts, "conceptual_model", True):
+        return None
+
+    try:
+        return create_llm_client(config.llm)
+    except MissingAPIKeyError as exc:
+        console.print(f"[yellow]Skipping AI artifacts:[/yellow] {exc}")
+    except UnsupportedProviderError as exc:
+        console.print(f"[yellow]Skipping AI artifacts:[/yellow] {exc}")
+    return None
+
+
 def run(argv: list[str] | None = None) -> int:
     args = parse_args(argv)
 
     # Logging is set up before config validation so that even a config
     # failure is captured in a log file, not just printed to stderr.
     setup_logging(level="INFO")
+    _load_dotenv()
 
     try:
         config = load_config(args.config)
@@ -61,8 +97,10 @@ def run(argv: list[str] | None = None) -> int:
     setup_logging(level=config.logging.level.value)
     logger.info("Loaded configuration for project '%s'", config.project.name)
 
+    llm_client = _build_llm_client(config)
+
     try:
-        orchestrator = MigrationOrchestrator(config)
+        orchestrator = MigrationOrchestrator(config, llm_client=llm_client)
         orchestrator.run()
     except UnsupportedSourceError as exc:
         console.print(f"[bold red]Unsupported source:[/bold red] {exc}")
