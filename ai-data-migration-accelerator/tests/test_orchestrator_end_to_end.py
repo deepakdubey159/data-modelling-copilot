@@ -246,8 +246,55 @@ def test_full_run_produces_every_artifact(tmp_path: Path, fake_connector):
         "conceptual_model.json",
         "conceptual_model.md",
         "conceptual_model.html",
+        "logical_model.json",
+        "logical_model.md",
+        "logical_model.html",
         "summary.txt",
     }
+
+
+def test_logical_model_is_derived_from_the_conceptual_model(tmp_path: Path, fake_connector):
+    """Module 5 runs inside the pipeline, not only as a standalone script."""
+    MigrationOrchestrator(
+        _config(tmp_path), llm_client=StubLLMClient(LLM_RESPONSE)
+    ).run()
+
+    run = _run_directory(tmp_path)
+    logical = json.loads((run / "logical_model.json").read_text(encoding="utf-8"))
+    model = logical["logical_model"]
+
+    assert logical["generated_from"] == "conceptual_model.json"
+    assert {e["name"] for e in model["entities"]} >= {"Customer", "Sales Order"}
+    assert model["relationships"]
+
+    html = (run / "logical_model.html").read_text(encoding="utf-8")
+    assert html.startswith("<!DOCTYPE html>")
+    assert "Logical Data Model" in html
+
+
+def test_logical_model_is_skipped_when_the_conceptual_model_is(
+    tmp_path: Path, fake_connector
+):
+    """Without an LLM client there is no conceptual model, so there is
+    nothing to derive a logical model from."""
+    MigrationOrchestrator(_config(tmp_path), llm_client=None).run()
+
+    produced = {p.name for p in _run_directory(tmp_path).iterdir()}
+
+    assert "metadata.json" in produced
+    assert "logical_model.json" not in produced
+
+
+def test_logical_toggle_disables_only_the_logical_step(tmp_path: Path, fake_connector):
+    config = _config(tmp_path)
+    config.artifacts.logical_model = False
+
+    MigrationOrchestrator(config, llm_client=StubLLMClient(LLM_RESPONSE)).run()
+
+    produced = {p.name for p in _run_directory(tmp_path).iterdir()}
+
+    assert "conceptual_model.json" in produced
+    assert "logical_model.json" not in produced
 
 
 def test_conceptual_html_is_produced_and_self_contained(tmp_path: Path, fake_connector):

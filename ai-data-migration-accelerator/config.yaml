@@ -10,12 +10,12 @@ source:
   username: postgres
   # Prefer the environment variable. Falls back to the literal below so an
   # existing local setup keeps working; remove the default before sharing.
-  password: ${SOURCE_DB_PASSWORD:-12345}
+  password: 'Visionet@1234'
   schema:
     - bronze
 
 target:
-  type: snowflake
+  type: databricks
 
 llm:
   provider: anthropic

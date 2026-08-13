@@ -1,0 +1,981 @@
+{
+    "metadata": {
+        "database_name": "datamodel",
+        "source_database_type": "postgres",
+        "schemas": [
+            {
+                "schema_name": "bronze",
+                "tables": [
+                    {
+                        "table_name": "customer",
+                        "table_type": "BASE TABLE",
+                        "columns": [
+                            {
+                                "name": "customer_id",
+                                "data_type": "bigint",
+                                "nullable": false,
+                                "default_value": "nextval('bronze.customer_customer_id_seq'::regclass)",
+                                "ordinal_position": 1,
+                                "character_length": null,
+                                "numeric_precision": 64,
+                                "numeric_scale": 0,
+                                "is_primary_key": true,
+                                "is_foreign_key": false,
+                                "comment": null
+                            },
+                            {
+                                "name": "customer_code",
+                                "data_type": "character varying",
+                                "nullable": false,
+                                "default_value": null,
+                                "ordinal_position": 2,
+                                "character_length": 20,
+                                "numeric_precision": null,
+                                "numeric_scale": null,
+                                "is_primary_key": false,
+                                "is_foreign_key": false,
+                                "comment": null
+                            },
+                            {
+                                "name": "first_name",
+                                "data_type": "character varying",
+                                "nullable": false,
+                                "default_value": null,
+                                "ordinal_position": 3,
+                                "character_length": 100,
+                                "numeric_precision": null,
+                                "numeric_scale": null,
+                                "is_primary_key": false,
+                                "is_foreign_key": false,
+                                "comment": null
+                            },
+                            {
+                                "name": "last_name",
+                                "data_type": "character varying",
+                                "nullable": true,
+                                "default_value": null,
+                                "ordinal_position": 4,
+                                "character_length": 100,
+                                "numeric_precision": null,
+                                "numeric_scale": null,
+                                "is_primary_key": false,
+                                "is_foreign_key": false,
+                                "comment": null
+                            },
+                            {
+                                "name": "email",
+                                "data_type": "character varying",
+                                "nullable": true,
+                                "default_value": null,
+                                "ordinal_position": 5,
+                                "character_length": 255,
+                                "numeric_precision": null,
+                                "numeric_scale": null,
+                                "is_primary_key": false,
+                                "is_foreign_key": false,
+                                "comment": null
+                            },
+                            {
+                                "name": "phone_number",
+                                "data_type": "character varying",
+                                "nullable": true,
+                                "default_value": null,
+                                "ordinal_position": 6,
+                                "character_length": 20,
+                                "numeric_precision": null,
+                                "numeric_scale": null,
+                                "is_primary_key": false,
+                                "is_foreign_key": false,
+                                "comment": null
+                            },
+                            {
+                                "name": "date_of_birth",
+                                "data_type": "date",
+                                "nullable": true,
+                                "default_value": null,
+                                "ordinal_position": 7,
+                                "character_length": null,
+                                "numeric_precision": null,
+                                "numeric_scale": null,
+                                "is_primary_key": false,
+                                "is_foreign_key": false,
+                                "comment": null
+                            },
+                            {
+                                "name": "gender",
+                                "data_type": "character varying",
+                                "nullable": true,
+                                "default_value": null,
+                                "ordinal_position": 8,
+                                "character_length": 10,
+                                "numeric_precision": null,
+                                "numeric_scale": null,
+                                "is_primary_key": false,
+                                "is_foreign_key": false,
+                                "comment": null
+                            },
+                            {
+                                "name": "city",
+                                "data_type": "character varying",
+                                "nullable": true,
+                                "default_value": null,
+                                "ordinal_position": 9,
+                                "character_length": 100,
+                                "numeric_precision": null,
+                                "numeric_scale": null,
+                                "is_primary_key": false,
+                                "is_foreign_key": false,
+                                "comment": null
+                            },
+                            {
+                                "name": "state",
+                                "data_type": "character varying",
+                                "nullable": true,
+                                "default_value": null,
+                                "ordinal_position": 10,
+                                "character_length": 100,
+                                "numeric_precision": null,
+                                "numeric_scale": null,
+                                "is_primary_key": false,
+                                "is_foreign_key": false,
+                                "comment": null
+                            },
+                            {
+                                "name": "country",
+                                "data_type": "character varying",
+                                "nullable": true,
+                                "default_value": null,
+                                "ordinal_position": 11,
+                                "character_length": 100,
+                                "numeric_precision": null,
+                                "numeric_scale": null,
+                                "is_primary_key": false,
+                                "is_foreign_key": false,
+                                "comment": null
+                            },
+                            {
+                                "name": "postal_code",
+                                "data_type": "character varying",
+                                "nullable": true,
+                                "default_value": null,
+                                "ordinal_position": 12,
+                                "character_length": 20,
+                                "numeric_precision": null,
+                                "numeric_scale": null,
+                                "is_primary_key": false,
+                                "is_foreign_key": false,
+                                "comment": null
+                            },
+                            {
+                                "name": "customer_status",
+                                "data_type": "character varying",
+                                "nullable": true,
+                                "default_value": "'ACTIVE'::character varying",
+                                "ordinal_position": 13,
+                                "character_length": 20,
+                                "numeric_precision": null,
+                                "numeric_scale": null,
+                                "is_primary_key": false,
+                                "is_foreign_key": false,
+                                "comment": null
+                            },
+                            {
+                                "name": "credit_limit",
+                                "data_type": "numeric",
+                                "nullable": true,
+                                "default_value": "0",
+                                "ordinal_position": 14,
+                                "character_length": null,
+                                "numeric_precision": 12,
+                                "numeric_scale": 2,
+                                "is_primary_key": false,
+                                "is_foreign_key": false,
+                                "comment": null
+                            },
+                            {
+                                "name": "is_active",
+                                "data_type": "boolean",
+                                "nullable": true,
+                                "default_value": "true",
+                                "ordinal_position": 15,
+                                "character_length": null,
+                                "numeric_precision": null,
+                                "numeric_scale": null,
+                                "is_primary_key": false,
+                                "is_foreign_key": false,
+                                "comment": null
+                            },
+                            {
+                                "name": "created_date",
+                                "data_type": "timestamp without time zone",
+                                "nullable": true,
+                                "default_value": "CURRENT_TIMESTAMP",
+                                "ordinal_position": 16,
+                                "character_length": null,
+                                "numeric_precision": null,
+                                "numeric_scale": null,
+                                "is_primary_key": false,
+                                "is_foreign_key": false,
+                                "comment": null
+                            },
+                            {
+                                "name": "updated_date",
+                                "data_type": "timestamp without time zone",
+                                "nullable": true,
+                                "default_value": "CURRENT_TIMESTAMP",
+                                "ordinal_position": 17,
+                                "character_length": null,
+                                "numeric_precision": null,
+                                "numeric_scale": null,
+                                "is_primary_key": false,
+                                "is_foreign_key": false,
+                                "comment": null
+                            }
+                        ],
+                        "primary_keys": [
+                            {
+                                "constraint_name": "customer_pkey",
+                                "columns": [
+                                    "customer_id"
+                                ]
+                            }
+                        ],
+                        "foreign_keys": [],
+                        "indexes": [
+                            {
+                                "index_name": "customer_customer_code_key",
+                                "definition": "CREATE UNIQUE INDEX customer_customer_code_key ON bronze.customer USING btree (customer_code)"
+                            },
+                            {
+                                "index_name": "customer_email_key",
+                                "definition": "CREATE UNIQUE INDEX customer_email_key ON bronze.customer USING btree (email)"
+                            },
+                            {
+                                "index_name": "customer_pkey",
+                                "definition": "CREATE UNIQUE INDEX customer_pkey ON bronze.customer USING btree (customer_id)"
+                            },
+                            {
+                                "index_name": "idx_customer_city",
+                                "definition": "CREATE INDEX idx_customer_city ON bronze.customer USING btree (city)"
+                            },
+                            {
+                                "index_name": "idx_customer_email",
+                                "definition": "CREATE INDEX idx_customer_email ON bronze.customer USING btree (email)"
+                            }
+                        ],
+                        "constraints": [
+                            {
+                                "constraint_name": "customer_customer_id_not_null",
+                                "constraint_type": "CHECK"
+                            },
+                            {
+                                "constraint_name": "customer_customer_code_not_null",
+                                "constraint_type": "CHECK"
+                            },
+                            {
+                                "constraint_name": "customer_first_name_not_null",
+                                "constraint_type": "CHECK"
+                            },
+                            {
+                                "constraint_name": "customer_pkey",
+                                "constraint_type": "PRIMARY KEY"
+                            },
+                            {
+                                "constraint_name": "customer_customer_code_key",
+                                "constraint_type": "UNIQUE"
+                            },
+                            {
+                                "constraint_name": "customer_email_key",
+                                "constraint_type": "UNIQUE"
+                            }
+                        ],
+                        "statistics": {
+                            "row_estimate": 5,
+                            "dead_row_estimate": 0,
+                            "last_analyze": null,
+                            "last_autoanalyze": null
+                        }
+                    },
+                    {
+                        "table_name": "order_item",
+                        "table_type": "BASE TABLE",
+                        "columns": [
+                            {
+                                "name": "order_item_id",
+                                "data_type": "bigint",
+                                "nullable": false,
+                                "default_value": "nextval('bronze.order_item_order_item_id_seq'::regclass)",
+                                "ordinal_position": 1,
+                                "character_length": null,
+                                "numeric_precision": 64,
+                                "numeric_scale": 0,
+                                "is_primary_key": true,
+                                "is_foreign_key": false,
+                                "comment": null
+                            },
+                            {
+                                "name": "order_id",
+                                "data_type": "bigint",
+                                "nullable": false,
+                                "default_value": null,
+                                "ordinal_position": 2,
+                                "character_length": null,
+                                "numeric_precision": 64,
+                                "numeric_scale": 0,
+                                "is_primary_key": false,
+                                "is_foreign_key": true,
+                                "comment": null
+                            },
+                            {
+                                "name": "product_name",
+                                "data_type": "character varying",
+                                "nullable": true,
+                                "default_value": null,
+                                "ordinal_position": 3,
+                                "character_length": 200,
+                                "numeric_precision": null,
+                                "numeric_scale": null,
+                                "is_primary_key": false,
+                                "is_foreign_key": false,
+                                "comment": null
+                            },
+                            {
+                                "name": "quantity",
+                                "data_type": "integer",
+                                "nullable": false,
+                                "default_value": null,
+                                "ordinal_position": 4,
+                                "character_length": null,
+                                "numeric_precision": 32,
+                                "numeric_scale": 0,
+                                "is_primary_key": false,
+                                "is_foreign_key": false,
+                                "comment": null
+                            },
+                            {
+                                "name": "unit_price",
+                                "data_type": "numeric",
+                                "nullable": true,
+                                "default_value": null,
+                                "ordinal_position": 5,
+                                "character_length": null,
+                                "numeric_precision": 10,
+                                "numeric_scale": 2,
+                                "is_primary_key": false,
+                                "is_foreign_key": false,
+                                "comment": null
+                            },
+                            {
+                                "name": "total_price",
+                                "data_type": "numeric",
+                                "nullable": true,
+                                "default_value": null,
+                                "ordinal_position": 6,
+                                "character_length": null,
+                                "numeric_precision": 12,
+                                "numeric_scale": 2,
+                                "is_primary_key": false,
+                                "is_foreign_key": false,
+                                "comment": null
+                            }
+                        ],
+                        "primary_keys": [
+                            {
+                                "constraint_name": "order_item_pkey",
+                                "columns": [
+                                    "order_item_id"
+                                ]
+                            }
+                        ],
+                        "foreign_keys": [
+                            {
+                                "constraint_name": "fk_order",
+                                "column": "order_id",
+                                "referenced_schema": "bronze",
+                                "referenced_table": "orders",
+                                "referenced_column": "order_id"
+                            }
+                        ],
+                        "indexes": [
+                            {
+                                "index_name": "order_item_pkey",
+                                "definition": "CREATE UNIQUE INDEX order_item_pkey ON bronze.order_item USING btree (order_item_id)"
+                            }
+                        ],
+                        "constraints": [
+                            {
+                                "constraint_name": "fk_order",
+                                "constraint_type": "FOREIGN KEY"
+                            },
+                            {
+                                "constraint_name": "order_item_order_item_id_not_null",
+                                "constraint_type": "CHECK"
+                            },
+                            {
+                                "constraint_name": "order_item_order_id_not_null",
+                                "constraint_type": "CHECK"
+                            },
+                            {
+                                "constraint_name": "order_item_quantity_not_null",
+                                "constraint_type": "CHECK"
+                            },
+                            {
+                                "constraint_name": "order_item_pkey",
+                                "constraint_type": "PRIMARY KEY"
+                            }
+                        ],
+                        "statistics": {
+                            "row_estimate": 6,
+                            "dead_row_estimate": 0,
+                            "last_analyze": null,
+                            "last_autoanalyze": null
+                        }
+                    },
+                    {
+                        "table_name": "order_product",
+                        "table_type": "BASE TABLE",
+                        "columns": [
+                            {
+                                "name": "order_id",
+                                "data_type": "bigint",
+                                "nullable": false,
+                                "default_value": null,
+                                "ordinal_position": 1,
+                                "character_length": null,
+                                "numeric_precision": 64,
+                                "numeric_scale": 0,
+                                "is_primary_key": true,
+                                "is_foreign_key": true,
+                                "comment": null
+                            },
+                            {
+                                "name": "product_id",
+                                "data_type": "bigint",
+                                "nullable": false,
+                                "default_value": null,
+                                "ordinal_position": 2,
+                                "character_length": null,
+                                "numeric_precision": 64,
+                                "numeric_scale": 0,
+                                "is_primary_key": true,
+                                "is_foreign_key": true,
+                                "comment": null
+                            },
+                            {
+                                "name": "quantity",
+                                "data_type": "integer",
+                                "nullable": true,
+                                "default_value": null,
+                                "ordinal_position": 3,
+                                "character_length": null,
+                                "numeric_precision": 32,
+                                "numeric_scale": 0,
+                                "is_primary_key": false,
+                                "is_foreign_key": false,
+                                "comment": null
+                            },
+                            {
+                                "name": "selling_price",
+                                "data_type": "numeric",
+                                "nullable": true,
+                                "default_value": null,
+                                "ordinal_position": 4,
+                                "character_length": null,
+                                "numeric_precision": 10,
+                                "numeric_scale": 2,
+                                "is_primary_key": false,
+                                "is_foreign_key": false,
+                                "comment": null
+                            }
+                        ],
+                        "primary_keys": [
+                            {
+                                "constraint_name": "order_product_pkey",
+                                "columns": [
+                                    "order_id",
+                                    "product_id"
+                                ]
+                            }
+                        ],
+                        "foreign_keys": [
+                            {
+                                "constraint_name": "fk_op_order",
+                                "column": "order_id",
+                                "referenced_schema": "bronze",
+                                "referenced_table": "orders",
+                                "referenced_column": "order_id"
+                            },
+                            {
+                                "constraint_name": "fk_op_product",
+                                "column": "product_id",
+                                "referenced_schema": "bronze",
+                                "referenced_table": "product",
+                                "referenced_column": "product_id"
+                            }
+                        ],
+                        "indexes": [
+                            {
+                                "index_name": "order_product_pkey",
+                                "definition": "CREATE UNIQUE INDEX order_product_pkey ON bronze.order_product USING btree (order_id, product_id)"
+                            }
+                        ],
+                        "constraints": [
+                            {
+                                "constraint_name": "order_product_product_id_not_null",
+                                "constraint_type": "CHECK"
+                            },
+                            {
+                                "constraint_name": "fk_op_product",
+                                "constraint_type": "FOREIGN KEY"
+                            },
+                            {
+                                "constraint_name": "fk_op_order",
+                                "constraint_type": "FOREIGN KEY"
+                            },
+                            {
+                                "constraint_name": "order_product_pkey",
+                                "constraint_type": "PRIMARY KEY"
+                            },
+                            {
+                                "constraint_name": "order_product_order_id_not_null",
+                                "constraint_type": "CHECK"
+                            }
+                        ],
+                        "statistics": {
+                            "row_estimate": 6,
+                            "dead_row_estimate": 0,
+                            "last_analyze": null,
+                            "last_autoanalyze": null
+                        }
+                    },
+                    {
+                        "table_name": "orders",
+                        "table_type": "BASE TABLE",
+                        "columns": [
+                            {
+                                "name": "order_id",
+                                "data_type": "bigint",
+                                "nullable": false,
+                                "default_value": "nextval('bronze.orders_order_id_seq'::regclass)",
+                                "ordinal_position": 1,
+                                "character_length": null,
+                                "numeric_precision": 64,
+                                "numeric_scale": 0,
+                                "is_primary_key": true,
+                                "is_foreign_key": false,
+                                "comment": null
+                            },
+                            {
+                                "name": "order_number",
+                                "data_type": "character varying",
+                                "nullable": false,
+                                "default_value": null,
+                                "ordinal_position": 2,
+                                "character_length": 30,
+                                "numeric_precision": null,
+                                "numeric_scale": null,
+                                "is_primary_key": false,
+                                "is_foreign_key": false,
+                                "comment": null
+                            },
+                            {
+                                "name": "customer_id",
+                                "data_type": "bigint",
+                                "nullable": false,
+                                "default_value": null,
+                                "ordinal_position": 3,
+                                "character_length": null,
+                                "numeric_precision": 64,
+                                "numeric_scale": 0,
+                                "is_primary_key": false,
+                                "is_foreign_key": true,
+                                "comment": null
+                            },
+                            {
+                                "name": "order_date",
+                                "data_type": "timestamp without time zone",
+                                "nullable": true,
+                                "default_value": "CURRENT_TIMESTAMP",
+                                "ordinal_position": 4,
+                                "character_length": null,
+                                "numeric_precision": null,
+                                "numeric_scale": null,
+                                "is_primary_key": false,
+                                "is_foreign_key": false,
+                                "comment": null
+                            },
+                            {
+                                "name": "shipped_date",
+                                "data_type": "timestamp without time zone",
+                                "nullable": true,
+                                "default_value": null,
+                                "ordinal_position": 5,
+                                "character_length": null,
+                                "numeric_precision": null,
+                                "numeric_scale": null,
+                                "is_primary_key": false,
+                                "is_foreign_key": false,
+                                "comment": null
+                            },
+                            {
+                                "name": "order_status",
+                                "data_type": "character varying",
+                                "nullable": true,
+                                "default_value": "'NEW'::character varying",
+                                "ordinal_position": 6,
+                                "character_length": 20,
+                                "numeric_precision": null,
+                                "numeric_scale": null,
+                                "is_primary_key": false,
+                                "is_foreign_key": false,
+                                "comment": null
+                            },
+                            {
+                                "name": "payment_method",
+                                "data_type": "character varying",
+                                "nullable": true,
+                                "default_value": null,
+                                "ordinal_position": 7,
+                                "character_length": 30,
+                                "numeric_precision": null,
+                                "numeric_scale": null,
+                                "is_primary_key": false,
+                                "is_foreign_key": false,
+                                "comment": null
+                            },
+                            {
+                                "name": "total_amount",
+                                "data_type": "numeric",
+                                "nullable": true,
+                                "default_value": null,
+                                "ordinal_position": 8,
+                                "character_length": null,
+                                "numeric_precision": 12,
+                                "numeric_scale": 2,
+                                "is_primary_key": false,
+                                "is_foreign_key": false,
+                                "comment": null
+                            },
+                            {
+                                "name": "tax_amount",
+                                "data_type": "numeric",
+                                "nullable": true,
+                                "default_value": null,
+                                "ordinal_position": 9,
+                                "character_length": null,
+                                "numeric_precision": 12,
+                                "numeric_scale": 2,
+                                "is_primary_key": false,
+                                "is_foreign_key": false,
+                                "comment": null
+                            },
+                            {
+                                "name": "discount_amount",
+                                "data_type": "numeric",
+                                "nullable": true,
+                                "default_value": null,
+                                "ordinal_position": 10,
+                                "character_length": null,
+                                "numeric_precision": 12,
+                                "numeric_scale": 2,
+                                "is_primary_key": false,
+                                "is_foreign_key": false,
+                                "comment": null
+                            },
+                            {
+                                "name": "shipping_amount",
+                                "data_type": "numeric",
+                                "nullable": true,
+                                "default_value": null,
+                                "ordinal_position": 11,
+                                "character_length": null,
+                                "numeric_precision": 12,
+                                "numeric_scale": 2,
+                                "is_primary_key": false,
+                                "is_foreign_key": false,
+                                "comment": null
+                            },
+                            {
+                                "name": "remarks",
+                                "data_type": "text",
+                                "nullable": true,
+                                "default_value": null,
+                                "ordinal_position": 12,
+                                "character_length": null,
+                                "numeric_precision": null,
+                                "numeric_scale": null,
+                                "is_primary_key": false,
+                                "is_foreign_key": false,
+                                "comment": null
+                            },
+                            {
+                                "name": "created_by",
+                                "data_type": "character varying",
+                                "nullable": true,
+                                "default_value": null,
+                                "ordinal_position": 13,
+                                "character_length": 50,
+                                "numeric_precision": null,
+                                "numeric_scale": null,
+                                "is_primary_key": false,
+                                "is_foreign_key": false,
+                                "comment": null
+                            },
+                            {
+                                "name": "created_date",
+                                "data_type": "timestamp without time zone",
+                                "nullable": true,
+                                "default_value": "CURRENT_TIMESTAMP",
+                                "ordinal_position": 14,
+                                "character_length": null,
+                                "numeric_precision": null,
+                                "numeric_scale": null,
+                                "is_primary_key": false,
+                                "is_foreign_key": false,
+                                "comment": null
+                            }
+                        ],
+                        "primary_keys": [
+                            {
+                                "constraint_name": "orders_pkey",
+                                "columns": [
+                                    "order_id"
+                                ]
+                            }
+                        ],
+                        "foreign_keys": [
+                            {
+                                "constraint_name": "fk_customer",
+                                "column": "customer_id",
+                                "referenced_schema": "bronze",
+                                "referenced_table": "customer",
+                                "referenced_column": "customer_id"
+                            }
+                        ],
+                        "indexes": [
+                            {
+                                "index_name": "idx_orders_customer",
+                                "definition": "CREATE INDEX idx_orders_customer ON bronze.orders USING btree (customer_id)"
+                            },
+                            {
+                                "index_name": "idx_orders_status",
+                                "definition": "CREATE INDEX idx_orders_status ON bronze.orders USING btree (order_status)"
+                            },
+                            {
+                                "index_name": "orders_order_number_key",
+                                "definition": "CREATE UNIQUE INDEX orders_order_number_key ON bronze.orders USING btree (order_number)"
+                            },
+                            {
+                                "index_name": "orders_pkey",
+                                "definition": "CREATE UNIQUE INDEX orders_pkey ON bronze.orders USING btree (order_id)"
+                            }
+                        ],
+                        "constraints": [
+                            {
+                                "constraint_name": "orders_order_number_key",
+                                "constraint_type": "UNIQUE"
+                            },
+                            {
+                                "constraint_name": "orders_customer_id_not_null",
+                                "constraint_type": "CHECK"
+                            },
+                            {
+                                "constraint_name": "orders_pkey",
+                                "constraint_type": "PRIMARY KEY"
+                            },
+                            {
+                                "constraint_name": "fk_customer",
+                                "constraint_type": "FOREIGN KEY"
+                            },
+                            {
+                                "constraint_name": "orders_order_id_not_null",
+                                "constraint_type": "CHECK"
+                            },
+                            {
+                                "constraint_name": "orders_order_number_not_null",
+                                "constraint_type": "CHECK"
+                            }
+                        ],
+                        "statistics": {
+                            "row_estimate": 6,
+                            "dead_row_estimate": 0,
+                            "last_analyze": null,
+                            "last_autoanalyze": null
+                        }
+                    },
+                    {
+                        "table_name": "product",
+                        "table_type": "BASE TABLE",
+                        "columns": [
+                            {
+                                "name": "product_id",
+                                "data_type": "bigint",
+                                "nullable": false,
+                                "default_value": "nextval('bronze.product_product_id_seq'::regclass)",
+                                "ordinal_position": 1,
+                                "character_length": null,
+                                "numeric_precision": 64,
+                                "numeric_scale": 0,
+                                "is_primary_key": true,
+                                "is_foreign_key": false,
+                                "comment": null
+                            },
+                            {
+                                "name": "product_code",
+                                "data_type": "character varying",
+                                "nullable": true,
+                                "default_value": null,
+                                "ordinal_position": 2,
+                                "character_length": 20,
+                                "numeric_precision": null,
+                                "numeric_scale": null,
+                                "is_primary_key": false,
+                                "is_foreign_key": false,
+                                "comment": null
+                            },
+                            {
+                                "name": "product_name",
+                                "data_type": "character varying",
+                                "nullable": true,
+                                "default_value": null,
+                                "ordinal_position": 3,
+                                "character_length": 200,
+                                "numeric_precision": null,
+                                "numeric_scale": null,
+                                "is_primary_key": false,
+                                "is_foreign_key": false,
+                                "comment": null
+                            },
+                            {
+                                "name": "category",
+                                "data_type": "character varying",
+                                "nullable": true,
+                                "default_value": null,
+                                "ordinal_position": 4,
+                                "character_length": 100,
+                                "numeric_precision": null,
+                                "numeric_scale": null,
+                                "is_primary_key": false,
+                                "is_foreign_key": false,
+                                "comment": null
+                            },
+                            {
+                                "name": "price",
+                                "data_type": "numeric",
+                                "nullable": true,
+                                "default_value": null,
+                                "ordinal_position": 5,
+                                "character_length": null,
+                                "numeric_precision": 10,
+                                "numeric_scale": 2,
+                                "is_primary_key": false,
+                                "is_foreign_key": false,
+                                "comment": null
+                            },
+                            {
+                                "name": "stock_quantity",
+                                "data_type": "integer",
+                                "nullable": true,
+                                "default_value": null,
+                                "ordinal_position": 6,
+                                "character_length": null,
+                                "numeric_precision": 32,
+                                "numeric_scale": 0,
+                                "is_primary_key": false,
+                                "is_foreign_key": false,
+                                "comment": null
+                            },
+                            {
+                                "name": "supplier_name",
+                                "data_type": "character varying",
+                                "nullable": true,
+                                "default_value": null,
+                                "ordinal_position": 7,
+                                "character_length": 100,
+                                "numeric_precision": null,
+                                "numeric_scale": null,
+                                "is_primary_key": false,
+                                "is_foreign_key": false,
+                                "comment": null
+                            },
+                            {
+                                "name": "is_active",
+                                "data_type": "boolean",
+                                "nullable": true,
+                                "default_value": "true",
+                                "ordinal_position": 8,
+                                "character_length": null,
+                                "numeric_precision": null,
+                                "numeric_scale": null,
+                                "is_primary_key": false,
+                                "is_foreign_key": false,
+                                "comment": null
+                            },
+                            {
+                                "name": "created_date",
+                                "data_type": "timestamp without time zone",
+                                "nullable": true,
+                                "default_value": "CURRENT_TIMESTAMP",
+                                "ordinal_position": 9,
+                                "character_length": null,
+                                "numeric_precision": null,
+                                "numeric_scale": null,
+                                "is_primary_key": false,
+                                "is_foreign_key": false,
+                                "comment": null
+                            }
+                        ],
+                        "primary_keys": [
+                            {
+                                "constraint_name": "product_pkey",
+                                "columns": [
+                                    "product_id"
+                                ]
+                            }
+                        ],
+                        "foreign_keys": [],
+                        "indexes": [
+                            {
+                                "index_name": "idx_product_category",
+                                "definition": "CREATE INDEX idx_product_category ON bronze.product USING btree (category)"
+                            },
+                            {
+                                "index_name": "product_pkey",
+                                "definition": "CREATE UNIQUE INDEX product_pkey ON bronze.product USING btree (product_id)"
+                            },
+                            {
+                                "index_name": "product_product_code_key",
+                                "definition": "CREATE UNIQUE INDEX product_product_code_key ON bronze.product USING btree (product_code)"
+                            }
+                        ],
+                        "constraints": [
+                            {
+                                "constraint_name": "product_product_code_key",
+                                "constraint_type": "UNIQUE"
+                            },
+                            {
+                                "constraint_name": "product_pkey",
+                                "constraint_type": "PRIMARY KEY"
+                            },
+                            {
+                                "constraint_name": "product_product_id_not_null",
+                                "constraint_type": "CHECK"
+                            }
+                        ],
+                        "statistics": {
+                            "row_estimate": 5,
+                            "dead_row_estimate": 0,
+                            "last_analyze": null,
+                            "last_autoanalyze": null
+                        }
+                    }
+                ],
+                "views": [],
+                "functions": [],
+                "procedures": [],
+                "triggers": []
+            }
+        ]
+    },
+    "profile": null
+}

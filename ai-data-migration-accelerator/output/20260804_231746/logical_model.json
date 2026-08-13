@@ -1,0 +1,1556 @@
+{
+    "logical_model": {
+        "database_name": "datamodel",
+        "summary": "Logical design for datamodel, derived from the conceptual model. 19 entities carry 21 relationships: 1 associative entities resolve many-to-many relationships and 2 entities are identified through a parent. 0 entities required a surrogate identifier because no business key was recorded. Attributes are typed against abstract domains and carry no platform-specific length, precision or storage.",
+        "subject_areas": [
+            {
+                "name": "Customer and Sales",
+                "description": "The demand side of the business: who buys, what they ordered, and how they paid. This is the commercial heart of the model and the most heavily connected part of the schema.",
+                "entities": [
+                    "Customer",
+                    "Order Line",
+                    "Payment",
+                    "Sales Order"
+                ]
+            },
+            {
+                "name": "Product and Sourcing",
+                "description": "The catalogue of sellable goods, how it is organised for browsing, who supplies it, and the promotional offers applied to it.",
+                "entities": [
+                    "Product",
+                    "Product Category",
+                    "Product Promotion Association",
+                    "Promotion",
+                    "Supplier"
+                ]
+            },
+            {
+                "name": "Inventory and Fulfilment",
+                "description": "Where goods are physically held and how they reach the customer or come back. Covers stock positions per location, outbound shipments, and returned goods.",
+                "entities": [
+                    "Product Return",
+                    "Shipment",
+                    "Stock Level",
+                    "Warehouse"
+                ]
+            },
+            {
+                "name": "Workforce",
+                "description": "The internal organisation. Employees are servicing accounts as sales representatives and are arranged in a reporting hierarchy within departments.",
+                "entities": [
+                    "Department",
+                    "Employee"
+                ]
+            },
+            {
+                "name": "Geography",
+                "description": "A shared three-level location hierarchy used as reference data by both customers and warehouses. It is not owned by any one business process.",
+                "entities": [
+                    "City",
+                    "Country",
+                    "State"
+                ]
+            },
+            {
+                "name": "Governance",
+                "description": "Change tracking. Records that a data-modifying operation occurred, who performed it and when.",
+                "entities": [
+                    "Audit Entry"
+                ]
+            }
+        ],
+        "entities": [
+            {
+                "name": "Audit Entry",
+                "description": "A record that a data-modifying operation took place, capturing which record type was affected, what kind of change it was, who made it and when. It refers to other records by name rather than by a modelled relationship, so it stands apart from the rest of the model.",
+                "kind": "FUNDAMENTAL",
+                "subject_area": "Governance",
+                "attributes": [
+                    {
+                        "name": "Audit Reference",
+                        "data_type": "IDENTIFIER",
+                        "optionality": "MANDATORY",
+                        "role": "PRIMARY_KEY",
+                        "references_entity": null,
+                        "source_attribute": "Audit Reference",
+                        "description": null
+                    },
+                    {
+                        "name": "Affected Record Type",
+                        "data_type": "CODE",
+                        "optionality": "OPTIONAL",
+                        "role": "DESCRIPTIVE",
+                        "references_entity": null,
+                        "source_attribute": "Affected Record Type",
+                        "description": null
+                    },
+                    {
+                        "name": "Operation Performed",
+                        "data_type": "CODE",
+                        "optionality": "OPTIONAL",
+                        "role": "DESCRIPTIVE",
+                        "references_entity": null,
+                        "source_attribute": "Operation Performed",
+                        "description": null
+                    },
+                    {
+                        "name": "Performed By",
+                        "data_type": "TEXT",
+                        "optionality": "OPTIONAL",
+                        "role": "DESCRIPTIVE",
+                        "references_entity": null,
+                        "source_attribute": "Performed By",
+                        "description": null
+                    },
+                    {
+                        "name": "Performed At",
+                        "data_type": "TIMESTAMP",
+                        "optionality": "OPTIONAL",
+                        "role": "DESCRIPTIVE",
+                        "references_entity": null,
+                        "source_attribute": "Performed At",
+                        "description": null
+                    }
+                ],
+                "primary_key": {
+                    "name": "PK_AUDIT_ENTRY",
+                    "kind": "PRIMARY",
+                    "attributes": [
+                        "Audit Reference"
+                    ],
+                    "is_surrogate": false
+                },
+                "alternate_keys": [],
+                "source_entities": [
+                    "Audit Entry"
+                ],
+                "source_tables": [
+                    "bronze.audit_log"
+                ]
+            },
+            {
+                "name": "City",
+                "description": "A populated place, the lowest level of the shared location hierarchy.",
+                "kind": "FUNDAMENTAL",
+                "subject_area": "Geography",
+                "attributes": [
+                    {
+                        "name": "City Name",
+                        "data_type": "TEXT",
+                        "optionality": "MANDATORY",
+                        "role": "PRIMARY_KEY",
+                        "references_entity": null,
+                        "source_attribute": "City Name",
+                        "description": null
+                    },
+                    {
+                        "name": "State Name",
+                        "data_type": "IDENTIFIER",
+                        "optionality": "MANDATORY",
+                        "role": "FOREIGN_KEY",
+                        "references_entity": "State",
+                        "source_attribute": null,
+                        "description": "References State."
+                    }
+                ],
+                "primary_key": {
+                    "name": "PK_CITY",
+                    "kind": "PRIMARY",
+                    "attributes": [
+                        "City Name"
+                    ],
+                    "is_surrogate": false
+                },
+                "alternate_keys": [],
+                "source_entities": [
+                    "City"
+                ],
+                "source_tables": [
+                    "bronze.city"
+                ]
+            },
+            {
+                "name": "Country",
+                "description": "A sovereign country, the top of the location hierarchy, held with a short standard code as well as a name.",
+                "kind": "FUNDAMENTAL",
+                "subject_area": "Geography",
+                "attributes": [
+                    {
+                        "name": "Country Code",
+                        "data_type": "CODE",
+                        "optionality": "MANDATORY",
+                        "role": "PRIMARY_KEY",
+                        "references_entity": null,
+                        "source_attribute": "Country Code",
+                        "description": null
+                    },
+                    {
+                        "name": "Country Name",
+                        "data_type": "TEXT",
+                        "optionality": "OPTIONAL",
+                        "role": "DESCRIPTIVE",
+                        "references_entity": null,
+                        "source_attribute": "Country Name",
+                        "description": null
+                    },
+                    {
+                        "name": "Date Recorded",
+                        "data_type": "DATE",
+                        "optionality": "OPTIONAL",
+                        "role": "DESCRIPTIVE",
+                        "references_entity": null,
+                        "source_attribute": "Date Recorded",
+                        "description": null
+                    }
+                ],
+                "primary_key": {
+                    "name": "PK_COUNTRY",
+                    "kind": "PRIMARY",
+                    "attributes": [
+                        "Country Code"
+                    ],
+                    "is_surrogate": false
+                },
+                "alternate_keys": [],
+                "source_entities": [
+                    "Country"
+                ],
+                "source_tables": [
+                    "bronze.country"
+                ]
+            },
+            {
+                "name": "Customer",
+                "description": "A person or organisation that buys from the business. Customers carry a credit limit, which indicates that trade is extended on account rather than strictly prepaid, and a lifecycle status.",
+                "kind": "FUNDAMENTAL",
+                "subject_area": "Customer and Sales",
+                "attributes": [
+                    {
+                        "name": "Customer Number",
+                        "data_type": "IDENTIFIER",
+                        "optionality": "MANDATORY",
+                        "role": "PRIMARY_KEY",
+                        "references_entity": null,
+                        "source_attribute": "Customer Number",
+                        "description": null
+                    },
+                    {
+                        "name": "First Name",
+                        "data_type": "TEXT",
+                        "optionality": "OPTIONAL",
+                        "role": "DESCRIPTIVE",
+                        "references_entity": null,
+                        "source_attribute": "First Name",
+                        "description": null
+                    },
+                    {
+                        "name": "Last Name",
+                        "data_type": "TEXT",
+                        "optionality": "OPTIONAL",
+                        "role": "DESCRIPTIVE",
+                        "references_entity": null,
+                        "source_attribute": "Last Name",
+                        "description": null
+                    },
+                    {
+                        "name": "Email Address",
+                        "data_type": "EMAIL",
+                        "optionality": "OPTIONAL",
+                        "role": "ALTERNATE_KEY",
+                        "references_entity": null,
+                        "source_attribute": "Email Address",
+                        "description": null
+                    },
+                    {
+                        "name": "Telephone Number",
+                        "data_type": "PHONE",
+                        "optionality": "OPTIONAL",
+                        "role": "ALTERNATE_KEY",
+                        "references_entity": null,
+                        "source_attribute": "Telephone Number",
+                        "description": null
+                    },
+                    {
+                        "name": "Credit Limit",
+                        "data_type": "AMOUNT",
+                        "optionality": "OPTIONAL",
+                        "role": "DESCRIPTIVE",
+                        "references_entity": null,
+                        "source_attribute": "Credit Limit",
+                        "description": null
+                    },
+                    {
+                        "name": "Account Status",
+                        "data_type": "CODE",
+                        "optionality": "OPTIONAL",
+                        "role": "DESCRIPTIVE",
+                        "references_entity": null,
+                        "source_attribute": "Account Status",
+                        "description": null
+                    },
+                    {
+                        "name": "City Name",
+                        "data_type": "IDENTIFIER",
+                        "optionality": "OPTIONAL",
+                        "role": "FOREIGN_KEY",
+                        "references_entity": "City",
+                        "source_attribute": null,
+                        "description": "References City."
+                    }
+                ],
+                "primary_key": {
+                    "name": "PK_CUSTOMER",
+                    "kind": "PRIMARY",
+                    "attributes": [
+                        "Customer Number"
+                    ],
+                    "is_surrogate": false
+                },
+                "alternate_keys": [
+                    {
+                        "name": "AK_CUSTOMER_EMAIL_ADDRESS",
+                        "kind": "ALTERNATE",
+                        "attributes": [
+                            "Email Address"
+                        ],
+                        "is_surrogate": false
+                    },
+                    {
+                        "name": "AK_CUSTOMER_TELEPHONE_NUMBER",
+                        "kind": "ALTERNATE",
+                        "attributes": [
+                            "Telephone Number"
+                        ],
+                        "is_surrogate": false
+                    }
+                ],
+                "source_entities": [
+                    "Customer"
+                ],
+                "source_tables": [
+                    "bronze.customer"
+                ]
+            },
+            {
+                "name": "Department",
+                "description": "An organisational unit that employees are assigned to.",
+                "kind": "FUNDAMENTAL",
+                "subject_area": "Workforce",
+                "attributes": [
+                    {
+                        "name": "Department Name",
+                        "data_type": "TEXT",
+                        "optionality": "MANDATORY",
+                        "role": "PRIMARY_KEY",
+                        "references_entity": null,
+                        "source_attribute": "Department Name",
+                        "description": null
+                    }
+                ],
+                "primary_key": {
+                    "name": "PK_DEPARTMENT",
+                    "kind": "PRIMARY",
+                    "attributes": [
+                        "Department Name"
+                    ],
+                    "is_surrogate": false
+                },
+                "alternate_keys": [],
+                "source_entities": [
+                    "Department"
+                ],
+                "source_tables": [
+                    "bronze.department"
+                ]
+            },
+            {
+                "name": "Employee",
+                "description": "A person employed by the business. Employees are organised in a management hierarchy and are the salespeople attributed to orders.",
+                "kind": "FUNDAMENTAL",
+                "subject_area": "Workforce",
+                "attributes": [
+                    {
+                        "name": "Email Address",
+                        "data_type": "EMAIL",
+                        "optionality": "MANDATORY",
+                        "role": "PRIMARY_KEY",
+                        "references_entity": null,
+                        "source_attribute": "Email Address",
+                        "description": null
+                    },
+                    {
+                        "name": "First Name",
+                        "data_type": "TEXT",
+                        "optionality": "OPTIONAL",
+                        "role": "DESCRIPTIVE",
+                        "references_entity": null,
+                        "source_attribute": "First Name",
+                        "description": null
+                    },
+                    {
+                        "name": "Last Name",
+                        "data_type": "TEXT",
+                        "optionality": "OPTIONAL",
+                        "role": "DESCRIPTIVE",
+                        "references_entity": null,
+                        "source_attribute": "Last Name",
+                        "description": null
+                    },
+                    {
+                        "name": "Salary",
+                        "data_type": "AMOUNT",
+                        "optionality": "OPTIONAL",
+                        "role": "DESCRIPTIVE",
+                        "references_entity": null,
+                        "source_attribute": "Salary",
+                        "description": null
+                    },
+                    {
+                        "name": "Hire Date",
+                        "data_type": "DATE",
+                        "optionality": "OPTIONAL",
+                        "role": "DESCRIPTIVE",
+                        "references_entity": null,
+                        "source_attribute": "Hire Date",
+                        "description": null
+                    },
+                    {
+                        "name": "Parent Email Address",
+                        "data_type": "IDENTIFIER",
+                        "optionality": "OPTIONAL",
+                        "role": "FOREIGN_KEY",
+                        "references_entity": "Employee",
+                        "source_attribute": null,
+                        "description": "References Employee."
+                    },
+                    {
+                        "name": "Department Name",
+                        "data_type": "IDENTIFIER",
+                        "optionality": "OPTIONAL",
+                        "role": "FOREIGN_KEY",
+                        "references_entity": "Department",
+                        "source_attribute": null,
+                        "description": "References Department."
+                    }
+                ],
+                "primary_key": {
+                    "name": "PK_EMPLOYEE",
+                    "kind": "PRIMARY",
+                    "attributes": [
+                        "Email Address"
+                    ],
+                    "is_surrogate": false
+                },
+                "alternate_keys": [],
+                "source_entities": [
+                    "Employee"
+                ],
+                "source_tables": [
+                    "bronze.employee"
+                ]
+            },
+            {
+                "name": "Order Line",
+                "description": "One product on one order, at the price agreed at the time of ordering. It is identified by its position within the order rather than by a key of its own, which makes it dependent on the order for its existence.",
+                "kind": "DEPENDENT",
+                "subject_area": "Customer and Sales",
+                "attributes": [
+                    {
+                        "name": "Order Number",
+                        "data_type": "IDENTIFIER",
+                        "optionality": "MANDATORY",
+                        "role": "PRIMARY_KEY",
+                        "references_entity": "Sales Order",
+                        "source_attribute": "Order Number",
+                        "description": null
+                    },
+                    {
+                        "name": "Line Number",
+                        "data_type": "WHOLE_NUMBER",
+                        "optionality": "MANDATORY",
+                        "role": "PRIMARY_KEY",
+                        "references_entity": null,
+                        "source_attribute": "Line Number",
+                        "description": null
+                    },
+                    {
+                        "name": "Quantity Ordered",
+                        "data_type": "WHOLE_NUMBER",
+                        "optionality": "OPTIONAL",
+                        "role": "DESCRIPTIVE",
+                        "references_entity": null,
+                        "source_attribute": "Quantity Ordered",
+                        "description": null
+                    },
+                    {
+                        "name": "Agreed Unit Price",
+                        "data_type": "AMOUNT",
+                        "optionality": "OPTIONAL",
+                        "role": "DESCRIPTIVE",
+                        "references_entity": null,
+                        "source_attribute": "Agreed Unit Price",
+                        "description": null
+                    },
+                    {
+                        "name": "Product Stock Keeping Unit",
+                        "data_type": "IDENTIFIER",
+                        "optionality": "OPTIONAL",
+                        "role": "FOREIGN_KEY",
+                        "references_entity": "Product",
+                        "source_attribute": null,
+                        "description": "References Product."
+                    }
+                ],
+                "primary_key": {
+                    "name": "PK_ORDER_LINE",
+                    "kind": "PRIMARY",
+                    "attributes": [
+                        "Order Number",
+                        "Line Number"
+                    ],
+                    "is_surrogate": false
+                },
+                "alternate_keys": [],
+                "source_entities": [
+                    "Order Line"
+                ],
+                "source_tables": [
+                    "bronze.order_item"
+                ]
+            },
+            {
+                "name": "Payment",
+                "description": "Money received against an order, recorded with the method used and the date it was taken.",
+                "kind": "FUNDAMENTAL",
+                "subject_area": "Customer and Sales",
+                "attributes": [
+                    {
+                        "name": "Payment Reference",
+                        "data_type": "IDENTIFIER",
+                        "optionality": "MANDATORY",
+                        "role": "PRIMARY_KEY",
+                        "references_entity": null,
+                        "source_attribute": "Payment Reference",
+                        "description": null
+                    },
+                    {
+                        "name": "Payment Method",
+                        "data_type": "CODE",
+                        "optionality": "OPTIONAL",
+                        "role": "DESCRIPTIVE",
+                        "references_entity": null,
+                        "source_attribute": "Payment Method",
+                        "description": null
+                    },
+                    {
+                        "name": "Payment Date",
+                        "data_type": "DATE",
+                        "optionality": "OPTIONAL",
+                        "role": "DESCRIPTIVE",
+                        "references_entity": null,
+                        "source_attribute": "Payment Date",
+                        "description": null
+                    },
+                    {
+                        "name": "Amount Paid",
+                        "data_type": "AMOUNT",
+                        "optionality": "OPTIONAL",
+                        "role": "DESCRIPTIVE",
+                        "references_entity": null,
+                        "source_attribute": "Amount Paid",
+                        "description": null
+                    },
+                    {
+                        "name": "Order Number",
+                        "data_type": "IDENTIFIER",
+                        "optionality": "OPTIONAL",
+                        "role": "FOREIGN_KEY",
+                        "references_entity": "Sales Order",
+                        "source_attribute": null,
+                        "description": "References Sales Order."
+                    }
+                ],
+                "primary_key": {
+                    "name": "PK_PAYMENT",
+                    "kind": "PRIMARY",
+                    "attributes": [
+                        "Payment Reference"
+                    ],
+                    "is_surrogate": false
+                },
+                "alternate_keys": [],
+                "source_entities": [
+                    "Payment"
+                ],
+                "source_tables": [
+                    "bronze.payment"
+                ]
+            },
+            {
+                "name": "Product",
+                "description": "An item the business sells. Products are catalogued, sourced from a supplier, priced, stocked in warehouses and may be promoted.",
+                "kind": "FUNDAMENTAL",
+                "subject_area": "Product and Sourcing",
+                "attributes": [
+                    {
+                        "name": "Stock Keeping Unit",
+                        "data_type": "CODE",
+                        "optionality": "MANDATORY",
+                        "role": "PRIMARY_KEY",
+                        "references_entity": null,
+                        "source_attribute": "Stock Keeping Unit",
+                        "description": null
+                    },
+                    {
+                        "name": "Product Name",
+                        "data_type": "TEXT",
+                        "optionality": "OPTIONAL",
+                        "role": "DESCRIPTIVE",
+                        "references_entity": null,
+                        "source_attribute": "Product Name",
+                        "description": null
+                    },
+                    {
+                        "name": "List Unit Price",
+                        "data_type": "AMOUNT",
+                        "optionality": "OPTIONAL",
+                        "role": "DESCRIPTIVE",
+                        "references_entity": null,
+                        "source_attribute": "List Unit Price",
+                        "description": null
+                    },
+                    {
+                        "name": "Product Status",
+                        "data_type": "CODE",
+                        "optionality": "OPTIONAL",
+                        "role": "DESCRIPTIVE",
+                        "references_entity": null,
+                        "source_attribute": "Product Status",
+                        "description": null
+                    },
+                    {
+                        "name": "Category Name",
+                        "data_type": "IDENTIFIER",
+                        "optionality": "OPTIONAL",
+                        "role": "FOREIGN_KEY",
+                        "references_entity": "Product Category",
+                        "source_attribute": null,
+                        "description": "References Product Category."
+                    },
+                    {
+                        "name": "Supplier Name",
+                        "data_type": "IDENTIFIER",
+                        "optionality": "OPTIONAL",
+                        "role": "FOREIGN_KEY",
+                        "references_entity": "Supplier",
+                        "source_attribute": null,
+                        "description": "References Supplier."
+                    }
+                ],
+                "primary_key": {
+                    "name": "PK_PRODUCT",
+                    "kind": "PRIMARY",
+                    "attributes": [
+                        "Stock Keeping Unit"
+                    ],
+                    "is_surrogate": false
+                },
+                "alternate_keys": [],
+                "source_entities": [
+                    "Product"
+                ],
+                "source_tables": [
+                    "bronze.product"
+                ]
+            },
+            {
+                "name": "Product Category",
+                "description": "A grouping used to organise the catalogue for browsing and reporting. The structure is flat, with no sub-categories.",
+                "kind": "FUNDAMENTAL",
+                "subject_area": "Product and Sourcing",
+                "attributes": [
+                    {
+                        "name": "Category Name",
+                        "data_type": "TEXT",
+                        "optionality": "MANDATORY",
+                        "role": "PRIMARY_KEY",
+                        "references_entity": null,
+                        "source_attribute": "Category Name",
+                        "description": null
+                    }
+                ],
+                "primary_key": {
+                    "name": "PK_PRODUCT_CATEGORY",
+                    "kind": "PRIMARY",
+                    "attributes": [
+                        "Category Name"
+                    ],
+                    "is_surrogate": false
+                },
+                "alternate_keys": [],
+                "source_entities": [
+                    "Product Category"
+                ],
+                "source_tables": [
+                    "bronze.category"
+                ]
+            },
+            {
+                "name": "Product Promotion Association",
+                "description": "Resolves the many-to-many relationship between Product and Promotion. Each occurrence records that one Product is promoted by one Promotion.",
+                "kind": "ASSOCIATIVE",
+                "subject_area": "Product and Sourcing",
+                "attributes": [
+                    {
+                        "name": "Product Stock Keeping Unit",
+                        "data_type": "IDENTIFIER",
+                        "optionality": "MANDATORY",
+                        "role": "PRIMARY_KEY",
+                        "references_entity": "Product",
+                        "source_attribute": null,
+                        "description": null
+                    },
+                    {
+                        "name": "Promotion Name",
+                        "data_type": "IDENTIFIER",
+                        "optionality": "MANDATORY",
+                        "role": "PRIMARY_KEY",
+                        "references_entity": "Promotion",
+                        "source_attribute": null,
+                        "description": null
+                    }
+                ],
+                "primary_key": {
+                    "name": "PK_PRODUCT_PROMOTION_ASSOCIATION",
+                    "kind": "PRIMARY",
+                    "attributes": [
+                        "Product Stock Keeping Unit",
+                        "Promotion Name"
+                    ],
+                    "is_surrogate": false
+                },
+                "alternate_keys": [],
+                "source_entities": [
+                    "Product",
+                    "Promotion"
+                ],
+                "source_tables": []
+            },
+            {
+                "name": "Product Return",
+                "description": "Goods sent back by a customer after an order, recorded with the reason given.",
+                "kind": "FUNDAMENTAL",
+                "subject_area": "Inventory and Fulfilment",
+                "attributes": [
+                    {
+                        "name": "Return Reference",
+                        "data_type": "IDENTIFIER",
+                        "optionality": "MANDATORY",
+                        "role": "PRIMARY_KEY",
+                        "references_entity": null,
+                        "source_attribute": "Return Reference",
+                        "description": null
+                    },
+                    {
+                        "name": "Return Reason",
+                        "data_type": "CODE",
+                        "optionality": "OPTIONAL",
+                        "role": "DESCRIPTIVE",
+                        "references_entity": null,
+                        "source_attribute": "Return Reason",
+                        "description": null
+                    },
+                    {
+                        "name": "Order Number",
+                        "data_type": "IDENTIFIER",
+                        "optionality": "OPTIONAL",
+                        "role": "FOREIGN_KEY",
+                        "references_entity": "Sales Order",
+                        "source_attribute": null,
+                        "description": "References Sales Order."
+                    },
+                    {
+                        "name": "Product Stock Keeping Unit",
+                        "data_type": "IDENTIFIER",
+                        "optionality": "OPTIONAL",
+                        "role": "FOREIGN_KEY",
+                        "references_entity": "Product",
+                        "source_attribute": null,
+                        "description": "References Product."
+                    }
+                ],
+                "primary_key": {
+                    "name": "PK_PRODUCT_RETURN",
+                    "kind": "PRIMARY",
+                    "attributes": [
+                        "Return Reference"
+                    ],
+                    "is_surrogate": false
+                },
+                "alternate_keys": [],
+                "source_entities": [
+                    "Product Return"
+                ],
+                "source_tables": [
+                    "bronze.return_order"
+                ]
+            },
+            {
+                "name": "Promotion",
+                "description": "A discount offer applied to a set of products, expressed as a percentage reduction.",
+                "kind": "FUNDAMENTAL",
+                "subject_area": "Product and Sourcing",
+                "attributes": [
+                    {
+                        "name": "Promotion Name",
+                        "data_type": "TEXT",
+                        "optionality": "MANDATORY",
+                        "role": "PRIMARY_KEY",
+                        "references_entity": null,
+                        "source_attribute": "Promotion Name",
+                        "description": null
+                    },
+                    {
+                        "name": "Discount Percentage",
+                        "data_type": "PERCENTAGE",
+                        "optionality": "OPTIONAL",
+                        "role": "DESCRIPTIVE",
+                        "references_entity": null,
+                        "source_attribute": "Discount Percentage",
+                        "description": null
+                    }
+                ],
+                "primary_key": {
+                    "name": "PK_PROMOTION",
+                    "kind": "PRIMARY",
+                    "attributes": [
+                        "Promotion Name"
+                    ],
+                    "is_surrogate": false
+                },
+                "alternate_keys": [],
+                "source_entities": [
+                    "Promotion"
+                ],
+                "source_tables": [
+                    "bronze.promotion"
+                ]
+            },
+            {
+                "name": "Sales Order",
+                "description": "A customer's request to buy goods. The central transaction of the business: it links the buyer, the salesperson, the goods ordered, the money received, the dispatch, and any return.",
+                "kind": "FUNDAMENTAL",
+                "subject_area": "Customer and Sales",
+                "attributes": [
+                    {
+                        "name": "Order Number",
+                        "data_type": "IDENTIFIER",
+                        "optionality": "MANDATORY",
+                        "role": "PRIMARY_KEY",
+                        "references_entity": null,
+                        "source_attribute": "Order Number",
+                        "description": null
+                    },
+                    {
+                        "name": "Order Date",
+                        "data_type": "DATE",
+                        "optionality": "OPTIONAL",
+                        "role": "DESCRIPTIVE",
+                        "references_entity": null,
+                        "source_attribute": "Order Date",
+                        "description": null
+                    },
+                    {
+                        "name": "Order Status",
+                        "data_type": "CODE",
+                        "optionality": "OPTIONAL",
+                        "role": "DESCRIPTIVE",
+                        "references_entity": null,
+                        "source_attribute": "Order Status",
+                        "description": null
+                    },
+                    {
+                        "name": "Customer Number",
+                        "data_type": "IDENTIFIER",
+                        "optionality": "OPTIONAL",
+                        "role": "FOREIGN_KEY",
+                        "references_entity": "Customer",
+                        "source_attribute": null,
+                        "description": "References Customer."
+                    },
+                    {
+                        "name": "Employee Email Address",
+                        "data_type": "IDENTIFIER",
+                        "optionality": "OPTIONAL",
+                        "role": "FOREIGN_KEY",
+                        "references_entity": "Employee",
+                        "source_attribute": null,
+                        "description": "References Employee."
+                    }
+                ],
+                "primary_key": {
+                    "name": "PK_SALES_ORDER",
+                    "kind": "PRIMARY",
+                    "attributes": [
+                        "Order Number"
+                    ],
+                    "is_surrogate": false
+                },
+                "alternate_keys": [],
+                "source_entities": [
+                    "Sales Order"
+                ],
+                "source_tables": [
+                    "bronze.orders"
+                ]
+            },
+            {
+                "name": "Shipment",
+                "description": "A dispatch of goods from a warehouse to fulfil an order, carrying a tracking reference that lets the customer follow it.",
+                "kind": "FUNDAMENTAL",
+                "subject_area": "Inventory and Fulfilment",
+                "attributes": [
+                    {
+                        "name": "Tracking Number",
+                        "data_type": "IDENTIFIER",
+                        "optionality": "MANDATORY",
+                        "role": "PRIMARY_KEY",
+                        "references_entity": null,
+                        "source_attribute": "Tracking Number",
+                        "description": null
+                    },
+                    {
+                        "name": "Shipped Date",
+                        "data_type": "DATE",
+                        "optionality": "OPTIONAL",
+                        "role": "DESCRIPTIVE",
+                        "references_entity": null,
+                        "source_attribute": "Shipped Date",
+                        "description": null
+                    },
+                    {
+                        "name": "Order Number",
+                        "data_type": "IDENTIFIER",
+                        "optionality": "OPTIONAL",
+                        "role": "FOREIGN_KEY",
+                        "references_entity": "Sales Order",
+                        "source_attribute": null,
+                        "description": "References Sales Order."
+                    },
+                    {
+                        "name": "Warehouse Name",
+                        "data_type": "IDENTIFIER",
+                        "optionality": "OPTIONAL",
+                        "role": "FOREIGN_KEY",
+                        "references_entity": "Warehouse",
+                        "source_attribute": null,
+                        "description": "References Warehouse."
+                    }
+                ],
+                "primary_key": {
+                    "name": "PK_SHIPMENT",
+                    "kind": "PRIMARY",
+                    "attributes": [
+                        "Tracking Number"
+                    ],
+                    "is_surrogate": false
+                },
+                "alternate_keys": [],
+                "source_entities": [
+                    "Shipment"
+                ],
+                "source_tables": [
+                    "bronze.shipment"
+                ]
+            },
+            {
+                "name": "State",
+                "description": "A state or province, the middle level of the location hierarchy.",
+                "kind": "FUNDAMENTAL",
+                "subject_area": "Geography",
+                "attributes": [
+                    {
+                        "name": "State Name",
+                        "data_type": "TEXT",
+                        "optionality": "MANDATORY",
+                        "role": "PRIMARY_KEY",
+                        "references_entity": null,
+                        "source_attribute": "State Name",
+                        "description": null
+                    },
+                    {
+                        "name": "Country Code",
+                        "data_type": "IDENTIFIER",
+                        "optionality": "MANDATORY",
+                        "role": "FOREIGN_KEY",
+                        "references_entity": "Country",
+                        "source_attribute": null,
+                        "description": "References Country."
+                    }
+                ],
+                "primary_key": {
+                    "name": "PK_STATE",
+                    "kind": "PRIMARY",
+                    "attributes": [
+                        "State Name"
+                    ],
+                    "is_surrogate": false
+                },
+                "alternate_keys": [],
+                "source_entities": [
+                    "State"
+                ],
+                "source_tables": [
+                    "bronze.state"
+                ]
+            },
+            {
+                "name": "Stock Level",
+                "description": "How much of one product is held at one warehouse, together with the threshold at which it should be replenished. This is a business fact in its own right rather than a simple link, because it carries measures the business acts on.",
+                "kind": "DEPENDENT",
+                "subject_area": "Inventory and Fulfilment",
+                "attributes": [
+                    {
+                        "name": "Warehouse Name",
+                        "data_type": "TEXT",
+                        "optionality": "MANDATORY",
+                        "role": "PRIMARY_KEY",
+                        "references_entity": "Warehouse",
+                        "source_attribute": "Warehouse Name",
+                        "description": null
+                    },
+                    {
+                        "name": "Stock Keeping Unit",
+                        "data_type": "CODE",
+                        "optionality": "MANDATORY",
+                        "role": "PRIMARY_KEY",
+                        "references_entity": "Product",
+                        "source_attribute": "Stock Keeping Unit",
+                        "description": null
+                    },
+                    {
+                        "name": "Quantity On Hand",
+                        "data_type": "WHOLE_NUMBER",
+                        "optionality": "OPTIONAL",
+                        "role": "DESCRIPTIVE",
+                        "references_entity": null,
+                        "source_attribute": "Quantity On Hand",
+                        "description": null
+                    },
+                    {
+                        "name": "Reorder Level",
+                        "data_type": "WHOLE_NUMBER",
+                        "optionality": "OPTIONAL",
+                        "role": "DESCRIPTIVE",
+                        "references_entity": null,
+                        "source_attribute": "Reorder Level",
+                        "description": null
+                    }
+                ],
+                "primary_key": {
+                    "name": "PK_STOCK_LEVEL",
+                    "kind": "PRIMARY",
+                    "attributes": [
+                        "Warehouse Name",
+                        "Stock Keeping Unit"
+                    ],
+                    "is_surrogate": false
+                },
+                "alternate_keys": [],
+                "source_entities": [
+                    "Stock Level"
+                ],
+                "source_tables": [
+                    "bronze.inventory"
+                ]
+            },
+            {
+                "name": "Supplier",
+                "description": "An external organisation that provides goods to the business, held with a named contact and direct contact details.",
+                "kind": "FUNDAMENTAL",
+                "subject_area": "Product and Sourcing",
+                "attributes": [
+                    {
+                        "name": "Supplier Name",
+                        "data_type": "TEXT",
+                        "optionality": "MANDATORY",
+                        "role": "PRIMARY_KEY",
+                        "references_entity": null,
+                        "source_attribute": "Supplier Name",
+                        "description": null
+                    },
+                    {
+                        "name": "Contact Name",
+                        "data_type": "TEXT",
+                        "optionality": "OPTIONAL",
+                        "role": "DESCRIPTIVE",
+                        "references_entity": null,
+                        "source_attribute": "Contact Name",
+                        "description": null
+                    },
+                    {
+                        "name": "Email Address",
+                        "data_type": "EMAIL",
+                        "optionality": "OPTIONAL",
+                        "role": "ALTERNATE_KEY",
+                        "references_entity": null,
+                        "source_attribute": "Email Address",
+                        "description": null
+                    },
+                    {
+                        "name": "Telephone Number",
+                        "data_type": "PHONE",
+                        "optionality": "OPTIONAL",
+                        "role": "ALTERNATE_KEY",
+                        "references_entity": null,
+                        "source_attribute": "Telephone Number",
+                        "description": null
+                    }
+                ],
+                "primary_key": {
+                    "name": "PK_SUPPLIER",
+                    "kind": "PRIMARY",
+                    "attributes": [
+                        "Supplier Name"
+                    ],
+                    "is_surrogate": false
+                },
+                "alternate_keys": [
+                    {
+                        "name": "AK_SUPPLIER_EMAIL_ADDRESS",
+                        "kind": "ALTERNATE",
+                        "attributes": [
+                            "Email Address"
+                        ],
+                        "is_surrogate": false
+                    },
+                    {
+                        "name": "AK_SUPPLIER_TELEPHONE_NUMBER",
+                        "kind": "ALTERNATE",
+                        "attributes": [
+                            "Telephone Number"
+                        ],
+                        "is_surrogate": false
+                    }
+                ],
+                "source_entities": [
+                    "Supplier"
+                ],
+                "source_tables": [
+                    "bronze.supplier"
+                ]
+            },
+            {
+                "name": "Warehouse",
+                "description": "A physical location where goods are held and from which orders are dispatched.",
+                "kind": "FUNDAMENTAL",
+                "subject_area": "Inventory and Fulfilment",
+                "attributes": [
+                    {
+                        "name": "Warehouse Name",
+                        "data_type": "TEXT",
+                        "optionality": "MANDATORY",
+                        "role": "PRIMARY_KEY",
+                        "references_entity": null,
+                        "source_attribute": "Warehouse Name",
+                        "description": null
+                    },
+                    {
+                        "name": "City Name",
+                        "data_type": "IDENTIFIER",
+                        "optionality": "OPTIONAL",
+                        "role": "FOREIGN_KEY",
+                        "references_entity": "City",
+                        "source_attribute": null,
+                        "description": "References City."
+                    }
+                ],
+                "primary_key": {
+                    "name": "PK_WAREHOUSE",
+                    "kind": "PRIMARY",
+                    "attributes": [
+                        "Warehouse Name"
+                    ],
+                    "is_surrogate": false
+                },
+                "alternate_keys": [],
+                "source_entities": [
+                    "Warehouse"
+                ],
+                "source_tables": [
+                    "bronze.warehouse"
+                ]
+            }
+        ],
+        "relationships": [
+            {
+                "name": "City to Customer",
+                "parent_entity": "City",
+                "child_entity": "Customer",
+                "cardinality": "ONE_TO_MANY",
+                "optionality": "OPTIONAL",
+                "is_identifying": false,
+                "foreign_key_attributes": [
+                    "City Name"
+                ],
+                "verb_phrase": "is located in",
+                "derived_from": "conceptual relationship 'Customer is located in City'"
+            },
+            {
+                "name": "City to Warehouse",
+                "parent_entity": "City",
+                "child_entity": "Warehouse",
+                "cardinality": "ONE_TO_MANY",
+                "optionality": "OPTIONAL",
+                "is_identifying": false,
+                "foreign_key_attributes": [
+                    "City Name"
+                ],
+                "verb_phrase": "is located in",
+                "derived_from": "conceptual relationship 'Warehouse is located in City'"
+            },
+            {
+                "name": "Country to State",
+                "parent_entity": "Country",
+                "child_entity": "State",
+                "cardinality": "ONE_TO_MANY",
+                "optionality": "MANDATORY",
+                "is_identifying": false,
+                "foreign_key_attributes": [
+                    "Country Code"
+                ],
+                "verb_phrase": "belongs to",
+                "derived_from": "conceptual relationship 'State belongs to Country'"
+            },
+            {
+                "name": "Customer to Sales Order",
+                "parent_entity": "Customer",
+                "child_entity": "Sales Order",
+                "cardinality": "ONE_TO_MANY",
+                "optionality": "OPTIONAL",
+                "is_identifying": false,
+                "foreign_key_attributes": [
+                    "Customer Number"
+                ],
+                "verb_phrase": "places",
+                "derived_from": "conceptual relationship 'Customer places Sales Order'"
+            },
+            {
+                "name": "Department to Employee",
+                "parent_entity": "Department",
+                "child_entity": "Employee",
+                "cardinality": "ONE_TO_MANY",
+                "optionality": "OPTIONAL",
+                "is_identifying": false,
+                "foreign_key_attributes": [
+                    "Department Name"
+                ],
+                "verb_phrase": "belongs to",
+                "derived_from": "conceptual relationship 'Employee belongs to Department'"
+            },
+            {
+                "name": "Employee to Employee",
+                "parent_entity": "Employee",
+                "child_entity": "Employee",
+                "cardinality": "ONE_TO_MANY",
+                "optionality": "OPTIONAL",
+                "is_identifying": false,
+                "foreign_key_attributes": [
+                    "Parent Email Address"
+                ],
+                "verb_phrase": "reports to",
+                "derived_from": "conceptual relationship 'Employee reports to Employee'"
+            },
+            {
+                "name": "Employee to Sales Order",
+                "parent_entity": "Employee",
+                "child_entity": "Sales Order",
+                "cardinality": "ONE_TO_MANY",
+                "optionality": "OPTIONAL",
+                "is_identifying": false,
+                "foreign_key_attributes": [
+                    "Employee Email Address"
+                ],
+                "verb_phrase": "is handled by",
+                "derived_from": "conceptual relationship 'Sales Order is handled by Employee'"
+            },
+            {
+                "name": "Product to Order Line",
+                "parent_entity": "Product",
+                "child_entity": "Order Line",
+                "cardinality": "ONE_TO_MANY",
+                "optionality": "OPTIONAL",
+                "is_identifying": false,
+                "foreign_key_attributes": [
+                    "Product Stock Keeping Unit"
+                ],
+                "verb_phrase": "is for",
+                "derived_from": "conceptual relationship 'Order Line is for Product'"
+            },
+            {
+                "name": "Product to Product Promotion Association",
+                "parent_entity": "Product",
+                "child_entity": "Product Promotion Association",
+                "cardinality": "ONE_TO_MANY",
+                "optionality": "MANDATORY",
+                "is_identifying": true,
+                "foreign_key_attributes": [
+                    "Product Stock Keeping Unit"
+                ],
+                "verb_phrase": "is referenced by",
+                "derived_from": "many-to-many between Product and Promotion"
+            },
+            {
+                "name": "Product to Product Return",
+                "parent_entity": "Product",
+                "child_entity": "Product Return",
+                "cardinality": "ONE_TO_MANY",
+                "optionality": "OPTIONAL",
+                "is_identifying": false,
+                "foreign_key_attributes": [
+                    "Product Stock Keeping Unit"
+                ],
+                "verb_phrase": "concerns",
+                "derived_from": "conceptual relationship 'Product Return concerns Product'"
+            },
+            {
+                "name": "Product to Stock Level",
+                "parent_entity": "Product",
+                "child_entity": "Stock Level",
+                "cardinality": "ONE_TO_MANY",
+                "optionality": "OPTIONAL",
+                "is_identifying": true,
+                "foreign_key_attributes": [
+                    "Stock Keeping Unit"
+                ],
+                "verb_phrase": "is stocked as",
+                "derived_from": "conceptual relationship 'Product is stocked as Stock Level'"
+            },
+            {
+                "name": "Product Category to Product",
+                "parent_entity": "Product Category",
+                "child_entity": "Product",
+                "cardinality": "ONE_TO_MANY",
+                "optionality": "OPTIONAL",
+                "is_identifying": false,
+                "foreign_key_attributes": [
+                    "Category Name"
+                ],
+                "verb_phrase": "is classified as",
+                "derived_from": "conceptual relationship 'Product is classified as Product Category'"
+            },
+            {
+                "name": "Promotion to Product Promotion Association",
+                "parent_entity": "Promotion",
+                "child_entity": "Product Promotion Association",
+                "cardinality": "ONE_TO_MANY",
+                "optionality": "MANDATORY",
+                "is_identifying": true,
+                "foreign_key_attributes": [
+                    "Promotion Name"
+                ],
+                "verb_phrase": "is referenced by",
+                "derived_from": "many-to-many between Product and Promotion"
+            },
+            {
+                "name": "Sales Order to Order Line",
+                "parent_entity": "Sales Order",
+                "child_entity": "Order Line",
+                "cardinality": "ONE_TO_MANY",
+                "optionality": "MANDATORY",
+                "is_identifying": true,
+                "foreign_key_attributes": [
+                    "Order Number"
+                ],
+                "verb_phrase": "consists of",
+                "derived_from": "conceptual relationship 'Sales Order consists of Order Line'"
+            },
+            {
+                "name": "Sales Order to Payment",
+                "parent_entity": "Sales Order",
+                "child_entity": "Payment",
+                "cardinality": "ONE_TO_MANY",
+                "optionality": "OPTIONAL",
+                "is_identifying": false,
+                "foreign_key_attributes": [
+                    "Order Number"
+                ],
+                "verb_phrase": "is settled by",
+                "derived_from": "conceptual relationship 'Sales Order is settled by Payment'"
+            },
+            {
+                "name": "Sales Order to Product Return",
+                "parent_entity": "Sales Order",
+                "child_entity": "Product Return",
+                "cardinality": "ONE_TO_MANY",
+                "optionality": "OPTIONAL",
+                "is_identifying": false,
+                "foreign_key_attributes": [
+                    "Order Number"
+                ],
+                "verb_phrase": "may result in",
+                "derived_from": "conceptual relationship 'Sales Order may result in Product Return'"
+            },
+            {
+                "name": "Sales Order to Shipment",
+                "parent_entity": "Sales Order",
+                "child_entity": "Shipment",
+                "cardinality": "ONE_TO_MANY",
+                "optionality": "OPTIONAL",
+                "is_identifying": false,
+                "foreign_key_attributes": [
+                    "Order Number"
+                ],
+                "verb_phrase": "is dispatched as",
+                "derived_from": "conceptual relationship 'Sales Order is dispatched as Shipment'"
+            },
+            {
+                "name": "State to City",
+                "parent_entity": "State",
+                "child_entity": "City",
+                "cardinality": "ONE_TO_MANY",
+                "optionality": "MANDATORY",
+                "is_identifying": false,
+                "foreign_key_attributes": [
+                    "State Name"
+                ],
+                "verb_phrase": "belongs to",
+                "derived_from": "conceptual relationship 'City belongs to State'"
+            },
+            {
+                "name": "Supplier to Product",
+                "parent_entity": "Supplier",
+                "child_entity": "Product",
+                "cardinality": "ONE_TO_MANY",
+                "optionality": "OPTIONAL",
+                "is_identifying": false,
+                "foreign_key_attributes": [
+                    "Supplier Name"
+                ],
+                "verb_phrase": "is sourced from",
+                "derived_from": "conceptual relationship 'Product is sourced from Supplier'"
+            },
+            {
+                "name": "Warehouse to Shipment",
+                "parent_entity": "Warehouse",
+                "child_entity": "Shipment",
+                "cardinality": "ONE_TO_MANY",
+                "optionality": "OPTIONAL",
+                "is_identifying": false,
+                "foreign_key_attributes": [
+                    "Warehouse Name"
+                ],
+                "verb_phrase": "dispatches",
+                "derived_from": "conceptual relationship 'Warehouse dispatches Shipment'"
+            },
+            {
+                "name": "Warehouse to Stock Level",
+                "parent_entity": "Warehouse",
+                "child_entity": "Stock Level",
+                "cardinality": "ONE_TO_MANY",
+                "optionality": "OPTIONAL",
+                "is_identifying": true,
+                "foreign_key_attributes": [
+                    "Warehouse Name"
+                ],
+                "verb_phrase": "holds",
+                "derived_from": "conceptual relationship 'Warehouse holds Stock Level'"
+            }
+        ],
+        "normalization_actions": [
+            {
+                "normal_form": "1NF",
+                "entity": "Product Promotion Association",
+                "action": "Resolved many-to-many between Product and Promotion",
+                "rationale": "A many-to-many relationship cannot be represented without a repeating group. An associative entity keyed on both parents removes the repetition and gives the relationship a place to carry its own attributes later."
+            },
+            {
+                "normal_form": "2NF",
+                "entity": "Order Line",
+                "action": "Checked non-key attributes against the full composite key",
+                "rationale": "Order Line has a composite key, so every non-key attribute (Quantity Ordered, Agreed Unit Price) must depend on the whole key rather than part of it. No partial dependency was found."
+            },
+            {
+                "normal_form": "2NF",
+                "entity": "Order Line",
+                "action": "Identified Order Line as dependent on Sales Order",
+                "rationale": "Its business key includes Sales Order's key (Order Number), so it cannot be identified independently. The relationship is identifying and the key is propagated rather than duplicated."
+            },
+            {
+                "normal_form": "2NF",
+                "entity": "Stock Level",
+                "action": "Checked non-key attributes against the full composite key",
+                "rationale": "Stock Level has a composite key, so every non-key attribute (Quantity On Hand, Reorder Level) must depend on the whole key rather than part of it. No partial dependency was found."
+            },
+            {
+                "normal_form": "2NF",
+                "entity": "Stock Level",
+                "action": "Identified Stock Level as dependent on Product",
+                "rationale": "Its business key includes Product's key (Stock Keeping Unit), so it cannot be identified independently. The relationship is identifying and the key is propagated rather than duplicated."
+            },
+            {
+                "normal_form": "2NF",
+                "entity": "Stock Level",
+                "action": "Identified Stock Level as dependent on Warehouse",
+                "rationale": "Its business key includes Warehouse's key (Warehouse Name), so it cannot be identified independently. The relationship is identifying and the key is propagated rather than duplicated."
+            },
+            {
+                "normal_form": "3NF",
+                "entity": "City",
+                "action": "Confirmed State attributes are not repeated on City",
+                "rationale": "City references State, which references Country. The chain is already decomposed, so Country's attributes reach City by navigation rather than by duplication."
+            },
+            {
+                "normal_form": "3NF",
+                "entity": "Customer",
+                "action": "Confirmed City attributes are not repeated on Customer",
+                "rationale": "Customer references City, which references State. The chain is already decomposed, so State's attributes reach Customer by navigation rather than by duplication."
+            },
+            {
+                "normal_form": "3NF",
+                "entity": "Order Line",
+                "action": "Confirmed Product attributes are not repeated on Order Line",
+                "rationale": "Order Line references Product, which references Supplier. The chain is already decomposed, so Supplier's attributes reach Order Line by navigation rather than by duplication."
+            },
+            {
+                "normal_form": "3NF",
+                "entity": "Payment",
+                "action": "Confirmed Sales Order attributes are not repeated on Payment",
+                "rationale": "Payment references Sales Order, which references Employee. The chain is already decomposed, so Employee's attributes reach Payment by navigation rather than by duplication."
+            },
+            {
+                "normal_form": "3NF",
+                "entity": "Product Return",
+                "action": "Confirmed Product attributes are not repeated on Product Return",
+                "rationale": "Product Return references Product, which references Supplier. The chain is already decomposed, so Supplier's attributes reach Product Return by navigation rather than by duplication."
+            },
+            {
+                "normal_form": "3NF",
+                "entity": "Sales Order",
+                "action": "Confirmed Employee attributes are not repeated on Sales Order",
+                "rationale": "Sales Order references Employee, which references Department. The chain is already decomposed, so Department's attributes reach Sales Order by navigation rather than by duplication."
+            },
+            {
+                "normal_form": "3NF",
+                "entity": "Shipment",
+                "action": "Confirmed Warehouse attributes are not repeated on Shipment",
+                "rationale": "Shipment references Warehouse, which references City. The chain is already decomposed, so City's attributes reach Shipment by navigation rather than by duplication."
+            },
+            {
+                "normal_form": "3NF",
+                "entity": "Stock Level",
+                "action": "Confirmed Warehouse attributes are not repeated on Stock Level",
+                "rationale": "Stock Level references Warehouse, which references City. The chain is already decomposed, so City's attributes reach Stock Level by navigation rather than by duplication."
+            },
+            {
+                "normal_form": "3NF",
+                "entity": "Warehouse",
+                "action": "Confirmed City attributes are not repeated on Warehouse",
+                "rationale": "Warehouse references City, which references State. The chain is already decomposed, so State's attributes reach Warehouse by navigation rather than by duplication."
+            }
+        ],
+        "assumptions": []
+    },
+    "generated_from": "business_model.json",
+    "generated_by": "claude-opus-5 (in-session; generated without an API call)"
+}
