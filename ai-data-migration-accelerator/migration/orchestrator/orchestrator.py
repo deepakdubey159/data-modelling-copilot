@@ -26,6 +26,8 @@ import logging
 
 from migration.conceptual.engine import ConceptualModelEngine
 from migration.conceptual.writer import ConceptualModelWriter
+from migration.logical.engine import LogicalModelEngine
+from migration.logical.writer import LogicalModelWriter
 from migration.connectors.factory import create_connector
 from migration.metadata.builder import MetadataBuilder
 from migration.output.writer import OutputWriter
@@ -139,6 +141,8 @@ class MigrationOrchestrator:
                     relationships_file,
                 )
 
+            conceptual = None
+
             conceptual_files = None
 
             if getattr(self.config.artifacts, "conceptual_model", True):
@@ -177,6 +181,38 @@ class MigrationOrchestrator:
                         conceptual_files[2],
                     )
 
+            logical_files = None
+
+            if getattr(self.config.artifacts, "logical_model", True):
+
+                if conceptual is None:
+
+                    logger.warning(
+                        "Skipping logical model: it is derived from the conceptual "
+                        "model, which was not produced in this run."
+                    )
+
+                else:
+
+                    logger.info("Deriving logical model...")
+
+                    logical = LogicalModelEngine(
+                        conceptual,
+                        source_artifact="conceptual_model.json",
+                    ).generate()
+
+                    logical_files = LogicalModelWriter().write(
+                        logical,
+                        run_directory,
+                    )
+
+                    logger.info(
+                        "Logical model written to %s, %s and %s",
+                        logical_files[0],
+                        logical_files[1],
+                        logical_files[2],
+                    )
+
             writer.write_execution_summary(
                 run_directory,
                 source.database,
@@ -207,6 +243,14 @@ class MigrationOrchestrator:
                 print(f"                {conceptual_files[1]}")
 
                 print(f"                {conceptual_files[2]}")
+
+            if logical_files is not None:
+
+                print(f"Logical       : {logical_files[0]}")
+
+                print(f"                {logical_files[1]}")
+
+                print(f"                {logical_files[2]}")
 
             print("=" * 70)
 

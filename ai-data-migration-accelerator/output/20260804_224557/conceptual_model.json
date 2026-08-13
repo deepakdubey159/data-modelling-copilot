@@ -1,0 +1,532 @@
+{
+    "conceptual_model": {
+        "database_name": "datamodel",
+        "summary": "This database supports a direct-to-customer retail business that sells physical goods from a catalogue, holds them across multiple warehouses, and fulfils customer orders through shipment, payment and returns. Six subject areas are visible: customers and their orders, the product catalogue and its suppliers, warehouse stock and fulfilment, the internal workforce that services accounts, a shared geographic hierarchy, and a change-tracking log. The commercial core is the sales order, which connects a customer, a salesperson, one or more catalogue products, a payment, a shipment from a warehouse, and any subsequent return.",
+        "domains": [
+            {
+                "name": "Customer and Sales",
+                "description": "The demand side of the business: who buys, what they ordered, and how they paid. This is the commercial heart of the model and the most heavily connected part of the schema.",
+                "entities": [
+                    "Customer",
+                    "Sales Order",
+                    "Order Line",
+                    "Payment"
+                ]
+            },
+            {
+                "name": "Product and Sourcing",
+                "description": "The catalogue of sellable goods, how it is organised for browsing, who supplies it, and the promotional offers applied to it.",
+                "entities": [
+                    "Product",
+                    "Product Category",
+                    "Supplier",
+                    "Promotion"
+                ]
+            },
+            {
+                "name": "Inventory and Fulfilment",
+                "description": "Where goods are physically held and how they reach the customer or come back. Covers stock positions per location, outbound shipments, and returned goods.",
+                "entities": [
+                    "Warehouse",
+                    "Stock Level",
+                    "Shipment",
+                    "Product Return"
+                ]
+            },
+            {
+                "name": "Workforce",
+                "description": "The internal organisation. Employees are servicing accounts as sales representatives and are arranged in a reporting hierarchy within departments.",
+                "entities": [
+                    "Employee",
+                    "Department"
+                ]
+            },
+            {
+                "name": "Geography",
+                "description": "A shared three-level location hierarchy used as reference data by both customers and warehouses. It is not owned by any one business process.",
+                "entities": [
+                    "City",
+                    "State",
+                    "Country"
+                ]
+            },
+            {
+                "name": "Governance",
+                "description": "Change tracking. Records that a data-modifying operation occurred, who performed it and when.",
+                "entities": [
+                    "Audit Entry"
+                ]
+            }
+        ],
+        "entities": [
+            {
+                "name": "Customer",
+                "description": "A person or organisation that buys from the business. Customers carry a credit limit, which indicates that trade is extended on account rather than strictly prepaid, and a lifecycle status.",
+                "business_key": [
+                    "Customer Number"
+                ],
+                "attributes": [
+                    "Customer Number",
+                    "First Name",
+                    "Last Name",
+                    "Email Address",
+                    "Telephone Number",
+                    "Credit Limit",
+                    "Account Status"
+                ],
+                "relationships": [
+                    {
+                        "related_entity": "Sales Order",
+                        "verb_phrase": "places",
+                        "cardinality": "ONE_TO_MANY",
+                        "is_optional": true,
+                        "description": "A customer may place many orders over time, and a newly registered customer may have placed none."
+                    },
+                    {
+                        "related_entity": "City",
+                        "verb_phrase": "is located in",
+                        "cardinality": "MANY_TO_ONE",
+                        "is_optional": true,
+                        "description": "Customer location is recorded only to city level; there is no street address."
+                    }
+                ],
+                "source_tables": [
+                    "bronze.customer"
+                ]
+            },
+            {
+                "name": "Sales Order",
+                "description": "A customer's request to buy goods. The central transaction of the business: it links the buyer, the salesperson, the goods ordered, the money received, the dispatch, and any return.",
+                "business_key": [
+                    "Order Number"
+                ],
+                "attributes": [
+                    "Order Number",
+                    "Order Date",
+                    "Order Status"
+                ],
+                "relationships": [
+                    {
+                        "related_entity": "Order Line",
+                        "verb_phrase": "consists of",
+                        "cardinality": "ONE_TO_MANY",
+                        "is_optional": false,
+                        "description": "An order is made up of numbered lines. A line has no meaning outside its order."
+                    },
+                    {
+                        "related_entity": "Employee",
+                        "verb_phrase": "is handled by",
+                        "cardinality": "MANY_TO_ONE",
+                        "is_optional": true,
+                        "description": "An order may be attributed to a sales representative, implying commission or account-ownership reporting."
+                    },
+                    {
+                        "related_entity": "Payment",
+                        "verb_phrase": "is settled by",
+                        "cardinality": "ONE_TO_MANY",
+                        "is_optional": true,
+                        "description": "Payment is recorded separately from the order, so an order can exist before it is paid."
+                    },
+                    {
+                        "related_entity": "Shipment",
+                        "verb_phrase": "is dispatched as",
+                        "cardinality": "ONE_TO_MANY",
+                        "is_optional": true,
+                        "description": "An order is shipped from a warehouse. The structure permits more than one shipment per order, so split dispatch is possible."
+                    },
+                    {
+                        "related_entity": "Product Return",
+                        "verb_phrase": "may result in",
+                        "cardinality": "ONE_TO_MANY",
+                        "is_optional": true,
+                        "description": "Goods from an order may be sent back."
+                    }
+                ],
+                "source_tables": [
+                    "bronze.orders"
+                ]
+            },
+            {
+                "name": "Order Line",
+                "description": "One product on one order, at the price agreed at the time of ordering. It is identified by its position within the order rather than by a key of its own, which makes it dependent on the order for its existence.",
+                "business_key": [
+                    "Order Number",
+                    "Line Number"
+                ],
+                "attributes": [
+                    "Line Number",
+                    "Quantity Ordered",
+                    "Agreed Unit Price"
+                ],
+                "relationships": [
+                    {
+                        "related_entity": "Product",
+                        "verb_phrase": "is for",
+                        "cardinality": "MANY_TO_ONE",
+                        "is_optional": true,
+                        "description": "Each line names the catalogue product being bought. Price is held on the line as well as on the product, so the price charged is preserved independently of later catalogue changes."
+                    }
+                ],
+                "source_tables": [
+                    "bronze.order_item"
+                ]
+            },
+            {
+                "name": "Payment",
+                "description": "Money received against an order, recorded with the method used and the date it was taken.",
+                "business_key": [
+                    "Payment Reference"
+                ],
+                "attributes": [
+                    "Payment Reference",
+                    "Payment Method",
+                    "Payment Date",
+                    "Amount Paid"
+                ],
+                "relationships": [],
+                "source_tables": [
+                    "bronze.payment"
+                ]
+            },
+            {
+                "name": "Product",
+                "description": "An item the business sells. Products are catalogued, sourced from a supplier, priced, stocked in warehouses and may be promoted.",
+                "business_key": [
+                    "Stock Keeping Unit"
+                ],
+                "attributes": [
+                    "Stock Keeping Unit",
+                    "Product Name",
+                    "List Unit Price",
+                    "Product Status"
+                ],
+                "relationships": [
+                    {
+                        "related_entity": "Product Category",
+                        "verb_phrase": "is classified as",
+                        "cardinality": "MANY_TO_ONE",
+                        "is_optional": true,
+                        "description": "A single-level classification used to organise the catalogue."
+                    },
+                    {
+                        "related_entity": "Supplier",
+                        "verb_phrase": "is sourced from",
+                        "cardinality": "MANY_TO_ONE",
+                        "is_optional": true,
+                        "description": "Each product has at most one supplier, so alternative or backup sourcing is not modelled."
+                    },
+                    {
+                        "related_entity": "Promotion",
+                        "verb_phrase": "is promoted by",
+                        "cardinality": "MANY_TO_MANY",
+                        "is_optional": true,
+                        "description": "A promotion can cover many products and a product can appear in many promotions."
+                    },
+                    {
+                        "related_entity": "Stock Level",
+                        "verb_phrase": "is stocked as",
+                        "cardinality": "ONE_TO_MANY",
+                        "is_optional": true,
+                        "description": "One stock position per warehouse holding the product."
+                    }
+                ],
+                "source_tables": [
+                    "bronze.product"
+                ]
+            },
+            {
+                "name": "Product Category",
+                "description": "A grouping used to organise the catalogue for browsing and reporting. The structure is flat, with no sub-categories.",
+                "business_key": [
+                    "Category Name"
+                ],
+                "attributes": [
+                    "Category Name"
+                ],
+                "relationships": [],
+                "source_tables": [
+                    "bronze.category"
+                ]
+            },
+            {
+                "name": "Supplier",
+                "description": "An external organisation that provides goods to the business, held with a named contact and direct contact details.",
+                "business_key": [
+                    "Supplier Name"
+                ],
+                "attributes": [
+                    "Supplier Name",
+                    "Contact Name",
+                    "Email Address",
+                    "Telephone Number"
+                ],
+                "relationships": [],
+                "source_tables": [
+                    "bronze.supplier"
+                ]
+            },
+            {
+                "name": "Promotion",
+                "description": "A discount offer applied to a set of products, expressed as a percentage reduction.",
+                "business_key": [
+                    "Promotion Name"
+                ],
+                "attributes": [
+                    "Promotion Name",
+                    "Discount Percentage"
+                ],
+                "relationships": [],
+                "source_tables": [
+                    "bronze.promotion"
+                ]
+            },
+            {
+                "name": "Warehouse",
+                "description": "A physical location where goods are held and from which orders are dispatched.",
+                "business_key": [
+                    "Warehouse Name"
+                ],
+                "attributes": [
+                    "Warehouse Name"
+                ],
+                "relationships": [
+                    {
+                        "related_entity": "Stock Level",
+                        "verb_phrase": "holds",
+                        "cardinality": "ONE_TO_MANY",
+                        "is_optional": true,
+                        "description": "One stock position per product held at the warehouse."
+                    },
+                    {
+                        "related_entity": "Shipment",
+                        "verb_phrase": "dispatches",
+                        "cardinality": "ONE_TO_MANY",
+                        "is_optional": true,
+                        "description": "Outbound deliveries leave from a warehouse."
+                    },
+                    {
+                        "related_entity": "City",
+                        "verb_phrase": "is located in",
+                        "cardinality": "MANY_TO_ONE",
+                        "is_optional": true,
+                        "description": "Warehouses share the same geographic hierarchy as customers, which allows distance between buyer and stock to be reasoned about."
+                    }
+                ],
+                "source_tables": [
+                    "bronze.warehouse"
+                ]
+            },
+            {
+                "name": "Stock Level",
+                "description": "How much of one product is held at one warehouse, together with the threshold at which it should be replenished. This is a business fact in its own right rather than a simple link, because it carries measures the business acts on.",
+                "business_key": [
+                    "Warehouse Name",
+                    "Stock Keeping Unit"
+                ],
+                "attributes": [
+                    "Quantity On Hand",
+                    "Reorder Level"
+                ],
+                "relationships": [],
+                "source_tables": [
+                    "bronze.inventory"
+                ]
+            },
+            {
+                "name": "Shipment",
+                "description": "A dispatch of goods from a warehouse to fulfil an order, carrying a tracking reference that lets the customer follow it.",
+                "business_key": [
+                    "Tracking Number"
+                ],
+                "attributes": [
+                    "Tracking Number",
+                    "Shipped Date"
+                ],
+                "relationships": [],
+                "source_tables": [
+                    "bronze.shipment"
+                ]
+            },
+            {
+                "name": "Product Return",
+                "description": "Goods sent back by a customer after an order, recorded with the reason given.",
+                "business_key": [
+                    "Return Reference"
+                ],
+                "attributes": [
+                    "Return Reference",
+                    "Return Reason"
+                ],
+                "relationships": [
+                    {
+                        "related_entity": "Product",
+                        "verb_phrase": "concerns",
+                        "cardinality": "MANY_TO_ONE",
+                        "is_optional": true,
+                        "description": "A return names the product being sent back as well as the order it came from."
+                    }
+                ],
+                "source_tables": [
+                    "bronze.return_order"
+                ]
+            },
+            {
+                "name": "Employee",
+                "description": "A person employed by the business. Employees are organised in a management hierarchy and are the salespeople attributed to orders.",
+                "business_key": [
+                    "Email Address"
+                ],
+                "attributes": [
+                    "First Name",
+                    "Last Name",
+                    "Email Address",
+                    "Salary",
+                    "Hire Date"
+                ],
+                "relationships": [
+                    {
+                        "related_entity": "Employee",
+                        "verb_phrase": "reports to",
+                        "cardinality": "MANY_TO_ONE",
+                        "is_optional": true,
+                        "description": "A management hierarchy. The optional manager identifies the top of the organisation, who reports to nobody."
+                    },
+                    {
+                        "related_entity": "Department",
+                        "verb_phrase": "belongs to",
+                        "cardinality": "MANY_TO_ONE",
+                        "is_optional": true,
+                        "description": "Employees are assigned to a single department."
+                    }
+                ],
+                "source_tables": [
+                    "bronze.employee"
+                ]
+            },
+            {
+                "name": "Department",
+                "description": "An organisational unit that employees are assigned to.",
+                "business_key": [
+                    "Department Name"
+                ],
+                "attributes": [
+                    "Department Name"
+                ],
+                "relationships": [],
+                "source_tables": [
+                    "bronze.department"
+                ]
+            },
+            {
+                "name": "City",
+                "description": "A populated place, the lowest level of the shared location hierarchy.",
+                "business_key": [
+                    "City Name"
+                ],
+                "attributes": [
+                    "City Name"
+                ],
+                "relationships": [
+                    {
+                        "related_entity": "State",
+                        "verb_phrase": "belongs to",
+                        "cardinality": "MANY_TO_ONE",
+                        "is_optional": false,
+                        "description": "Every city sits within a state or province."
+                    }
+                ],
+                "source_tables": [
+                    "bronze.city"
+                ]
+            },
+            {
+                "name": "State",
+                "description": "A state or province, the middle level of the location hierarchy.",
+                "business_key": [
+                    "State Name"
+                ],
+                "attributes": [
+                    "State Name"
+                ],
+                "relationships": [
+                    {
+                        "related_entity": "Country",
+                        "verb_phrase": "belongs to",
+                        "cardinality": "MANY_TO_ONE",
+                        "is_optional": false,
+                        "description": "Every state sits within a country."
+                    }
+                ],
+                "source_tables": [
+                    "bronze.state"
+                ]
+            },
+            {
+                "name": "Country",
+                "description": "A sovereign country, the top of the location hierarchy, held with a short standard code as well as a name.",
+                "business_key": [
+                    "Country Code"
+                ],
+                "attributes": [
+                    "Country Code",
+                    "Country Name",
+                    "Date Recorded"
+                ],
+                "relationships": [],
+                "source_tables": [
+                    "bronze.country"
+                ]
+            },
+            {
+                "name": "Audit Entry",
+                "description": "A record that a data-modifying operation took place, capturing which record type was affected, what kind of change it was, who made it and when. It refers to other records by name rather than by a modelled relationship, so it stands apart from the rest of the model.",
+                "business_key": [
+                    "Audit Reference"
+                ],
+                "attributes": [
+                    "Audit Reference",
+                    "Affected Record Type",
+                    "Operation Performed",
+                    "Performed By",
+                    "Performed At"
+                ],
+                "relationships": [],
+                "source_tables": [
+                    "bronze.audit_log"
+                ]
+            }
+        ],
+        "business_rules": [
+            "Every order line must belong to an order and is identified by its position within it; a line cannot exist independently of its order.",
+            "An order records both the customer who placed it and the employee who handled it, so sales performance can be attributed to an individual.",
+            "The price charged is captured on the order line as well as on the product, so later catalogue price changes do not alter the value of historical orders.",
+            "Customers are granted a credit limit, indicating that goods are supplied on account and that exposure per customer is controlled.",
+            "Stock is tracked per product per warehouse, and each stock position carries a reorder level, implying an automatic replenishment trigger.",
+            "Order status, payment method, product status, customer status and country code are all drawn from short controlled vocabularies rather than free text.",
+            "A product may be sourced from only one supplier at a time, so alternative sourcing is not supported by the current model.",
+            "Both customers and warehouses are located through the same city, state and country hierarchy, so a single geography is shared across the business.",
+            "Employees form a single reporting hierarchy in which exactly one person has no manager.",
+            "Payment, shipment and return are each recorded separately from the order, so an order may exist unpaid, undispatched, or without any return."
+        ],
+        "assumptions": [
+            "The employee attributed to an order is a sales representative. The reference is named for the role rather than for the entity it points at, so this reading is inferred from the role name and not from the structure.",
+            "The inventory record is treated as a business entity, Stock Level, rather than a simple association, because it carries quantity and reorder level -- measures the business acts on.",
+            "The product-to-promotion association is treated as a pure relationship and not an entity, because it carries no attributes of its own.",
+            "Every table in the analysis contains exactly ten rows, and several columns hold a single repeated value such as one order status and one payment method. This strongly suggests seeded demonstration data. Value distributions were therefore used to identify controlled vocabularies but not to draw conclusions about real business volumes or mix.",
+            "The audit record refers to affected records by name in a text column rather than through a relationship, so it has been modelled as standing alone. If it is intended to reference specific rows, that intent is not expressed in the structure.",
+            "Country is assumed to be the top of the hierarchy even though the sample data shows every state assigned to a single country; this is read as a property of the sample rather than a business rule.",
+            "Order status was read as a fulfilment lifecycle. Only one value is present in the sample, so the full set of permitted states cannot be determined from the data alone."
+        ],
+        "recommendations": [
+            "No entity represents a postal or delivery address. Location is captured only to city level, which is insufficient to actually deliver an order and should be confirmed with the business.",
+            "Promotion carries no start or end date, so it is not possible to determine when an offer was active or which orders it should have applied to.",
+            "The order carries no total value. Whether order value is derived on demand from its lines or is expected to be held should be settled before reporting is built on this model.",
+            "A return records a reason and the product but neither a quantity nor a refunded amount, so returns cannot currently be reconciled against payments.",
+            "Shipment records a tracking number but no carrier, so tracking references cannot be resolved without knowing who carried the goods.",
+            "Payment is modelled as many per order, but there is no allocation of a payment across order lines. Part-payment and instalment handling should be clarified.",
+            "The audit entry is disconnected from everything it describes. If audit history needs to be queried alongside business data, a modelled relationship is required.",
+            "Confirm whether the workforce data belongs in this model at all. Employee salary sits alongside customer and order data with no separation, which is usually a concern for access control."
+        ]
+    },
+    "generated_by": "claude-opus-5 (in-session; generated without an API call)"
+}

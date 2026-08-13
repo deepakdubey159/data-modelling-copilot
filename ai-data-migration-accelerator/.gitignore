@@ -4,8 +4,15 @@ __pycache__/
 venv/
 .env
 logs/*.log
-output/*/
-!output/.gitkeep
+
+# Generated artifacts under output/ ARE tracked: they are the accelerator's
+# deliverable, and reviewers need to see what a run actually produces.
+# Previously `output/*/` ignored every run folder, which is why nothing
+# under output/ ever reached the remote.
+#
+# Runs accumulate quickly and are largely identical, so prune old ones
+# rather than committing every execution. Keep the runs that are worth
+# showing.
 .pytest_cache/
 .ruff_cache/
 *.egg-info/
