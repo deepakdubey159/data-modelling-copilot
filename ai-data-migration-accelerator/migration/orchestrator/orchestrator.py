@@ -28,6 +28,13 @@ from migration.conceptual.engine import ConceptualModelEngine
 from migration.conceptual.writer import ConceptualModelWriter
 from migration.logical.engine import LogicalModelEngine
 from migration.logical.writer import LogicalModelWriter
+from migration.physical.engine import PhysicalModelEngine
+from migration.physical.writer import PhysicalModelWriter
+from migration.ddl.databricks_generator import DatabricksDDLGenerator
+from migration.ddl.writer import DDLWriter
+from migration.estimation import create_estimator
+from migration.estimation.writer import EstimationWriter
+from migration.target.databricks import DatabricksTargetAdapter
 from migration.connectors.factory import create_connector
 from migration.metadata.builder import MetadataBuilder
 from migration.output.writer import OutputWriter
@@ -181,6 +188,8 @@ class MigrationOrchestrator:
                         conceptual_files[2],
                     )
 
+            logical = None
+
             logical_files = None
 
             if getattr(self.config.artifacts, "logical_model", True):
@@ -199,6 +208,7 @@ class MigrationOrchestrator:
                     logical = LogicalModelEngine(
                         conceptual,
                         source_artifact="conceptual_model.json",
+                        metadata=metadata,
                     ).generate()
 
                     logical_files = LogicalModelWriter().write(
@@ -211,6 +221,117 @@ class MigrationOrchestrator:
                         logical_files[0],
                         logical_files[1],
                         logical_files[2],
+                    )
+
+            physical = None
+
+            physical_files = None
+
+            if getattr(self.config.artifacts, "physical_model", True):
+
+                if logical is None:
+
+                    logger.warning(
+                        "Skipping physical model: it is derived from the logical "
+                        "model, which was not produced in this run."
+                    )
+
+                else:
+
+                    logger.info("Deriving physical model...")
+
+                    physical = PhysicalModelEngine(
+                        logical,
+                        source_artifact="logical_model.json",
+                        metadata=metadata,
+                    ).generate()
+
+                    physical_files = PhysicalModelWriter().write(
+                        physical,
+                        run_directory,
+                    )
+
+                    logger.info(
+                        "Physical model written to %s, %s and %s",
+                        physical_files[0],
+                        physical_files[1],
+                        physical_files[2],
+                    )
+
+            ddl_files = None
+
+            if getattr(self.config.artifacts, "ddl", True):
+
+                if physical is None:
+
+                    logger.warning(
+                        "Skipping DDL generation: it is derived from the physical "
+                        "model, which was not produced in this run."
+                    )
+
+                else:
+
+                    logger.info("Generating Databricks DDL...")
+
+                    target = DatabricksTargetAdapter(
+                        physical,
+                        source_artifact="physical_model.json",
+                    ).map()
+
+                    ddl = DatabricksDDLGenerator(
+                        target,
+                        generated_from="physical_model.json",
+                        catalog=self.config.target.catalog,
+                        schema=self.config.target.schema,
+                        enable_clustering=self.config.target.enable_clustering,
+                    ).generate()
+
+                    ddl_files = DDLWriter().write(
+                        ddl,
+                        run_directory,
+                    )
+
+                    logger.info(
+                        "DDL written to %s and %s",
+                        ddl_files[0],
+                        ddl_files[1],
+                    )
+
+            estimation_files = None
+
+            if getattr(self.config.artifacts, "estimation", True):
+
+                if physical is None:
+
+                    logger.warning(
+                        "Skipping effort estimation: it is derived from the physical "
+                        "model, which was not produced in this run."
+                    )
+
+                else:
+
+                    logger.info("Estimating migration effort...")
+
+                    estimator = create_estimator(
+                        package=physical,
+                        source_type=source.type.value,
+                        target_type=self.config.target.type.value,
+                        canonical_metadata=metadata,
+                        config=self.config,
+                    )
+
+                    estimation = estimator.estimate()
+
+                    estimation_files = EstimationWriter().write(
+                        estimation,
+                        run_directory,
+                    )
+
+                    logger.info(
+                        "Estimation written to %s, %s and %s",
+                        estimation_files[0],
+                        estimation_files[1],
+                        estimation_files[2],
                     )
 
             writer.write_execution_summary(
@@ -252,9 +373,33 @@ class MigrationOrchestrator:
 
                 print(f"                {logical_files[2]}")
 
+            if physical_files is not None:
+
+                print(f"Physical      : {physical_files[0]}")
+
+                print(f"                {physical_files[1]}")
+
+                print(f"                {physical_files[2]}")
+
+            if ddl_files is not None:
+
+                print(f"DDL           : {ddl_files[0]}")
+
+                print(f"                {ddl_files[1]}")
+
+            if estimation_files is not None:
+
+                print(f"Estimation    : {estimation_files[0]}")
+
+                print(f"                {estimation_files[1]}")
+
+                print(f"                {estimation_files[2]}")
+
             print("=" * 70)
 
             print()
+
+            return run_directory
 
         finally:
 

@@ -31,6 +31,9 @@ from __future__ import annotations
 import logging
 import re
 
+from migration.canonical.models import ColumnMetadata, MetadataPackage
+from migration.metadata.source_lookup import resolve_source_column
+from migration.physical.source_types import classify_source_type
 from migration.logical.models import (
     AttributeRole,
     EntityKind,
@@ -97,10 +100,12 @@ class PhysicalModelEngine:
         self,
         package: LogicalModelPackage,
         source_artifact: str = "logical_model.json",
+        metadata: MetadataPackage | None = None,
     ):
         self.package = package
         self.model: LogicalModel = package.logical_model
         self.source_artifact = source_artifact
+        self.metadata = metadata
 
         self._table_names: dict[str, str] = {}
         self._notes: list[str] = []
@@ -187,7 +192,7 @@ class PhysicalModelEngine:
     ) -> PhysicalTable:
         table_name = self._table_names[entity.name]
         columns = [
-            self._build_column(attribute, position)
+            self._build_column(attribute, position, entity)
             for position, attribute in enumerate(entity.attributes, start=1)
         ]
 
@@ -210,7 +215,9 @@ class PhysicalModelEngine:
         table.storage = self._build_storage(table)
         return table
 
-    def _build_column(self, attribute: LogicalAttribute, position: int) -> PhysicalColumn:
+    def _build_column(
+        self, attribute: LogicalAttribute, position: int, entity: LogicalEntity
+    ) -> PhysicalColumn:
         data_type, length, precision, scale = _TYPE_MAP.get(
             attribute.data_type, (PhysicalDataType.STRING, 255, None, None)
         )
@@ -219,6 +226,35 @@ class PhysicalModelEngine:
             length = _refine_length(attribute.name, length)
 
         nullable = attribute.optionality != Optionality.MANDATORY
+        default_value = _default_for(attribute, data_type, nullable)
+
+        source = self._resolve_source(attribute, entity)
+        source_database_type = source.data_type if source else None
+        source_length = source.character_length if source else None
+        source_precision = source.numeric_precision if source else None
+        source_scale = source.numeric_scale if source else None
+        source_nullable = source.nullable if source else None
+        source_default = source.default_value if source else None
+
+        if source is not None:
+            classification = classify_source_type(
+                source.data_type,
+                length=source.character_length,
+                precision=source.numeric_precision,
+                scale=source.numeric_scale,
+            )
+            data_type = classification.data_type
+            length = classification.length
+            precision = classification.precision
+            scale = classification.scale
+            if classification.warning:
+                self._notes.append(classification.warning)
+            # A structural fact from the source overrides the abstract
+            # domain's inferred nullability - unless this column is the
+            # entity's own primary key, whose mandatoriness the logical
+            # model has already established correctly.
+            if source.nullable is not None and attribute.role != AttributeRole.PRIMARY_KEY:
+                nullable = source.nullable
 
         return PhysicalColumn(
             name=_identifier(attribute.name),
@@ -227,7 +263,7 @@ class PhysicalModelEngine:
             precision=precision,
             scale=scale,
             nullable=nullable,
-            default_value=_default_for(attribute, data_type, nullable),
+            default_value=default_value,
             is_primary_key=attribute.role == AttributeRole.PRIMARY_KEY,
             is_foreign_key=attribute.role == AttributeRole.FOREIGN_KEY
             or (
@@ -237,6 +273,42 @@ class PhysicalModelEngine:
             is_unique=attribute.role == AttributeRole.ALTERNATE_KEY,
             ordinal_position=position,
             source_attribute=attribute.name,
+            source_database_type=source_database_type,
+            source_length=source_length,
+            source_precision=source_precision,
+            source_scale=source_scale,
+            source_nullable=source_nullable,
+            source_default=source_default,
+        )
+
+    def _resolve_source(
+        self, attribute: LogicalAttribute, entity: LogicalEntity
+    ) -> ColumnMetadata | None:
+        """Find the authoritative source column for an attribute.
+
+        Prefers the resolution already recorded on the logical model (set by
+        LogicalModelEngine when metadata was available at that stage) so
+        physical and logical fidelity agree on the same source fact. Falls
+        back to resolving independently against this engine's own metadata -
+        needed when the logical model was built without metadata (e.g. an
+        older logical_model.json, or a hand-built one in a test).
+        """
+        if attribute.source_data_type is not None:
+            return ColumnMetadata(
+                name=attribute.source_attribute or attribute.name,
+                data_type=attribute.source_data_type,
+                nullable=attribute.source_nullable if attribute.source_nullable is not None else True,
+                default_value=attribute.source_default,
+                ordinal_position=0,
+                character_length=attribute.source_length,
+                numeric_precision=attribute.source_precision,
+                numeric_scale=attribute.source_scale,
+            )
+
+        if self.metadata is None or not entity.source_tables:
+            return None
+        return resolve_source_column(
+            entity.source_tables, attribute.name, self.metadata.metadata
         )
 
     # -- Referential type alignment ----------------------------------------

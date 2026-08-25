@@ -1,0 +1,48 @@
+# Example Configuration: PostgreSQL Analytics Database Migration
+# Copy this to config.yaml and customize for your environment
+
+project:
+  name: postgres_analytics_migration_to_databricks
+  output_directory: output/postgres/
+
+source:
+  type: postgres              # PostgreSQL as source
+  host: analytics-db.company.com
+  port: 5432                  # Standard PostgreSQL port
+  database: analytics_db
+  username: analyst_user
+  password: ""                # Load from SOURCE_DB_PASSWORD env var
+  schema:
+    - public
+    - metrics
+    - reports
+  connection_timeout: 30
+
+target:
+  type: databricks
+  host_env: DATABRICKS_HOST
+  token_env: DATABRICKS_TOKEN
+  http_path_env: DATABRICKS_HTTP_PATH
+  workspace_path_env: DATABRICKS_WORKSPACE_PATH
+  catalog: dblearn
+  schema: analytics_bronze     # Different target schema for different source
+
+llm:
+  provider: anthropic
+  model: claude-opus-5
+  max_tokens: 32000
+  effort: high
+  api_key_env: ANTHROPIC_API_KEY
+
+artifacts:
+  profile: true
+  relationships: true
+  conceptual_model: true
+  logical_model: true
+  physical_model: true
+  ddl: true
+  dml: true
+  estimation: true
+
+logging:
+  level: INFO

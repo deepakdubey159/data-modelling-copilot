@@ -1,0 +1,418 @@
+{
+    "conceptual_model": {
+        "database_name": "datamodel",
+        "summary": "A retail e-commerce and inventory management system supporting product sales, order fulfilment, supplier relationships, and warehouse logistics across multiple geographic locations and organizational departments.",
+        "domains": [
+            {
+                "name": "Geography",
+                "description": "Organizational and operational locations: countries, states, cities, and warehouses.",
+                "entities": [
+                    "Country",
+                    "State",
+                    "City",
+                    "Warehouse"
+                ]
+            },
+            {
+                "name": "Catalog & Supply",
+                "description": "Product information, categorization, supplier relationships, and pricing.",
+                "entities": [
+                    "Product",
+                    "Category",
+                    "Supplier",
+                    "Promotion"
+                ]
+            },
+            {
+                "name": "Sales & Orders",
+                "description": "Customer order lifecycle from placement through delivery and payment.",
+                "entities": [
+                    "Order",
+                    "Order Item",
+                    "Payment",
+                    "Shipment"
+                ]
+            },
+            {
+                "name": "Inventory Management",
+                "description": "Stock levels, warehouse distribution, and product availability across locations.",
+                "entities": [
+                    "Inventory"
+                ]
+            },
+            {
+                "name": "Customer Management",
+                "description": "Customer profiles and relationships.",
+                "entities": [
+                    "Customer"
+                ]
+            },
+            {
+                "name": "Organization",
+                "description": "Internal organizational structure: employees, departments, and reporting relationships.",
+                "entities": [
+                    "Employee",
+                    "Department"
+                ]
+            },
+            {
+                "name": "Operations",
+                "description": "Return handling and system audit trails.",
+                "entities": [
+                    "Return",
+                    "Audit Log"
+                ]
+            }
+        ],
+        "entities": [
+            {
+                "name": "Country",
+                "description": "A nation or sovereign territory where the organization operates.",
+                "business_key": [
+                    "country_code"
+                ],
+                "attributes": [
+                    "country_code",
+                    "country_name",
+                    "created_at"
+                ],
+                "relationships": [],
+                "source_tables": [
+                    "bronze.country"
+                ]
+            },
+            {
+                "name": "State",
+                "description": "A state or province within a country.",
+                "business_key": [
+                    "state_name",
+                    "country_code"
+                ],
+                "attributes": [
+                    "state_name"
+                ],
+                "relationships": [],
+                "source_tables": [
+                    "bronze.state"
+                ]
+            },
+            {
+                "name": "City",
+                "description": "A city or municipality within a state.",
+                "business_key": [
+                    "city_name",
+                    "state_name"
+                ],
+                "attributes": [
+                    "city_name"
+                ],
+                "relationships": [],
+                "source_tables": [
+                    "bronze.city"
+                ]
+            },
+            {
+                "name": "Warehouse",
+                "description": "A physical storage and distribution facility.",
+                "business_key": [
+                    "warehouse_name",
+                    "city_name"
+                ],
+                "attributes": [
+                    "warehouse_name"
+                ],
+                "relationships": [],
+                "source_tables": [
+                    "bronze.warehouse"
+                ]
+            },
+            {
+                "name": "Product",
+                "description": "A physical or digital good offered for sale.",
+                "business_key": [
+                    "sku"
+                ],
+                "attributes": [
+                    "product_name",
+                    "sku",
+                    "unit_price",
+                    "status"
+                ],
+                "relationships": [],
+                "source_tables": [
+                    "bronze.product"
+                ]
+            },
+            {
+                "name": "Category",
+                "description": "A classification or grouping of related products.",
+                "business_key": [
+                    "category_name"
+                ],
+                "attributes": [
+                    "category_name"
+                ],
+                "relationships": [],
+                "source_tables": [
+                    "bronze.category"
+                ]
+            },
+            {
+                "name": "Supplier",
+                "description": "A vendor or partner from whom products are sourced.",
+                "business_key": [
+                    "supplier_name"
+                ],
+                "attributes": [
+                    "supplier_name",
+                    "contact_name",
+                    "email",
+                    "phone"
+                ],
+                "relationships": [],
+                "source_tables": [
+                    "bronze.supplier"
+                ]
+            },
+            {
+                "name": "Promotion",
+                "description": "A discount or marketing offer applied to products.",
+                "business_key": [
+                    "promotion_name"
+                ],
+                "attributes": [
+                    "promotion_name",
+                    "discount_percent"
+                ],
+                "relationships": [],
+                "source_tables": [
+                    "bronze.promotion"
+                ]
+            },
+            {
+                "name": "Order",
+                "description": "A customer purchase order for one or more products.",
+                "business_key": [
+                    "order_id"
+                ],
+                "attributes": [
+                    "order_date",
+                    "order_status"
+                ],
+                "relationships": [],
+                "source_tables": [
+                    "bronze.orders"
+                ]
+            },
+            {
+                "name": "Order Item",
+                "description": "A line item within an order specifying product, quantity, and price.",
+                "business_key": [
+                    "order_id",
+                    "line_number"
+                ],
+                "attributes": [
+                    "line_number",
+                    "quantity",
+                    "unit_price"
+                ],
+                "relationships": [],
+                "source_tables": [
+                    "bronze.order_item"
+                ]
+            },
+            {
+                "name": "Payment",
+                "description": "A payment transaction related to an order.",
+                "business_key": [
+                    "payment_id"
+                ],
+                "attributes": [
+                    "payment_method",
+                    "payment_date",
+                    "amount"
+                ],
+                "relationships": [],
+                "source_tables": [
+                    "bronze.payment"
+                ]
+            },
+            {
+                "name": "Shipment",
+                "description": "A dispatch of ordered items from a warehouse to a customer.",
+                "business_key": [
+                    "tracking_number"
+                ],
+                "attributes": [
+                    "shipped_date",
+                    "tracking_number"
+                ],
+                "relationships": [],
+                "source_tables": [
+                    "bronze.shipment"
+                ]
+            },
+            {
+                "name": "Inventory",
+                "description": "The quantity of a product held in a warehouse, including reorder threshold.",
+                "business_key": [
+                    "warehouse_name",
+                    "sku"
+                ],
+                "attributes": [
+                    "quantity",
+                    "reorder_level"
+                ],
+                "relationships": [],
+                "source_tables": [
+                    "bronze.inventory"
+                ]
+            },
+            {
+                "name": "Customer",
+                "description": "An individual or organization that purchases products.",
+                "business_key": [
+                    "customer_number"
+                ],
+                "attributes": [
+                    "first_name",
+                    "last_name",
+                    "email",
+                    "phone",
+                    "credit_limit",
+                    "status"
+                ],
+                "relationships": [],
+                "source_tables": [
+                    "bronze.customer"
+                ]
+            },
+            {
+                "name": "Department",
+                "description": "An organizational unit within the company.",
+                "business_key": [
+                    "department_name"
+                ],
+                "attributes": [
+                    "department_name"
+                ],
+                "relationships": [],
+                "source_tables": [
+                    "bronze.department"
+                ]
+            },
+            {
+                "name": "Employee",
+                "description": "A person employed by the organization.",
+                "business_key": [
+                    "email"
+                ],
+                "attributes": [
+                    "first_name",
+                    "last_name",
+                    "email",
+                    "salary",
+                    "hire_date"
+                ],
+                "relationships": [],
+                "source_tables": [
+                    "bronze.employee"
+                ]
+            },
+            {
+                "name": "Return",
+                "description": "A product returned by a customer from a completed order.",
+                "business_key": [
+                    "return_id"
+                ],
+                "attributes": [
+                    "return_reason"
+                ],
+                "relationships": [],
+                "source_tables": [
+                    "bronze.return_order"
+                ]
+            },
+            {
+                "name": "Audit Log",
+                "description": "A system record of data changes including inserts, updates, and deletes.",
+                "business_key": [
+                    "audit_id"
+                ],
+                "attributes": [
+                    "table_name",
+                    "operation",
+                    "user_name",
+                    "operation_timestamp"
+                ],
+                "relationships": [],
+                "source_tables": [
+                    "bronze.audit_log"
+                ]
+            }
+        ],
+        "business_rules": [
+            "A customer may be located in a specific city or have no location specified (optional).",
+            "An employee must belong to a department; a department may have many employees.",
+            "An employee may have a manager who is also an employee, supporting hierarchical reporting structures; some employees have no manager (optional).",
+            "A product must be supplied by a supplier or have no supplier specified (optional).",
+            "A product must belong to a category or have no category specified (optional).",
+            "An order must be placed by a customer or have no customer specified (optional); a customer may place many orders.",
+            "An order may be assigned to a sales representative who is an employee (optional).",
+            "An order contains one or more line items; each line item references a product (optional).",
+            "A payment is associated with an order (optional); an order may have multiple payments.",
+            "A shipment is associated with an order (optional); an order may be fulfilled by multiple shipments.",
+            "A shipment originates from a warehouse (optional).",
+            "A product held in inventory is stored in a warehouse; inventory carries both quantity and reorder level.",
+            "A product may be associated with multiple promotions; a promotion may apply to multiple products (many-to-many).",
+            "A return references an order and a product (both optional); multiple returns may exist for a single order.",
+            "A warehouse is located in a city (optional).",
+            "A city is located in a state; a state is located in a country (mandatory hierarchy).",
+            "Only one country is active in the sample data, suggesting a single-geography or demo system.",
+            "A customer's status is consistently ACTIVE in the sample, suggesting a binary or enumerated status field.",
+            "An order's status shows as DELIVERED in samples, implying a controlled vocabulary of order statuses (e.g., PENDING, PROCESSING, DELIVERED, CANCELLED).",
+            "Product and customer statuses are both ACTIVE, indicating active/inactive lifecycle management."
+        ],
+        "assumptions": [
+            "Treated 'customer_number' (e.g., CUST001) as the business key for Customer rather than the surrogate customer_id, as it is a business-facing identifier.",
+            "Treated 'sku' (e.g., SKU001) as the business key for Product because it is a standardized external identifier.",
+            "Treated 'tracking_number' as the business key for Shipment because it is the unique customer-facing identifier for shipments.",
+            "Treated 'email' as the business key for Employee because it is a unique, business-recognizable identifier (in addition to employee_id).",
+            "Treated 'country_code' as the business key for Country (e.g., AE, US) because it is the standard international business identifier.",
+            "Treated 'promotion_name' and 'discount_percent' as the business key components for Promotion; promotion_id is surrogate.",
+            "Employee.manager_id references Employee.employee_id, permitting recursive reporting structures. Interpreted as optional (10% null) to allow for organizational roots.",
+            "Order.sales_rep_id references Employee.employee_id, indicating that employees in the organization serve as sales representatives; the relationship is optional (some orders may not be assigned to a sales rep).",
+            "Product.supplier_id is optional (10% null), implying some products may not have an assigned supplier or may be in-house sourced.",
+            "Product.category_id is optional, suggesting some products may not be categorized or may belong to a default/unknown category.",
+            "Inventory is a non-pure junction table connecting Product and Warehouse with additional attributes (quantity, reorder_level), therefore treated as a business entity in its own right rather than a pure link.",
+            "Product_Promotion is a pure junction table (no extra attributes) connecting Product and Promotion; not treated as a separate entity, but rather represents the many-to-many relationship.",
+            "Customer.city_id is optional, implying some customers may not have a registered location or may be remote/international.",
+            "Warehouse.city_id is optional, though most warehouses would be expected to have a location.",
+            "Order status values appear to include at least DELIVERED; full enumeration is not visible in sample data.",
+            "Payment.order_id is optional (some records may not reference an order, or there may be payments recorded without orders), though unusual in a transactional system.",
+            "Shipment.order_id is optional, though typically a shipment would be tied to an order.",
+            "Shipment.warehouse_id is optional, allowing for shipments from external fulfillment partners or third-party warehouses.",
+            "Return_order.product_id is optional, though returns typically involve a product.",
+            "The Audit_Log table is an orphan (no inbound foreign keys), consistent with it being a system logging facility rather than a business entity linked to specific domain entities.",
+            "Sample data contains only 10 rows per table and a narrow range of values; business rules are inferred from cardinality and nullability patterns rather than from large data distributions.",
+            "Null percentages and distinct counts are taken at face value from a small sample; in production, distributions may differ significantly.",
+            "No temporal or soft-delete columns (e.g., deleted_at, effective_date) are visible, suggesting either immutable design or hard deletes; the Audit_Log provides some change tracking."
+        ],
+        "recommendations": [
+            "Clarify the ownership and definition of 'sales_rep_id' on Order: is every order always assigned to a sales rep for accountability, or is it only required for direct sales (not web/automated orders)? Current optionality suggests mixed order channels.",
+            "Evaluate whether Supplier should be mandatory for Product. If in-house production is significant, document the convention for identifying products without suppliers (null, a 'house' supplier record, etc.).",
+            "Consider adding a Product-Supplier relationship table (ProductSupplier) if multiple suppliers can furnish the same product or if supplier-specific pricing and lead times are tracked; currently supplier_id is one-to-many.",
+            "Examine whether Payment should always reference Order. If payments can be taken without an order context (e.g., deposits, advance payments), document the relationship and consider a separate Payment entity type.",
+            "Document the enumerated values for order_status (e.g., PENDING, PROCESSING, SHIPPED, DELIVERED, CANCELLED, FAILED) to clarify the order lifecycle and whether all statuses are used.",
+            "Document the enumerated values and business meaning of customer_status and product_status (currently ACTIVE observed) to clarify inactive lifecycle handling.",
+            "Add contact information (email, phone) to Customer if not already collected; currently present but consider whether it is mandatory for order communication.",
+            "Review Inventory reorder_level cardinality: all sample values are '20', suggesting either a global default or insufficient variance. Clarify whether reorder levels are product-specific, warehouse-specific, or both, and how they drive procurement.",
+            "Confirm whether geographic data (Country, State, City) is used for reporting and compliance or for operational logistics. If multi-country operations are supported, verify that all warehouses and customers are correctly assigned to cities/states.",
+            "Assess whether Department and Employee structures align with current organizational reality; the sample shows 10 of each in a demo but production systems may have sparse hierarchies or matrix reporting.",
+            "Ensure Audit_Log is actively maintained and monitored; it is currently orphaned and not integrated with business entities, so its use for change tracking depends on application code rather than database constraints.",
+            "Consider adding an explicit status history or timeline table if tracking when orders, customers, or products change state is important for analytics.",
+            "Evaluate whether a ShipmentItem table is needed to track which items from an order are included in which shipment, as currently only Shipment\u2192Order is tracked."
+        ]
+    },
+    "generated_by": "claude-haiku-4-5-20251001"
+}

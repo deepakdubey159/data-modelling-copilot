@@ -117,6 +117,26 @@ class PhysicalColumn(BaseModel):
     source_attribute: Optional[str] = None
     """The logical attribute this column was resolved from."""
 
+    source_database_type: Optional[str] = None
+    """The original source database type name (e.g. 'VARCHAR', 'DECIMAL'),
+    verbatim from the source catalog. Used for accurate type mapping when
+    source type information is available."""
+
+    source_length: Optional[int] = None
+    source_precision: Optional[int] = None
+    source_scale: Optional[int] = None
+    """The source's own declared length/precision/scale, structurally -
+    never parsed out of a combined type string. Authoritative over the
+    generic length/precision/scale above whenever a confident source column
+    match exists; kept separately so a target adapter can tell the
+    difference between 'the source said so' and 'a generic default'."""
+
+    source_nullable: Optional[bool] = None
+    source_default: Optional[str] = None
+    """The source's raw default expression, verbatim, for traceability only.
+    Not necessarily valid syntax on any target - a target adapter must
+    translate or omit it, never emit it unchanged."""
+
     def type_signature(self) -> str:
         """Human-readable type, e.g. STRING(255) or DECIMAL(18,2)."""
         if self.length is not None:

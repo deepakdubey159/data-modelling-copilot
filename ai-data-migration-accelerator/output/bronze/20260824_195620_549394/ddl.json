@@ -1,0 +1,586 @@
+{
+    "ddl_script": {
+        "database_name": "datamodel",
+        "target_type": "databricks",
+        "table_creation_statements": [
+            {
+                "statement": "CREATE TABLE `audit_log` (\n  `audit_id` STRING(255) NOT NULL,\n  `operation` STRING(30),\n  `operation_timestamp` STRING(255),\n  `table_name` STRING(100),\n  `user_name` STRING(100),\n  CONSTRAINT `pk_audit_log` PRIMARY KEY (`audit_id`)\n)\n;",
+                "description": "Create table audit_log",
+                "source_table": "audit_log",
+                "statement_type": "CREATE"
+            },
+            {
+                "statement": "CREATE TABLE `category` (\n  `category_name` STRING(100) NOT NULL,\n  CONSTRAINT `pk_category` PRIMARY KEY (`category_name`)\n)\n;",
+                "description": "Create table category",
+                "source_table": "category",
+                "statement_type": "CREATE"
+            },
+            {
+                "statement": "CREATE TABLE `city` (\n  `city_name` STRING(100) NOT NULL,\n  `state_name` STRING(100) NOT NULL,\n  CONSTRAINT `pk_city` PRIMARY KEY (`city_name`, `state_name`)\n)\n;",
+                "description": "Create table city",
+                "source_table": "city",
+                "statement_type": "CREATE"
+            },
+            {
+                "statement": "CREATE TABLE `country` (\n  `country_code` STRING(255) NOT NULL,\n  `country_name` STRING(100),\n  `created_at` STRING(255),\n  CONSTRAINT `pk_country` PRIMARY KEY (`country_code`)\n)\n;",
+                "description": "Create table country",
+                "source_table": "country",
+                "statement_type": "CREATE"
+            },
+            {
+                "statement": "CREATE TABLE `customer` (\n  `credit_limit` STRING(255),\n  `customer_number` STRING(255) NOT NULL,\n  `email` STRING(255),\n  `first_name` STRING(100),\n  `last_name` STRING(100),\n  `phone` STRING(30),\n  `status` STRING(30),\n  CONSTRAINT `pk_customer` PRIMARY KEY (`customer_number`),\n  CONSTRAINT `uq_customer_email` UNIQUE (`email`)\n)\n;",
+                "description": "Create table customer",
+                "source_table": "customer",
+                "statement_type": "CREATE"
+            },
+            {
+                "statement": "CREATE TABLE `department` (\n  `department_name` STRING(100) NOT NULL,\n  CONSTRAINT `pk_department` PRIMARY KEY (`department_name`)\n)\n;",
+                "description": "Create table department",
+                "source_table": "department",
+                "statement_type": "CREATE"
+            },
+            {
+                "statement": "CREATE TABLE `employee` (\n  `email` STRING(255) NOT NULL,\n  `first_name` STRING(100),\n  `hire_date` STRING(255),\n  `last_name` STRING(100),\n  `salary` DECIMAL(18,2),\n  CONSTRAINT `pk_employee` PRIMARY KEY (`email`)\n)\n;",
+                "description": "Create table employee",
+                "source_table": "employee",
+                "statement_type": "CREATE"
+            },
+            {
+                "statement": "CREATE TABLE `inventory` (\n  `quantity` BIGINT,\n  `reorder_level` STRING(255),\n  `sku` STRING(30) NOT NULL,\n  `warehouse_name` STRING(100) NOT NULL,\n  CONSTRAINT `pk_inventory` PRIMARY KEY (`warehouse_name`, `sku`),\n  CONSTRAINT `ck_inventory_quantity` CHECK (quantity >= 0)\n)\n;",
+                "description": "Create table inventory",
+                "source_table": "inventory",
+                "statement_type": "CREATE"
+            },
+            {
+                "statement": "CREATE TABLE `order` (\n  `order_date` STRING(255),\n  `order_id` STRING(255) NOT NULL,\n  `order_status` STRING(255),\n  CONSTRAINT `pk_order` PRIMARY KEY (`order_id`)\n)\n;",
+                "description": "Create table order",
+                "source_table": "order",
+                "statement_type": "CREATE"
+            },
+            {
+                "statement": "CREATE TABLE `order_line` (\n  `line_number` STRING(255) NOT NULL,\n  `order_id` STRING(255) NOT NULL,\n  `quantity` BIGINT,\n  `unit_price` STRING(255),\n  CONSTRAINT `pk_order_line` PRIMARY KEY (`order_id`, `line_number`),\n  CONSTRAINT `ck_order_line_quantity` CHECK (quantity >= 0)\n)\n;",
+                "description": "Create table order_line",
+                "source_table": "order_line",
+                "statement_type": "CREATE"
+            },
+            {
+                "statement": "CREATE TABLE `payment` (\n  `amount` DECIMAL(18,2),\n  `payment_date` STRING(255),\n  `payment_id` STRING(255) NOT NULL,\n  `payment_method` STRING(255),\n  CONSTRAINT `pk_payment` PRIMARY KEY (`payment_id`)\n)\n;",
+                "description": "Create table payment",
+                "source_table": "payment",
+                "statement_type": "CREATE"
+            },
+            {
+                "statement": "CREATE TABLE `product` (\n  `product_name` STRING(100),\n  `sku` STRING(30) NOT NULL,\n  `status` STRING(30),\n  `unit_price` STRING(255),\n  CONSTRAINT `pk_product` PRIMARY KEY (`sku`)\n)\n;",
+                "description": "Create table product",
+                "source_table": "product",
+                "statement_type": "CREATE"
+            },
+            {
+                "statement": "CREATE TABLE `promotion` (\n  `discount_percent` STRING(255),\n  `promotion_name` STRING(100) NOT NULL,\n  CONSTRAINT `pk_promotion` PRIMARY KEY (`promotion_name`)\n)\n;",
+                "description": "Create table promotion",
+                "source_table": "promotion",
+                "statement_type": "CREATE"
+            },
+            {
+                "statement": "CREATE TABLE `return` (\n  `return_id` STRING(255) NOT NULL,\n  `return_reason` STRING(500),\n  CONSTRAINT `pk_return` PRIMARY KEY (`return_id`)\n)\n;",
+                "description": "Create table return",
+                "source_table": "return",
+                "statement_type": "CREATE"
+            },
+            {
+                "statement": "CREATE TABLE `shipment` (\n  `shipped_date` STRING(255),\n  `tracking_number` STRING(255) NOT NULL,\n  CONSTRAINT `pk_shipment` PRIMARY KEY (`tracking_number`)\n)\n;",
+                "description": "Create table shipment",
+                "source_table": "shipment",
+                "statement_type": "CREATE"
+            },
+            {
+                "statement": "CREATE TABLE `state` (\n  `country_code` STRING(255) NOT NULL,\n  `state_name` STRING(100) NOT NULL,\n  CONSTRAINT `pk_state` PRIMARY KEY (`state_name`, `country_code`)\n)\n;",
+                "description": "Create table state",
+                "source_table": "state",
+                "statement_type": "CREATE"
+            },
+            {
+                "statement": "CREATE TABLE `supplier` (\n  `contact_name` STRING(100),\n  `email` STRING(255),\n  `phone` STRING(30),\n  `supplier_name` STRING(100) NOT NULL,\n  CONSTRAINT `pk_supplier` PRIMARY KEY (`supplier_name`),\n  CONSTRAINT `uq_supplier_email` UNIQUE (`email`)\n)\n;",
+                "description": "Create table supplier",
+                "source_table": "supplier",
+                "statement_type": "CREATE"
+            },
+            {
+                "statement": "CREATE TABLE `warehouse` (\n  `city_name` STRING(100) NOT NULL,\n  `warehouse_name` STRING(100) NOT NULL,\n  CONSTRAINT `pk_warehouse` PRIMARY KEY (`warehouse_name`, `city_name`)\n)\n;",
+                "description": "Create table warehouse",
+                "source_table": "warehouse",
+                "statement_type": "CREATE"
+            }
+        ],
+        "constraint_statements": [],
+        "index_statements": [
+            {
+                "statement": "CREATE UNIQUE INDEX `idx_audit_log_pk` ON `audit_log`(`audit_id`);",
+                "description": "Create index idx_audit_log_pk",
+                "source_table": "audit_log",
+                "statement_type": "CREATE INDEX"
+            },
+            {
+                "statement": "CREATE UNIQUE INDEX `idx_category_pk` ON `category`(`category_name`);",
+                "description": "Create index idx_category_pk",
+                "source_table": "category",
+                "statement_type": "CREATE INDEX"
+            },
+            {
+                "statement": "CREATE UNIQUE INDEX `idx_city_pk` ON `city`(`city_name`, `state_name`);",
+                "description": "Create index idx_city_pk",
+                "source_table": "city",
+                "statement_type": "CREATE INDEX"
+            },
+            {
+                "statement": "CREATE UNIQUE INDEX `idx_country_pk` ON `country`(`country_code`);",
+                "description": "Create index idx_country_pk",
+                "source_table": "country",
+                "statement_type": "CREATE INDEX"
+            },
+            {
+                "statement": "CREATE UNIQUE INDEX `idx_customer_email` ON `customer`(`email`);",
+                "description": "Create index idx_customer_email",
+                "source_table": "customer",
+                "statement_type": "CREATE INDEX"
+            },
+            {
+                "statement": "CREATE UNIQUE INDEX `idx_customer_pk` ON `customer`(`customer_number`);",
+                "description": "Create index idx_customer_pk",
+                "source_table": "customer",
+                "statement_type": "CREATE INDEX"
+            },
+            {
+                "statement": "CREATE UNIQUE INDEX `idx_department_pk` ON `department`(`department_name`);",
+                "description": "Create index idx_department_pk",
+                "source_table": "department",
+                "statement_type": "CREATE INDEX"
+            },
+            {
+                "statement": "CREATE UNIQUE INDEX `idx_employee_pk` ON `employee`(`email`);",
+                "description": "Create index idx_employee_pk",
+                "source_table": "employee",
+                "statement_type": "CREATE INDEX"
+            },
+            {
+                "statement": "CREATE UNIQUE INDEX `idx_inventory_pk` ON `inventory`(`warehouse_name`, `sku`);",
+                "description": "Create index idx_inventory_pk",
+                "source_table": "inventory",
+                "statement_type": "CREATE INDEX"
+            },
+            {
+                "statement": "CREATE UNIQUE INDEX `idx_order_pk` ON `order`(`order_id`);",
+                "description": "Create index idx_order_pk",
+                "source_table": "order",
+                "statement_type": "CREATE INDEX"
+            },
+            {
+                "statement": "CREATE UNIQUE INDEX `idx_order_line_pk` ON `order_line`(`order_id`, `line_number`);",
+                "description": "Create index idx_order_line_pk",
+                "source_table": "order_line",
+                "statement_type": "CREATE INDEX"
+            },
+            {
+                "statement": "CREATE UNIQUE INDEX `idx_payment_pk` ON `payment`(`payment_id`);",
+                "description": "Create index idx_payment_pk",
+                "source_table": "payment",
+                "statement_type": "CREATE INDEX"
+            },
+            {
+                "statement": "CREATE UNIQUE INDEX `idx_product_pk` ON `product`(`sku`);",
+                "description": "Create index idx_product_pk",
+                "source_table": "product",
+                "statement_type": "CREATE INDEX"
+            },
+            {
+                "statement": "CREATE UNIQUE INDEX `idx_promotion_pk` ON `promotion`(`promotion_name`);",
+                "description": "Create index idx_promotion_pk",
+                "source_table": "promotion",
+                "statement_type": "CREATE INDEX"
+            },
+            {
+                "statement": "CREATE UNIQUE INDEX `idx_return_pk` ON `return`(`return_id`);",
+                "description": "Create index idx_return_pk",
+                "source_table": "return",
+                "statement_type": "CREATE INDEX"
+            },
+            {
+                "statement": "CREATE UNIQUE INDEX `idx_shipment_pk` ON `shipment`(`tracking_number`);",
+                "description": "Create index idx_shipment_pk",
+                "source_table": "shipment",
+                "statement_type": "CREATE INDEX"
+            },
+            {
+                "statement": "CREATE UNIQUE INDEX `idx_state_pk` ON `state`(`state_name`, `country_code`);",
+                "description": "Create index idx_state_pk",
+                "source_table": "state",
+                "statement_type": "CREATE INDEX"
+            },
+            {
+                "statement": "CREATE UNIQUE INDEX `idx_supplier_email` ON `supplier`(`email`);",
+                "description": "Create index idx_supplier_email",
+                "source_table": "supplier",
+                "statement_type": "CREATE INDEX"
+            },
+            {
+                "statement": "CREATE UNIQUE INDEX `idx_supplier_pk` ON `supplier`(`supplier_name`);",
+                "description": "Create index idx_supplier_pk",
+                "source_table": "supplier",
+                "statement_type": "CREATE INDEX"
+            },
+            {
+                "statement": "CREATE UNIQUE INDEX `idx_warehouse_pk` ON `warehouse`(`warehouse_name`, `city_name`);",
+                "description": "Create index idx_warehouse_pk",
+                "source_table": "warehouse",
+                "statement_type": "CREATE INDEX"
+            }
+        ],
+        "comment_statements": [
+            {
+                "statement": "ALTER TABLE `audit_log` CHANGE COLUMN `audit_id` COMMENT 'Source: audit_id | Physical type: STRING';",
+                "description": "Add comment to audit_log.audit_id",
+                "source_table": "audit_log",
+                "statement_type": "COMMENT"
+            },
+            {
+                "statement": "ALTER TABLE `audit_log` CHANGE COLUMN `operation` COMMENT 'Source: operation | Physical type: STRING';",
+                "description": "Add comment to audit_log.operation",
+                "source_table": "audit_log",
+                "statement_type": "COMMENT"
+            },
+            {
+                "statement": "ALTER TABLE `audit_log` CHANGE COLUMN `operation_timestamp` COMMENT 'Source: operation_timestamp | Physical type: STRING';",
+                "description": "Add comment to audit_log.operation_timestamp",
+                "source_table": "audit_log",
+                "statement_type": "COMMENT"
+            },
+            {
+                "statement": "ALTER TABLE `audit_log` CHANGE COLUMN `table_name` COMMENT 'Source: table_name | Physical type: STRING';",
+                "description": "Add comment to audit_log.table_name",
+                "source_table": "audit_log",
+                "statement_type": "COMMENT"
+            },
+            {
+                "statement": "ALTER TABLE `audit_log` CHANGE COLUMN `user_name` COMMENT 'Source: user_name | Physical type: STRING';",
+                "description": "Add comment to audit_log.user_name",
+                "source_table": "audit_log",
+                "statement_type": "COMMENT"
+            },
+            {
+                "statement": "ALTER TABLE `category` CHANGE COLUMN `category_name` COMMENT 'Source: category_name | Physical type: STRING';",
+                "description": "Add comment to category.category_name",
+                "source_table": "category",
+                "statement_type": "COMMENT"
+            },
+            {
+                "statement": "ALTER TABLE `city` CHANGE COLUMN `city_name` COMMENT 'Source: city_name | Physical type: STRING';",
+                "description": "Add comment to city.city_name",
+                "source_table": "city",
+                "statement_type": "COMMENT"
+            },
+            {
+                "statement": "ALTER TABLE `city` CHANGE COLUMN `state_name` COMMENT 'Source: state_name | Physical type: STRING';",
+                "description": "Add comment to city.state_name",
+                "source_table": "city",
+                "statement_type": "COMMENT"
+            },
+            {
+                "statement": "ALTER TABLE `country` CHANGE COLUMN `country_code` COMMENT 'Source: country_code | Physical type: STRING';",
+                "description": "Add comment to country.country_code",
+                "source_table": "country",
+                "statement_type": "COMMENT"
+            },
+            {
+                "statement": "ALTER TABLE `country` CHANGE COLUMN `country_name` COMMENT 'Source: country_name | Physical type: STRING';",
+                "description": "Add comment to country.country_name",
+                "source_table": "country",
+                "statement_type": "COMMENT"
+            },
+            {
+                "statement": "ALTER TABLE `country` CHANGE COLUMN `created_at` COMMENT 'Source: created_at | Physical type: STRING';",
+                "description": "Add comment to country.created_at",
+                "source_table": "country",
+                "statement_type": "COMMENT"
+            },
+            {
+                "statement": "ALTER TABLE `customer` CHANGE COLUMN `credit_limit` COMMENT 'Source: credit_limit | Physical type: STRING';",
+                "description": "Add comment to customer.credit_limit",
+                "source_table": "customer",
+                "statement_type": "COMMENT"
+            },
+            {
+                "statement": "ALTER TABLE `customer` CHANGE COLUMN `customer_number` COMMENT 'Source: customer_number | Physical type: STRING';",
+                "description": "Add comment to customer.customer_number",
+                "source_table": "customer",
+                "statement_type": "COMMENT"
+            },
+            {
+                "statement": "ALTER TABLE `customer` CHANGE COLUMN `email` COMMENT 'Source: email | Physical type: STRING';",
+                "description": "Add comment to customer.email",
+                "source_table": "customer",
+                "statement_type": "COMMENT"
+            },
+            {
+                "statement": "ALTER TABLE `customer` CHANGE COLUMN `first_name` COMMENT 'Source: first_name | Physical type: STRING';",
+                "description": "Add comment to customer.first_name",
+                "source_table": "customer",
+                "statement_type": "COMMENT"
+            },
+            {
+                "statement": "ALTER TABLE `customer` CHANGE COLUMN `last_name` COMMENT 'Source: last_name | Physical type: STRING';",
+                "description": "Add comment to customer.last_name",
+                "source_table": "customer",
+                "statement_type": "COMMENT"
+            },
+            {
+                "statement": "ALTER TABLE `customer` CHANGE COLUMN `phone` COMMENT 'Source: phone | Physical type: STRING';",
+                "description": "Add comment to customer.phone",
+                "source_table": "customer",
+                "statement_type": "COMMENT"
+            },
+            {
+                "statement": "ALTER TABLE `customer` CHANGE COLUMN `status` COMMENT 'Source: status | Physical type: STRING';",
+                "description": "Add comment to customer.status",
+                "source_table": "customer",
+                "statement_type": "COMMENT"
+            },
+            {
+                "statement": "ALTER TABLE `department` CHANGE COLUMN `department_name` COMMENT 'Source: department_name | Physical type: STRING';",
+                "description": "Add comment to department.department_name",
+                "source_table": "department",
+                "statement_type": "COMMENT"
+            },
+            {
+                "statement": "ALTER TABLE `employee` CHANGE COLUMN `email` COMMENT 'Source: email | Physical type: STRING';",
+                "description": "Add comment to employee.email",
+                "source_table": "employee",
+                "statement_type": "COMMENT"
+            },
+            {
+                "statement": "ALTER TABLE `employee` CHANGE COLUMN `first_name` COMMENT 'Source: first_name | Physical type: STRING';",
+                "description": "Add comment to employee.first_name",
+                "source_table": "employee",
+                "statement_type": "COMMENT"
+            },
+            {
+                "statement": "ALTER TABLE `employee` CHANGE COLUMN `hire_date` COMMENT 'Source: hire_date | Physical type: STRING';",
+                "description": "Add comment to employee.hire_date",
+                "source_table": "employee",
+                "statement_type": "COMMENT"
+            },
+            {
+                "statement": "ALTER TABLE `employee` CHANGE COLUMN `last_name` COMMENT 'Source: last_name | Physical type: STRING';",
+                "description": "Add comment to employee.last_name",
+                "source_table": "employee",
+                "statement_type": "COMMENT"
+            },
+            {
+                "statement": "ALTER TABLE `employee` CHANGE COLUMN `salary` COMMENT 'Source: salary | Physical type: DECIMAL';",
+                "description": "Add comment to employee.salary",
+                "source_table": "employee",
+                "statement_type": "COMMENT"
+            },
+            {
+                "statement": "ALTER TABLE `inventory` CHANGE COLUMN `quantity` COMMENT 'Source: quantity | Physical type: INTEGER';",
+                "description": "Add comment to inventory.quantity",
+                "source_table": "inventory",
+                "statement_type": "COMMENT"
+            },
+            {
+                "statement": "ALTER TABLE `inventory` CHANGE COLUMN `reorder_level` COMMENT 'Source: reorder_level | Physical type: STRING';",
+                "description": "Add comment to inventory.reorder_level",
+                "source_table": "inventory",
+                "statement_type": "COMMENT"
+            },
+            {
+                "statement": "ALTER TABLE `inventory` CHANGE COLUMN `sku` COMMENT 'Source: sku | Physical type: STRING';",
+                "description": "Add comment to inventory.sku",
+                "source_table": "inventory",
+                "statement_type": "COMMENT"
+            },
+            {
+                "statement": "ALTER TABLE `inventory` CHANGE COLUMN `warehouse_name` COMMENT 'Source: warehouse_name | Physical type: STRING';",
+                "description": "Add comment to inventory.warehouse_name",
+                "source_table": "inventory",
+                "statement_type": "COMMENT"
+            },
+            {
+                "statement": "ALTER TABLE `order` CHANGE COLUMN `order_date` COMMENT 'Source: order_date | Physical type: STRING';",
+                "description": "Add comment to order.order_date",
+                "source_table": "order",
+                "statement_type": "COMMENT"
+            },
+            {
+                "statement": "ALTER TABLE `order` CHANGE COLUMN `order_id` COMMENT 'Source: order_id | Physical type: STRING';",
+                "description": "Add comment to order.order_id",
+                "source_table": "order",
+                "statement_type": "COMMENT"
+            },
+            {
+                "statement": "ALTER TABLE `order` CHANGE COLUMN `order_status` COMMENT 'Source: order_status | Physical type: STRING';",
+                "description": "Add comment to order.order_status",
+                "source_table": "order",
+                "statement_type": "COMMENT"
+            },
+            {
+                "statement": "ALTER TABLE `order_line` CHANGE COLUMN `line_number` COMMENT 'Source: line_number | Physical type: STRING';",
+                "description": "Add comment to order_line.line_number",
+                "source_table": "order_line",
+                "statement_type": "COMMENT"
+            },
+            {
+                "statement": "ALTER TABLE `order_line` CHANGE COLUMN `order_id` COMMENT 'Source: order_id | Physical type: STRING';",
+                "description": "Add comment to order_line.order_id",
+                "source_table": "order_line",
+                "statement_type": "COMMENT"
+            },
+            {
+                "statement": "ALTER TABLE `order_line` CHANGE COLUMN `quantity` COMMENT 'Source: quantity | Physical type: INTEGER';",
+                "description": "Add comment to order_line.quantity",
+                "source_table": "order_line",
+                "statement_type": "COMMENT"
+            },
+            {
+                "statement": "ALTER TABLE `order_line` CHANGE COLUMN `unit_price` COMMENT 'Source: unit_price | Physical type: STRING';",
+                "description": "Add comment to order_line.unit_price",
+                "source_table": "order_line",
+                "statement_type": "COMMENT"
+            },
+            {
+                "statement": "ALTER TABLE `payment` CHANGE COLUMN `amount` COMMENT 'Source: amount | Physical type: DECIMAL';",
+                "description": "Add comment to payment.amount",
+                "source_table": "payment",
+                "statement_type": "COMMENT"
+            },
+            {
+                "statement": "ALTER TABLE `payment` CHANGE COLUMN `payment_date` COMMENT 'Source: payment_date | Physical type: STRING';",
+                "description": "Add comment to payment.payment_date",
+                "source_table": "payment",
+                "statement_type": "COMMENT"
+            },
+            {
+                "statement": "ALTER TABLE `payment` CHANGE COLUMN `payment_id` COMMENT 'Source: payment_id | Physical type: STRING';",
+                "description": "Add comment to payment.payment_id",
+                "source_table": "payment",
+                "statement_type": "COMMENT"
+            },
+            {
+                "statement": "ALTER TABLE `payment` CHANGE COLUMN `payment_method` COMMENT 'Source: payment_method | Physical type: STRING';",
+                "description": "Add comment to payment.payment_method",
+                "source_table": "payment",
+                "statement_type": "COMMENT"
+            },
+            {
+                "statement": "ALTER TABLE `product` CHANGE COLUMN `product_name` COMMENT 'Source: product_name | Physical type: STRING';",
+                "description": "Add comment to product.product_name",
+                "source_table": "product",
+                "statement_type": "COMMENT"
+            },
+            {
+                "statement": "ALTER TABLE `product` CHANGE COLUMN `sku` COMMENT 'Source: sku | Physical type: STRING';",
+                "description": "Add comment to product.sku",
+                "source_table": "product",
+                "statement_type": "COMMENT"
+            },
+            {
+                "statement": "ALTER TABLE `product` CHANGE COLUMN `status` COMMENT 'Source: status | Physical type: STRING';",
+                "description": "Add comment to product.status",
+                "source_table": "product",
+                "statement_type": "COMMENT"
+            },
+            {
+                "statement": "ALTER TABLE `product` CHANGE COLUMN `unit_price` COMMENT 'Source: unit_price | Physical type: STRING';",
+                "description": "Add comment to product.unit_price",
+                "source_table": "product",
+                "statement_type": "COMMENT"
+            },
+            {
+                "statement": "ALTER TABLE `promotion` CHANGE COLUMN `discount_percent` COMMENT 'Source: discount_percent | Physical type: STRING';",
+                "description": "Add comment to promotion.discount_percent",
+                "source_table": "promotion",
+                "statement_type": "COMMENT"
+            },
+            {
+                "statement": "ALTER TABLE `promotion` CHANGE COLUMN `promotion_name` COMMENT 'Source: promotion_name | Physical type: STRING';",
+                "description": "Add comment to promotion.promotion_name",
+                "source_table": "promotion",
+                "statement_type": "COMMENT"
+            },
+            {
+                "statement": "ALTER TABLE `return` CHANGE COLUMN `return_id` COMMENT 'Source: return_id | Physical type: STRING';",
+                "description": "Add comment to return.return_id",
+                "source_table": "return",
+                "statement_type": "COMMENT"
+            },
+            {
+                "statement": "ALTER TABLE `return` CHANGE COLUMN `return_reason` COMMENT 'Source: return_reason | Physical type: STRING';",
+                "description": "Add comment to return.return_reason",
+                "source_table": "return",
+                "statement_type": "COMMENT"
+            },
+            {
+                "statement": "ALTER TABLE `shipment` CHANGE COLUMN `shipped_date` COMMENT 'Source: shipped_date | Physical type: STRING';",
+                "description": "Add comment to shipment.shipped_date",
+                "source_table": "shipment",
+                "statement_type": "COMMENT"
+            },
+            {
+                "statement": "ALTER TABLE `shipment` CHANGE COLUMN `tracking_number` COMMENT 'Source: tracking_number | Physical type: STRING';",
+                "description": "Add comment to shipment.tracking_number",
+                "source_table": "shipment",
+                "statement_type": "COMMENT"
+            },
+            {
+                "statement": "ALTER TABLE `state` CHANGE COLUMN `country_code` COMMENT 'Source: country_code | Physical type: STRING';",
+                "description": "Add comment to state.country_code",
+                "source_table": "state",
+                "statement_type": "COMMENT"
+            },
+            {
+                "statement": "ALTER TABLE `state` CHANGE COLUMN `state_name` COMMENT 'Source: state_name | Physical type: STRING';",
+                "description": "Add comment to state.state_name",
+                "source_table": "state",
+                "statement_type": "COMMENT"
+            },
+            {
+                "statement": "ALTER TABLE `supplier` CHANGE COLUMN `contact_name` COMMENT 'Source: contact_name | Physical type: STRING';",
+                "description": "Add comment to supplier.contact_name",
+                "source_table": "supplier",
+                "statement_type": "COMMENT"
+            },
+            {
+                "statement": "ALTER TABLE `supplier` CHANGE COLUMN `email` COMMENT 'Source: email | Physical type: STRING';",
+                "description": "Add comment to supplier.email",
+                "source_table": "supplier",
+                "statement_type": "COMMENT"
+            },
+            {
+                "statement": "ALTER TABLE `supplier` CHANGE COLUMN `phone` COMMENT 'Source: phone | Physical type: STRING';",
+                "description": "Add comment to supplier.phone",
+                "source_table": "supplier",
+                "statement_type": "COMMENT"
+            },
+            {
+                "statement": "ALTER TABLE `supplier` CHANGE COLUMN `supplier_name` COMMENT 'Source: supplier_name | Physical type: STRING';",
+                "description": "Add comment to supplier.supplier_name",
+                "source_table": "supplier",
+                "statement_type": "COMMENT"
+            },
+            {
+                "statement": "ALTER TABLE `warehouse` CHANGE COLUMN `city_name` COMMENT 'Source: city_name | Physical type: STRING';",
+                "description": "Add comment to warehouse.city_name",
+                "source_table": "warehouse",
+                "statement_type": "COMMENT"
+            },
+            {
+                "statement": "ALTER TABLE `warehouse` CHANGE COLUMN `warehouse_name` COMMENT 'Source: warehouse_name | Physical type: STRING';",
+                "description": "Add comment to warehouse.warehouse_name",
+                "source_table": "warehouse",
+                "statement_type": "COMMENT"
+            }
+        ],
+        "partition_clustering_statements": []
+    },
+    "generated_from": "physical_model.json",
+    "generated_by": "DatabricksDDLGenerator"
+}

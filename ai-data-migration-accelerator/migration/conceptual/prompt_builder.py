@@ -67,6 +67,15 @@ CONCEPTUAL_MODEL_PROMPT = PromptTemplate(
         "A table called 'cust_mstr' is a Customer.",
         "Group entities into business domains. A domain is a subject area a team "
         "could own, such as Sales, Fulfilment or Human Resources.",
+        "The context includes a 'relationships' section with declared database foreign keys. "
+        "Each of these MUST have a corresponding entry in the source entity's 'relationships' array. "
+        "For each declared relationship, create a relationship entry with the target entity name, "
+        "the business verb phrase (e.g. 'places', 'is assigned to'), the cardinality from the constraint, "
+        "and whether it is optional.",
+        "Every entity's 'source_tables' MUST list the exact qualified schema.table name(s) it was "
+        "derived from, taken verbatim from the context's 'tables' section. Never leave source_tables "
+        "empty for an entity derived from a table - it is how the declared foreign keys above get "
+        "matched back to the entities you name here.",
         "Describe each relationship with a verb phrase that reads as a sentence: "
         "'a Customer places Orders', 'an Employee reports to a Manager'.",
         "A pure link table is usually not a business entity - it expresses a "
@@ -83,6 +92,16 @@ CONCEPTUAL_MODEL_PROMPT = PromptTemplate(
         "treat it as a hypothesis and note it in assumptions if you rely on it.",
         "If part of the schema was omitted from the context, say so in assumptions "
         "rather than inferring what it might have contained.",
+        "First decide the full set of entities and their exact names, then write "
+        "domains[].entities and relationships[].related_entity using those same "
+        "strings, character for character. Never place a name in a domain or a "
+        "relationship that is not also the name of an entity you defined - if a "
+        "concept needs its own domain membership or relationship, it needs an "
+        "entity in the entities list first.",
+        "Entity names MUST be unique. Do not repeat the same entity name twice in "
+        "the entities[] array, even with different descriptions or source tables. "
+        "If you initially list an entity twice, consolidate it into a single entry "
+        "with all its source_tables, relationships, and attributes combined.",
     ],
     exclusions=[
         "No SQL, DDL, data types, lengths, indexes, or constraint syntax.",
@@ -116,9 +135,11 @@ CONCEPTUAL_MODEL_PROMPT = PromptTemplate(
         '  "assumptions": [string],\n'
         '  "recommendations": [string]\n'
         "}\n\n"
-        "Every name in domains[].entities must match an entity name exactly. Every "
-        "relationships[].related_entity must match an entity name exactly. "
-        "source_tables must use the qualified schema.table names from the context."
+        "Referential rule: domains[].entities and relationships[].related_entity "
+        "may only contain values that appear as an entities[].name somewhere in "
+        "this same response - no other value is valid there, regardless of how "
+        "natural it reads. source_tables must use the qualified schema.table "
+        "names from the context."
     ),
 )
 
@@ -160,6 +181,25 @@ class PromptBuilder:
             "Here is the structural analysis of the database.\n\n"
             f"{ContextBuilder.to_prompt_json(context)}\n\n"
             "Produce the conceptual data model as JSON."
+        )
+
+    def build_correction_prompt_for_duplicates(
+        self, original_response: str, duplicate_names: list[str]
+    ) -> str:
+        """Build a correction prompt when the LLM returns duplicate entity names.
+
+        This is a focused retry prompt that asks the model to consolidate
+        duplicates into single entities without re-generating the whole model.
+        Keeps retries cheap and focused."""
+        duplicates_str = ", ".join(f"'{name}'" for name in duplicate_names)
+        return (
+            f"Your previous response defined these entity names more than once: "
+            f"{duplicates_str}.\n\n"
+            f"Entity names MUST be unique. Please return a corrected JSON response "
+            f"where each of these names appears exactly once in the entities[] array. "
+            f"Consolidate any split definitions into a single entity with all "
+            f"source_tables, relationships, and attributes combined.\n\n"
+            f"Return only the corrected JSON object, nothing else."
         )
 
     @staticmethod

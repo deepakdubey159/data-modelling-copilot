@@ -1,0 +1,1667 @@
+{
+    "physical_model": {
+        "database_name": "datamodel",
+        "summary": "7 tables and 54 columns, carrying 19 constraints and 15 recommended indexes. 3 tables are transactional, 1 hold master data and 3 are lookups; 0 are candidates for partitioning. Types, lengths and precision are generic \u2014 no vendor syntax appears until DDL generation.",
+        "naming_convention": {
+            "style": "snake_case",
+            "max_identifier_length": 30,
+            "notes": [
+                "6 foreign key columns were retyped to match the key they reference. A foreign key must be physically comparable to its parent column or the constraint cannot be created."
+            ]
+        },
+        "tables": [
+            {
+                "name": "customer",
+                "logical_entity": "Customer",
+                "subject_area": "Customer Management",
+                "classification": "LOOKUP",
+                "size_category": "SMALL",
+                "growth_rate": "STATIC",
+                "columns": [
+                    {
+                        "name": "customer_code",
+                        "data_type": "STRING",
+                        "length": 20,
+                        "precision": null,
+                        "scale": null,
+                        "nullable": false,
+                        "default_value": null,
+                        "is_primary_key": true,
+                        "is_foreign_key": false,
+                        "is_unique": false,
+                        "ordinal_position": 1,
+                        "source_attribute": "customer_code",
+                        "source_database_type": "character varying",
+                        "source_length": 20,
+                        "source_precision": null,
+                        "source_scale": null,
+                        "source_nullable": false,
+                        "source_default": null
+                    },
+                    {
+                        "name": "first_name",
+                        "data_type": "STRING",
+                        "length": 100,
+                        "precision": null,
+                        "scale": null,
+                        "nullable": false,
+                        "default_value": null,
+                        "is_primary_key": false,
+                        "is_foreign_key": false,
+                        "is_unique": false,
+                        "ordinal_position": 2,
+                        "source_attribute": "first_name",
+                        "source_database_type": "character varying",
+                        "source_length": 100,
+                        "source_precision": null,
+                        "source_scale": null,
+                        "source_nullable": false,
+                        "source_default": null
+                    },
+                    {
+                        "name": "last_name",
+                        "data_type": "STRING",
+                        "length": 100,
+                        "precision": null,
+                        "scale": null,
+                        "nullable": true,
+                        "default_value": null,
+                        "is_primary_key": false,
+                        "is_foreign_key": false,
+                        "is_unique": false,
+                        "ordinal_position": 3,
+                        "source_attribute": "last_name",
+                        "source_database_type": "character varying",
+                        "source_length": 100,
+                        "source_precision": null,
+                        "source_scale": null,
+                        "source_nullable": true,
+                        "source_default": null
+                    },
+                    {
+                        "name": "email",
+                        "data_type": "STRING",
+                        "length": 255,
+                        "precision": null,
+                        "scale": null,
+                        "nullable": true,
+                        "default_value": null,
+                        "is_primary_key": false,
+                        "is_foreign_key": false,
+                        "is_unique": true,
+                        "ordinal_position": 4,
+                        "source_attribute": "email",
+                        "source_database_type": "character varying",
+                        "source_length": 255,
+                        "source_precision": null,
+                        "source_scale": null,
+                        "source_nullable": true,
+                        "source_default": null
+                    },
+                    {
+                        "name": "phone_number",
+                        "data_type": "STRING",
+                        "length": 20,
+                        "precision": null,
+                        "scale": null,
+                        "nullable": true,
+                        "default_value": null,
+                        "is_primary_key": false,
+                        "is_foreign_key": false,
+                        "is_unique": true,
+                        "ordinal_position": 5,
+                        "source_attribute": "phone_number",
+                        "source_database_type": "character varying",
+                        "source_length": 20,
+                        "source_precision": null,
+                        "source_scale": null,
+                        "source_nullable": true,
+                        "source_default": null
+                    },
+                    {
+                        "name": "date_of_birth",
+                        "data_type": "DATE",
+                        "length": null,
+                        "precision": null,
+                        "scale": null,
+                        "nullable": true,
+                        "default_value": null,
+                        "is_primary_key": false,
+                        "is_foreign_key": false,
+                        "is_unique": false,
+                        "ordinal_position": 6,
+                        "source_attribute": "date_of_birth",
+                        "source_database_type": "date",
+                        "source_length": null,
+                        "source_precision": null,
+                        "source_scale": null,
+                        "source_nullable": true,
+                        "source_default": null
+                    },
+                    {
+                        "name": "gender",
+                        "data_type": "STRING",
+                        "length": 10,
+                        "precision": null,
+                        "scale": null,
+                        "nullable": true,
+                        "default_value": null,
+                        "is_primary_key": false,
+                        "is_foreign_key": false,
+                        "is_unique": false,
+                        "ordinal_position": 7,
+                        "source_attribute": "gender",
+                        "source_database_type": "character varying",
+                        "source_length": 10,
+                        "source_precision": null,
+                        "source_scale": null,
+                        "source_nullable": true,
+                        "source_default": null
+                    },
+                    {
+                        "name": "city",
+                        "data_type": "STRING",
+                        "length": 100,
+                        "precision": null,
+                        "scale": null,
+                        "nullable": true,
+                        "default_value": null,
+                        "is_primary_key": false,
+                        "is_foreign_key": false,
+                        "is_unique": false,
+                        "ordinal_position": 8,
+                        "source_attribute": "city",
+                        "source_database_type": "character varying",
+                        "source_length": 100,
+                        "source_precision": null,
+                        "source_scale": null,
+                        "source_nullable": true,
+                        "source_default": null
+                    },
+                    {
+                        "name": "state",
+                        "data_type": "STRING",
+                        "length": 100,
+                        "precision": null,
+                        "scale": null,
+                        "nullable": true,
+                        "default_value": null,
+                        "is_primary_key": false,
+                        "is_foreign_key": false,
+                        "is_unique": false,
+                        "ordinal_position": 9,
+                        "source_attribute": "state",
+                        "source_database_type": "character varying",
+                        "source_length": 100,
+                        "source_precision": null,
+                        "source_scale": null,
+                        "source_nullable": true,
+                        "source_default": null
+                    },
+                    {
+                        "name": "country",
+                        "data_type": "STRING",
+                        "length": 100,
+                        "precision": null,
+                        "scale": null,
+                        "nullable": true,
+                        "default_value": null,
+                        "is_primary_key": false,
+                        "is_foreign_key": false,
+                        "is_unique": false,
+                        "ordinal_position": 10,
+                        "source_attribute": "country",
+                        "source_database_type": "character varying",
+                        "source_length": 100,
+                        "source_precision": null,
+                        "source_scale": null,
+                        "source_nullable": true,
+                        "source_default": null
+                    },
+                    {
+                        "name": "postal_code",
+                        "data_type": "STRING",
+                        "length": 20,
+                        "precision": null,
+                        "scale": null,
+                        "nullable": true,
+                        "default_value": null,
+                        "is_primary_key": false,
+                        "is_foreign_key": false,
+                        "is_unique": true,
+                        "ordinal_position": 11,
+                        "source_attribute": "postal_code",
+                        "source_database_type": "character varying",
+                        "source_length": 20,
+                        "source_precision": null,
+                        "source_scale": null,
+                        "source_nullable": true,
+                        "source_default": null
+                    },
+                    {
+                        "name": "customer_status",
+                        "data_type": "STRING",
+                        "length": 20,
+                        "precision": null,
+                        "scale": null,
+                        "nullable": true,
+                        "default_value": null,
+                        "is_primary_key": false,
+                        "is_foreign_key": false,
+                        "is_unique": false,
+                        "ordinal_position": 12,
+                        "source_attribute": "customer_status",
+                        "source_database_type": "character varying",
+                        "source_length": 20,
+                        "source_precision": null,
+                        "source_scale": null,
+                        "source_nullable": true,
+                        "source_default": "'ACTIVE'::character varying"
+                    },
+                    {
+                        "name": "credit_limit",
+                        "data_type": "DECIMAL",
+                        "length": null,
+                        "precision": 12,
+                        "scale": 2,
+                        "nullable": true,
+                        "default_value": null,
+                        "is_primary_key": false,
+                        "is_foreign_key": false,
+                        "is_unique": false,
+                        "ordinal_position": 13,
+                        "source_attribute": "credit_limit",
+                        "source_database_type": "numeric",
+                        "source_length": null,
+                        "source_precision": 12,
+                        "source_scale": 2,
+                        "source_nullable": true,
+                        "source_default": "0"
+                    },
+                    {
+                        "name": "is_active",
+                        "data_type": "BOOLEAN",
+                        "length": null,
+                        "precision": null,
+                        "scale": null,
+                        "nullable": true,
+                        "default_value": null,
+                        "is_primary_key": false,
+                        "is_foreign_key": false,
+                        "is_unique": false,
+                        "ordinal_position": 14,
+                        "source_attribute": "is_active",
+                        "source_database_type": "boolean",
+                        "source_length": null,
+                        "source_precision": null,
+                        "source_scale": null,
+                        "source_nullable": true,
+                        "source_default": "true"
+                    }
+                ],
+                "constraints": [
+                    {
+                        "name": "pk_customer",
+                        "constraint_type": "PRIMARY_KEY",
+                        "table": "customer",
+                        "columns": [
+                            "customer_code"
+                        ],
+                        "referenced_table": null,
+                        "referenced_columns": [],
+                        "expression": null,
+                        "rationale": "Primary key preserved from the logical model."
+                    },
+                    {
+                        "name": "uq_customer_email",
+                        "constraint_type": "UNIQUE",
+                        "table": "customer",
+                        "columns": [
+                            "email"
+                        ],
+                        "referenced_table": null,
+                        "referenced_columns": [],
+                        "expression": null,
+                        "rationale": "Alternate key: identifies a row as reliably as the primary key."
+                    },
+                    {
+                        "name": "uq_customer_phone_number",
+                        "constraint_type": "UNIQUE",
+                        "table": "customer",
+                        "columns": [
+                            "phone_number"
+                        ],
+                        "referenced_table": null,
+                        "referenced_columns": [],
+                        "expression": null,
+                        "rationale": "Alternate key: identifies a row as reliably as the primary key."
+                    },
+                    {
+                        "name": "uq_customer_postal_code",
+                        "constraint_type": "UNIQUE",
+                        "table": "customer",
+                        "columns": [
+                            "postal_code"
+                        ],
+                        "referenced_table": null,
+                        "referenced_columns": [],
+                        "expression": null,
+                        "rationale": "Alternate key: identifies a row as reliably as the primary key."
+                    }
+                ],
+                "indexes": [
+                    {
+                        "name": "idx_customer_pk",
+                        "table": "customer",
+                        "columns": [
+                            "customer_code"
+                        ],
+                        "is_unique": true,
+                        "purpose": "PRIMARY_KEY",
+                        "rationale": "Enforces and serves lookups on the primary key."
+                    },
+                    {
+                        "name": "idx_customer_email",
+                        "table": "customer",
+                        "columns": [
+                            "email"
+                        ],
+                        "is_unique": true,
+                        "purpose": "UNIQUE_CONSTRAINT",
+                        "rationale": "Enforces the alternate key."
+                    },
+                    {
+                        "name": "idx_customer_phone_number",
+                        "table": "customer",
+                        "columns": [
+                            "phone_number"
+                        ],
+                        "is_unique": true,
+                        "purpose": "UNIQUE_CONSTRAINT",
+                        "rationale": "Enforces the alternate key."
+                    },
+                    {
+                        "name": "idx_customer_postal_code",
+                        "table": "customer",
+                        "columns": [
+                            "postal_code"
+                        ],
+                        "is_unique": true,
+                        "purpose": "UNIQUE_CONSTRAINT",
+                        "rationale": "Enforces the alternate key."
+                    }
+                ],
+                "storage": {
+                    "table": "customer",
+                    "partition_candidates": [],
+                    "clustering_candidates": [],
+                    "rationale": "Lookup data is small enough to be scanned or cached in full; partitioning would add maintenance without reducing work."
+                },
+                "source_tables": [
+                    "bronze.customer"
+                ]
+            },
+            {
+                "name": "order",
+                "logical_entity": "Order",
+                "subject_area": "Order Fulfillment",
+                "classification": "MASTER",
+                "size_category": "MEDIUM",
+                "growth_rate": "LOW",
+                "columns": [
+                    {
+                        "name": "order_number",
+                        "data_type": "STRING",
+                        "length": 30,
+                        "precision": null,
+                        "scale": null,
+                        "nullable": false,
+                        "default_value": null,
+                        "is_primary_key": true,
+                        "is_foreign_key": false,
+                        "is_unique": false,
+                        "ordinal_position": 1,
+                        "source_attribute": "order_number",
+                        "source_database_type": "character varying",
+                        "source_length": 30,
+                        "source_precision": null,
+                        "source_scale": null,
+                        "source_nullable": false,
+                        "source_default": null
+                    },
+                    {
+                        "name": "order_date",
+                        "data_type": "TIMESTAMP",
+                        "length": null,
+                        "precision": null,
+                        "scale": null,
+                        "nullable": true,
+                        "default_value": null,
+                        "is_primary_key": false,
+                        "is_foreign_key": false,
+                        "is_unique": false,
+                        "ordinal_position": 2,
+                        "source_attribute": "order_date",
+                        "source_database_type": "timestamp without time zone",
+                        "source_length": null,
+                        "source_precision": null,
+                        "source_scale": null,
+                        "source_nullable": true,
+                        "source_default": "CURRENT_TIMESTAMP"
+                    },
+                    {
+                        "name": "order_status",
+                        "data_type": "STRING",
+                        "length": 20,
+                        "precision": null,
+                        "scale": null,
+                        "nullable": true,
+                        "default_value": null,
+                        "is_primary_key": false,
+                        "is_foreign_key": false,
+                        "is_unique": false,
+                        "ordinal_position": 3,
+                        "source_attribute": "order_status",
+                        "source_database_type": "character varying",
+                        "source_length": 20,
+                        "source_precision": null,
+                        "source_scale": null,
+                        "source_nullable": true,
+                        "source_default": "'NEW'::character varying"
+                    },
+                    {
+                        "name": "payment_method",
+                        "data_type": "STRING",
+                        "length": 30,
+                        "precision": null,
+                        "scale": null,
+                        "nullable": true,
+                        "default_value": null,
+                        "is_primary_key": false,
+                        "is_foreign_key": false,
+                        "is_unique": false,
+                        "ordinal_position": 4,
+                        "source_attribute": "payment_method",
+                        "source_database_type": "character varying",
+                        "source_length": 30,
+                        "source_precision": null,
+                        "source_scale": null,
+                        "source_nullable": true,
+                        "source_default": null
+                    },
+                    {
+                        "name": "total_amount",
+                        "data_type": "DECIMAL",
+                        "length": null,
+                        "precision": 12,
+                        "scale": 2,
+                        "nullable": true,
+                        "default_value": null,
+                        "is_primary_key": false,
+                        "is_foreign_key": false,
+                        "is_unique": false,
+                        "ordinal_position": 5,
+                        "source_attribute": "total_amount",
+                        "source_database_type": "numeric",
+                        "source_length": null,
+                        "source_precision": 12,
+                        "source_scale": 2,
+                        "source_nullable": true,
+                        "source_default": null
+                    },
+                    {
+                        "name": "tax_amount",
+                        "data_type": "DECIMAL",
+                        "length": null,
+                        "precision": 12,
+                        "scale": 2,
+                        "nullable": true,
+                        "default_value": null,
+                        "is_primary_key": false,
+                        "is_foreign_key": false,
+                        "is_unique": false,
+                        "ordinal_position": 6,
+                        "source_attribute": "tax_amount",
+                        "source_database_type": "numeric",
+                        "source_length": null,
+                        "source_precision": 12,
+                        "source_scale": 2,
+                        "source_nullable": true,
+                        "source_default": null
+                    },
+                    {
+                        "name": "discount_amount",
+                        "data_type": "DECIMAL",
+                        "length": null,
+                        "precision": 12,
+                        "scale": 2,
+                        "nullable": true,
+                        "default_value": null,
+                        "is_primary_key": false,
+                        "is_foreign_key": false,
+                        "is_unique": false,
+                        "ordinal_position": 7,
+                        "source_attribute": "discount_amount",
+                        "source_database_type": "numeric",
+                        "source_length": null,
+                        "source_precision": 12,
+                        "source_scale": 2,
+                        "source_nullable": true,
+                        "source_default": null
+                    },
+                    {
+                        "name": "shipping_amount",
+                        "data_type": "DECIMAL",
+                        "length": null,
+                        "precision": 12,
+                        "scale": 2,
+                        "nullable": true,
+                        "default_value": null,
+                        "is_primary_key": false,
+                        "is_foreign_key": false,
+                        "is_unique": false,
+                        "ordinal_position": 8,
+                        "source_attribute": "shipping_amount",
+                        "source_database_type": "numeric",
+                        "source_length": null,
+                        "source_precision": 12,
+                        "source_scale": 2,
+                        "source_nullable": true,
+                        "source_default": null
+                    },
+                    {
+                        "name": "shipped_date",
+                        "data_type": "TIMESTAMP",
+                        "length": null,
+                        "precision": null,
+                        "scale": null,
+                        "nullable": true,
+                        "default_value": null,
+                        "is_primary_key": false,
+                        "is_foreign_key": false,
+                        "is_unique": false,
+                        "ordinal_position": 9,
+                        "source_attribute": "shipped_date",
+                        "source_database_type": "timestamp without time zone",
+                        "source_length": null,
+                        "source_precision": null,
+                        "source_scale": null,
+                        "source_nullable": true,
+                        "source_default": null
+                    },
+                    {
+                        "name": "remarks",
+                        "data_type": "STRING",
+                        "length": null,
+                        "precision": null,
+                        "scale": null,
+                        "nullable": true,
+                        "default_value": null,
+                        "is_primary_key": false,
+                        "is_foreign_key": false,
+                        "is_unique": false,
+                        "ordinal_position": 10,
+                        "source_attribute": "remarks",
+                        "source_database_type": "text",
+                        "source_length": null,
+                        "source_precision": null,
+                        "source_scale": null,
+                        "source_nullable": true,
+                        "source_default": null
+                    },
+                    {
+                        "name": "created_by",
+                        "data_type": "STRING",
+                        "length": 50,
+                        "precision": null,
+                        "scale": null,
+                        "nullable": true,
+                        "default_value": null,
+                        "is_primary_key": false,
+                        "is_foreign_key": false,
+                        "is_unique": false,
+                        "ordinal_position": 11,
+                        "source_attribute": "created_by",
+                        "source_database_type": "character varying",
+                        "source_length": 50,
+                        "source_precision": null,
+                        "source_scale": null,
+                        "source_nullable": true,
+                        "source_default": null
+                    },
+                    {
+                        "name": "created_date",
+                        "data_type": "TIMESTAMP",
+                        "length": null,
+                        "precision": null,
+                        "scale": null,
+                        "nullable": true,
+                        "default_value": null,
+                        "is_primary_key": false,
+                        "is_foreign_key": false,
+                        "is_unique": false,
+                        "ordinal_position": 12,
+                        "source_attribute": "created_date",
+                        "source_database_type": "timestamp without time zone",
+                        "source_length": null,
+                        "source_precision": null,
+                        "source_scale": null,
+                        "source_nullable": true,
+                        "source_default": "CURRENT_TIMESTAMP"
+                    },
+                    {
+                        "name": "customer_code",
+                        "data_type": "STRING",
+                        "length": 20,
+                        "precision": null,
+                        "scale": null,
+                        "nullable": false,
+                        "default_value": null,
+                        "is_primary_key": false,
+                        "is_foreign_key": true,
+                        "is_unique": false,
+                        "ordinal_position": 13,
+                        "source_attribute": "customer_code",
+                        "source_database_type": null,
+                        "source_length": null,
+                        "source_precision": null,
+                        "source_scale": null,
+                        "source_nullable": null,
+                        "source_default": null
+                    }
+                ],
+                "constraints": [
+                    {
+                        "name": "pk_order",
+                        "constraint_type": "PRIMARY_KEY",
+                        "table": "order",
+                        "columns": [
+                            "order_number"
+                        ],
+                        "referenced_table": null,
+                        "referenced_columns": [],
+                        "expression": null,
+                        "rationale": "Primary key preserved from the logical model."
+                    },
+                    {
+                        "name": "fk_order_customer_code",
+                        "constraint_type": "FOREIGN_KEY",
+                        "table": "order",
+                        "columns": [
+                            "customer_code"
+                        ],
+                        "referenced_table": "customer",
+                        "referenced_columns": [
+                            "customer_code"
+                        ],
+                        "expression": null,
+                        "rationale": "Preserves the relationship to Customer."
+                    }
+                ],
+                "indexes": [
+                    {
+                        "name": "idx_order_pk",
+                        "table": "order",
+                        "columns": [
+                            "order_number"
+                        ],
+                        "is_unique": true,
+                        "purpose": "PRIMARY_KEY",
+                        "rationale": "Enforces and serves lookups on the primary key."
+                    },
+                    {
+                        "name": "idx_order_customer_code",
+                        "table": "order",
+                        "columns": [
+                            "customer_code"
+                        ],
+                        "is_unique": false,
+                        "purpose": "FOREIGN_KEY",
+                        "rationale": "Foreign keys are joined on constantly and are scanned when the parent is deleted; an unindexed foreign key is a common cause of slow joins and lock escalation."
+                    }
+                ],
+                "storage": {
+                    "table": "order",
+                    "partition_candidates": [],
+                    "clustering_candidates": [
+                        "order_number"
+                    ],
+                    "rationale": "Master data is looked up by key; clustering on it keeps those reads to a minimum of blocks."
+                },
+                "source_tables": [
+                    "bronze.orders"
+                ]
+            },
+            {
+                "name": "order_item",
+                "logical_entity": "Order Item",
+                "subject_area": "",
+                "classification": "TRANSACTION",
+                "size_category": "LARGE",
+                "growth_rate": "MODERATE",
+                "columns": [
+                    {
+                        "name": "order_item_id",
+                        "data_type": "INTEGER",
+                        "length": null,
+                        "precision": null,
+                        "scale": null,
+                        "nullable": false,
+                        "default_value": null,
+                        "is_primary_key": true,
+                        "is_foreign_key": false,
+                        "is_unique": false,
+                        "ordinal_position": 1,
+                        "source_attribute": "order_item_id",
+                        "source_database_type": "bigint",
+                        "source_length": null,
+                        "source_precision": 64,
+                        "source_scale": 0,
+                        "source_nullable": false,
+                        "source_default": "nextval('bronze.order_item_order_item_id_seq'::regclass)"
+                    },
+                    {
+                        "name": "product_name",
+                        "data_type": "STRING",
+                        "length": 200,
+                        "precision": null,
+                        "scale": null,
+                        "nullable": true,
+                        "default_value": null,
+                        "is_primary_key": false,
+                        "is_foreign_key": false,
+                        "is_unique": false,
+                        "ordinal_position": 2,
+                        "source_attribute": "product_name",
+                        "source_database_type": "character varying",
+                        "source_length": 200,
+                        "source_precision": null,
+                        "source_scale": null,
+                        "source_nullable": true,
+                        "source_default": null
+                    },
+                    {
+                        "name": "quantity",
+                        "data_type": "INTEGER",
+                        "length": null,
+                        "precision": null,
+                        "scale": null,
+                        "nullable": false,
+                        "default_value": null,
+                        "is_primary_key": false,
+                        "is_foreign_key": false,
+                        "is_unique": false,
+                        "ordinal_position": 3,
+                        "source_attribute": "quantity",
+                        "source_database_type": "integer",
+                        "source_length": null,
+                        "source_precision": 32,
+                        "source_scale": 0,
+                        "source_nullable": false,
+                        "source_default": null
+                    },
+                    {
+                        "name": "unit_price",
+                        "data_type": "DECIMAL",
+                        "length": null,
+                        "precision": 10,
+                        "scale": 2,
+                        "nullable": true,
+                        "default_value": null,
+                        "is_primary_key": false,
+                        "is_foreign_key": false,
+                        "is_unique": false,
+                        "ordinal_position": 4,
+                        "source_attribute": "unit_price",
+                        "source_database_type": "numeric",
+                        "source_length": null,
+                        "source_precision": 10,
+                        "source_scale": 2,
+                        "source_nullable": true,
+                        "source_default": null
+                    },
+                    {
+                        "name": "total_price",
+                        "data_type": "DECIMAL",
+                        "length": null,
+                        "precision": 12,
+                        "scale": 2,
+                        "nullable": true,
+                        "default_value": null,
+                        "is_primary_key": false,
+                        "is_foreign_key": false,
+                        "is_unique": false,
+                        "ordinal_position": 5,
+                        "source_attribute": "total_price",
+                        "source_database_type": "numeric",
+                        "source_length": null,
+                        "source_precision": 12,
+                        "source_scale": 2,
+                        "source_nullable": true,
+                        "source_default": null
+                    },
+                    {
+                        "name": "order_number",
+                        "data_type": "STRING",
+                        "length": 30,
+                        "precision": null,
+                        "scale": null,
+                        "nullable": false,
+                        "default_value": null,
+                        "is_primary_key": false,
+                        "is_foreign_key": true,
+                        "is_unique": false,
+                        "ordinal_position": 6,
+                        "source_attribute": "order_number",
+                        "source_database_type": null,
+                        "source_length": null,
+                        "source_precision": null,
+                        "source_scale": null,
+                        "source_nullable": null,
+                        "source_default": null
+                    }
+                ],
+                "constraints": [
+                    {
+                        "name": "pk_order_item",
+                        "constraint_type": "PRIMARY_KEY",
+                        "table": "order_item",
+                        "columns": [
+                            "order_item_id"
+                        ],
+                        "referenced_table": null,
+                        "referenced_columns": [],
+                        "expression": null,
+                        "rationale": "Primary key preserved from the logical model."
+                    },
+                    {
+                        "name": "fk_order_item_order_number",
+                        "constraint_type": "FOREIGN_KEY",
+                        "table": "order_item",
+                        "columns": [
+                            "order_number"
+                        ],
+                        "referenced_table": "order",
+                        "referenced_columns": [
+                            "order_number"
+                        ],
+                        "expression": null,
+                        "rationale": "Preserves the relationship to Order."
+                    },
+                    {
+                        "name": "ck_order_item_quantity",
+                        "constraint_type": "CHECK",
+                        "table": "order_item",
+                        "columns": [
+                            "quantity"
+                        ],
+                        "referenced_table": null,
+                        "referenced_columns": [],
+                        "expression": "quantity >= 0",
+                        "rationale": "A counted quantity cannot be negative."
+                    }
+                ],
+                "indexes": [
+                    {
+                        "name": "idx_order_item_pk",
+                        "table": "order_item",
+                        "columns": [
+                            "order_item_id"
+                        ],
+                        "is_unique": true,
+                        "purpose": "PRIMARY_KEY",
+                        "rationale": "Enforces and serves lookups on the primary key."
+                    },
+                    {
+                        "name": "idx_order_item_order_number",
+                        "table": "order_item",
+                        "columns": [
+                            "order_number"
+                        ],
+                        "is_unique": false,
+                        "purpose": "FOREIGN_KEY",
+                        "rationale": "Foreign keys are joined on constantly and are scanned when the parent is deleted; an unindexed foreign key is a common cause of slow joins and lock escalation."
+                    }
+                ],
+                "storage": {
+                    "table": "order_item",
+                    "partition_candidates": [],
+                    "clustering_candidates": [
+                        "order_number"
+                    ],
+                    "rationale": "Clustering on order_number co-locates rows that are joined and filtered together."
+                },
+                "source_tables": [
+                    "bronze.order_item"
+                ]
+            },
+            {
+                "name": "order_line_item",
+                "logical_entity": "Order Line Item",
+                "subject_area": "Order Fulfillment",
+                "classification": "LOOKUP",
+                "size_category": "SMALL",
+                "growth_rate": "STATIC",
+                "columns": [
+                    {
+                        "name": "order_id",
+                        "data_type": "INTEGER",
+                        "length": null,
+                        "precision": null,
+                        "scale": null,
+                        "nullable": false,
+                        "default_value": null,
+                        "is_primary_key": true,
+                        "is_foreign_key": false,
+                        "is_unique": false,
+                        "ordinal_position": 1,
+                        "source_attribute": "order_id",
+                        "source_database_type": "bigint",
+                        "source_length": null,
+                        "source_precision": 64,
+                        "source_scale": 0,
+                        "source_nullable": false,
+                        "source_default": null
+                    },
+                    {
+                        "name": "product_name",
+                        "data_type": "STRING",
+                        "length": 200,
+                        "precision": null,
+                        "scale": null,
+                        "nullable": false,
+                        "default_value": null,
+                        "is_primary_key": true,
+                        "is_foreign_key": false,
+                        "is_unique": false,
+                        "ordinal_position": 2,
+                        "source_attribute": "product_name",
+                        "source_database_type": "character varying",
+                        "source_length": 200,
+                        "source_precision": null,
+                        "source_scale": null,
+                        "source_nullable": true,
+                        "source_default": null
+                    },
+                    {
+                        "name": "quantity",
+                        "data_type": "INTEGER",
+                        "length": null,
+                        "precision": null,
+                        "scale": null,
+                        "nullable": false,
+                        "default_value": null,
+                        "is_primary_key": false,
+                        "is_foreign_key": false,
+                        "is_unique": false,
+                        "ordinal_position": 3,
+                        "source_attribute": "quantity",
+                        "source_database_type": "integer",
+                        "source_length": null,
+                        "source_precision": 32,
+                        "source_scale": 0,
+                        "source_nullable": false,
+                        "source_default": null
+                    },
+                    {
+                        "name": "unit_price",
+                        "data_type": "DECIMAL",
+                        "length": null,
+                        "precision": 10,
+                        "scale": 2,
+                        "nullable": true,
+                        "default_value": null,
+                        "is_primary_key": false,
+                        "is_foreign_key": false,
+                        "is_unique": false,
+                        "ordinal_position": 4,
+                        "source_attribute": "unit_price",
+                        "source_database_type": "numeric",
+                        "source_length": null,
+                        "source_precision": 10,
+                        "source_scale": 2,
+                        "source_nullable": true,
+                        "source_default": null
+                    },
+                    {
+                        "name": "total_price",
+                        "data_type": "DECIMAL",
+                        "length": null,
+                        "precision": 12,
+                        "scale": 2,
+                        "nullable": true,
+                        "default_value": null,
+                        "is_primary_key": false,
+                        "is_foreign_key": false,
+                        "is_unique": false,
+                        "ordinal_position": 5,
+                        "source_attribute": "total_price",
+                        "source_database_type": "numeric",
+                        "source_length": null,
+                        "source_precision": 12,
+                        "source_scale": 2,
+                        "source_nullable": true,
+                        "source_default": null
+                    }
+                ],
+                "constraints": [
+                    {
+                        "name": "pk_order_line_item",
+                        "constraint_type": "PRIMARY_KEY",
+                        "table": "order_line_item",
+                        "columns": [
+                            "order_id",
+                            "product_name"
+                        ],
+                        "referenced_table": null,
+                        "referenced_columns": [],
+                        "expression": null,
+                        "rationale": "Composite key preserved from the logical model."
+                    },
+                    {
+                        "name": "ck_order_line_item_quantity",
+                        "constraint_type": "CHECK",
+                        "table": "order_line_item",
+                        "columns": [
+                            "quantity"
+                        ],
+                        "referenced_table": null,
+                        "referenced_columns": [],
+                        "expression": "quantity >= 0",
+                        "rationale": "A counted quantity cannot be negative."
+                    }
+                ],
+                "indexes": [
+                    {
+                        "name": "idx_order_line_item_pk",
+                        "table": "order_line_item",
+                        "columns": [
+                            "order_id",
+                            "product_name"
+                        ],
+                        "is_unique": true,
+                        "purpose": "PRIMARY_KEY",
+                        "rationale": "Enforces and serves lookups on the primary key."
+                    }
+                ],
+                "storage": {
+                    "table": "order_line_item",
+                    "partition_candidates": [],
+                    "clustering_candidates": [],
+                    "rationale": "Lookup data is small enough to be scanned or cached in full; partitioning would add maintenance without reducing work."
+                },
+                "source_tables": [
+                    "bronze.order_item"
+                ]
+            },
+            {
+                "name": "order_product",
+                "logical_entity": "Order Product",
+                "subject_area": "Order Fulfillment",
+                "classification": "TRANSACTION",
+                "size_category": "LARGE",
+                "growth_rate": "MODERATE",
+                "columns": [
+                    {
+                        "name": "order_id",
+                        "data_type": "INTEGER",
+                        "length": null,
+                        "precision": null,
+                        "scale": null,
+                        "nullable": false,
+                        "default_value": null,
+                        "is_primary_key": true,
+                        "is_foreign_key": false,
+                        "is_unique": false,
+                        "ordinal_position": 1,
+                        "source_attribute": "order_id",
+                        "source_database_type": "bigint",
+                        "source_length": null,
+                        "source_precision": 64,
+                        "source_scale": 0,
+                        "source_nullable": false,
+                        "source_default": null
+                    },
+                    {
+                        "name": "product_id",
+                        "data_type": "INTEGER",
+                        "length": null,
+                        "precision": null,
+                        "scale": null,
+                        "nullable": false,
+                        "default_value": null,
+                        "is_primary_key": true,
+                        "is_foreign_key": false,
+                        "is_unique": false,
+                        "ordinal_position": 2,
+                        "source_attribute": "product_id",
+                        "source_database_type": "bigint",
+                        "source_length": null,
+                        "source_precision": 64,
+                        "source_scale": 0,
+                        "source_nullable": false,
+                        "source_default": null
+                    },
+                    {
+                        "name": "quantity",
+                        "data_type": "INTEGER",
+                        "length": null,
+                        "precision": null,
+                        "scale": null,
+                        "nullable": true,
+                        "default_value": null,
+                        "is_primary_key": false,
+                        "is_foreign_key": false,
+                        "is_unique": false,
+                        "ordinal_position": 3,
+                        "source_attribute": "quantity",
+                        "source_database_type": "integer",
+                        "source_length": null,
+                        "source_precision": 32,
+                        "source_scale": 0,
+                        "source_nullable": true,
+                        "source_default": null
+                    },
+                    {
+                        "name": "selling_price",
+                        "data_type": "DECIMAL",
+                        "length": null,
+                        "precision": 10,
+                        "scale": 2,
+                        "nullable": true,
+                        "default_value": null,
+                        "is_primary_key": false,
+                        "is_foreign_key": false,
+                        "is_unique": false,
+                        "ordinal_position": 4,
+                        "source_attribute": "selling_price",
+                        "source_database_type": "numeric",
+                        "source_length": null,
+                        "source_precision": 10,
+                        "source_scale": 2,
+                        "source_nullable": true,
+                        "source_default": null
+                    },
+                    {
+                        "name": "product_code",
+                        "data_type": "STRING",
+                        "length": 20,
+                        "precision": null,
+                        "scale": null,
+                        "nullable": false,
+                        "default_value": null,
+                        "is_primary_key": false,
+                        "is_foreign_key": true,
+                        "is_unique": false,
+                        "ordinal_position": 5,
+                        "source_attribute": "product_code",
+                        "source_database_type": null,
+                        "source_length": null,
+                        "source_precision": null,
+                        "source_scale": null,
+                        "source_nullable": null,
+                        "source_default": null
+                    },
+                    {
+                        "name": "order_number",
+                        "data_type": "STRING",
+                        "length": 30,
+                        "precision": null,
+                        "scale": null,
+                        "nullable": false,
+                        "default_value": null,
+                        "is_primary_key": false,
+                        "is_foreign_key": true,
+                        "is_unique": false,
+                        "ordinal_position": 6,
+                        "source_attribute": "order_number",
+                        "source_database_type": null,
+                        "source_length": null,
+                        "source_precision": null,
+                        "source_scale": null,
+                        "source_nullable": null,
+                        "source_default": null
+                    }
+                ],
+                "constraints": [
+                    {
+                        "name": "pk_order_product",
+                        "constraint_type": "PRIMARY_KEY",
+                        "table": "order_product",
+                        "columns": [
+                            "order_id",
+                            "product_id"
+                        ],
+                        "referenced_table": null,
+                        "referenced_columns": [],
+                        "expression": null,
+                        "rationale": "Composite key preserved from the logical model."
+                    },
+                    {
+                        "name": "fk_order_product_product_code",
+                        "constraint_type": "FOREIGN_KEY",
+                        "table": "order_product",
+                        "columns": [
+                            "product_code"
+                        ],
+                        "referenced_table": "product",
+                        "referenced_columns": [
+                            "product_code"
+                        ],
+                        "expression": null,
+                        "rationale": "Preserves the relationship to Product."
+                    },
+                    {
+                        "name": "fk_order_product_order_number",
+                        "constraint_type": "FOREIGN_KEY",
+                        "table": "order_product",
+                        "columns": [
+                            "order_number"
+                        ],
+                        "referenced_table": "order",
+                        "referenced_columns": [
+                            "order_number"
+                        ],
+                        "expression": null,
+                        "rationale": "Preserves the relationship to Order."
+                    },
+                    {
+                        "name": "ck_order_product_quantity",
+                        "constraint_type": "CHECK",
+                        "table": "order_product",
+                        "columns": [
+                            "quantity"
+                        ],
+                        "referenced_table": null,
+                        "referenced_columns": [],
+                        "expression": "quantity >= 0",
+                        "rationale": "A counted quantity cannot be negative."
+                    }
+                ],
+                "indexes": [
+                    {
+                        "name": "idx_order_product_pk",
+                        "table": "order_product",
+                        "columns": [
+                            "order_id",
+                            "product_id"
+                        ],
+                        "is_unique": true,
+                        "purpose": "PRIMARY_KEY",
+                        "rationale": "Enforces and serves lookups on the primary key."
+                    },
+                    {
+                        "name": "idx_order_product_product_code",
+                        "table": "order_product",
+                        "columns": [
+                            "product_code"
+                        ],
+                        "is_unique": false,
+                        "purpose": "FOREIGN_KEY",
+                        "rationale": "Foreign keys are joined on constantly and are scanned when the parent is deleted; an unindexed foreign key is a common cause of slow joins and lock escalation."
+                    },
+                    {
+                        "name": "idx_order_product_order_number",
+                        "table": "order_product",
+                        "columns": [
+                            "order_number"
+                        ],
+                        "is_unique": false,
+                        "purpose": "FOREIGN_KEY",
+                        "rationale": "Foreign keys are joined on constantly and are scanned when the parent is deleted; an unindexed foreign key is a common cause of slow joins and lock escalation."
+                    }
+                ],
+                "storage": {
+                    "table": "order_product",
+                    "partition_candidates": [],
+                    "clustering_candidates": [
+                        "product_code",
+                        "order_number"
+                    ],
+                    "rationale": "Clustering on product_code, order_number co-locates rows that are joined and filtered together."
+                },
+                "source_tables": [
+                    "bronze.order_product"
+                ]
+            },
+            {
+                "name": "order_product_association",
+                "logical_entity": "Order Product Association",
+                "subject_area": "Order Fulfillment",
+                "classification": "TRANSACTION",
+                "size_category": "VERY_LARGE",
+                "growth_rate": "HIGH",
+                "columns": [
+                    {
+                        "name": "order_number",
+                        "data_type": "STRING",
+                        "length": 30,
+                        "precision": null,
+                        "scale": null,
+                        "nullable": false,
+                        "default_value": null,
+                        "is_primary_key": true,
+                        "is_foreign_key": true,
+                        "is_unique": false,
+                        "ordinal_position": 1,
+                        "source_attribute": "order_number",
+                        "source_database_type": null,
+                        "source_length": null,
+                        "source_precision": null,
+                        "source_scale": null,
+                        "source_nullable": null,
+                        "source_default": null
+                    },
+                    {
+                        "name": "product_code",
+                        "data_type": "STRING",
+                        "length": 20,
+                        "precision": null,
+                        "scale": null,
+                        "nullable": false,
+                        "default_value": null,
+                        "is_primary_key": true,
+                        "is_foreign_key": true,
+                        "is_unique": false,
+                        "ordinal_position": 2,
+                        "source_attribute": "product_code",
+                        "source_database_type": null,
+                        "source_length": null,
+                        "source_precision": null,
+                        "source_scale": null,
+                        "source_nullable": null,
+                        "source_default": null
+                    }
+                ],
+                "constraints": [
+                    {
+                        "name": "pk_order_product_association",
+                        "constraint_type": "PRIMARY_KEY",
+                        "table": "order_product_association",
+                        "columns": [
+                            "order_number",
+                            "product_code"
+                        ],
+                        "referenced_table": null,
+                        "referenced_columns": [],
+                        "expression": null,
+                        "rationale": "Composite key preserved from the logical model."
+                    },
+                    {
+                        "name": "fk_order_product_association",
+                        "constraint_type": "FOREIGN_KEY",
+                        "table": "order_product_association",
+                        "columns": [
+                            "order_number"
+                        ],
+                        "referenced_table": "order",
+                        "referenced_columns": [
+                            "order_number"
+                        ],
+                        "expression": null,
+                        "rationale": "Preserves the relationship to Order."
+                    },
+                    {
+                        "name": "fk_order_product_association",
+                        "constraint_type": "FOREIGN_KEY",
+                        "table": "order_product_association",
+                        "columns": [
+                            "product_code"
+                        ],
+                        "referenced_table": "product",
+                        "referenced_columns": [
+                            "product_code"
+                        ],
+                        "expression": null,
+                        "rationale": "Preserves the relationship to Product."
+                    }
+                ],
+                "indexes": [
+                    {
+                        "name": "idx_order_product_association",
+                        "table": "order_product_association",
+                        "columns": [
+                            "order_number",
+                            "product_code"
+                        ],
+                        "is_unique": true,
+                        "purpose": "PRIMARY_KEY",
+                        "rationale": "Enforces and serves lookups on the primary key."
+                    },
+                    {
+                        "name": "idx_order_product_association",
+                        "table": "order_product_association",
+                        "columns": [
+                            "product_code"
+                        ],
+                        "is_unique": false,
+                        "purpose": "FOREIGN_KEY",
+                        "rationale": "Foreign keys are joined on constantly and are scanned when the parent is deleted; an unindexed foreign key is a common cause of slow joins and lock escalation."
+                    }
+                ],
+                "storage": {
+                    "table": "order_product_association",
+                    "partition_candidates": [],
+                    "clustering_candidates": [
+                        "order_number",
+                        "product_code"
+                    ],
+                    "rationale": "Clustering on order_number, product_code co-locates rows that are joined and filtered together."
+                },
+                "source_tables": []
+            },
+            {
+                "name": "product",
+                "logical_entity": "Product",
+                "subject_area": "Product Catalog",
+                "classification": "LOOKUP",
+                "size_category": "SMALL",
+                "growth_rate": "STATIC",
+                "columns": [
+                    {
+                        "name": "product_code",
+                        "data_type": "STRING",
+                        "length": 20,
+                        "precision": null,
+                        "scale": null,
+                        "nullable": false,
+                        "default_value": null,
+                        "is_primary_key": true,
+                        "is_foreign_key": false,
+                        "is_unique": false,
+                        "ordinal_position": 1,
+                        "source_attribute": "product_code",
+                        "source_database_type": "character varying",
+                        "source_length": 20,
+                        "source_precision": null,
+                        "source_scale": null,
+                        "source_nullable": true,
+                        "source_default": null
+                    },
+                    {
+                        "name": "product_name",
+                        "data_type": "STRING",
+                        "length": 200,
+                        "precision": null,
+                        "scale": null,
+                        "nullable": true,
+                        "default_value": null,
+                        "is_primary_key": false,
+                        "is_foreign_key": false,
+                        "is_unique": false,
+                        "ordinal_position": 2,
+                        "source_attribute": "product_name",
+                        "source_database_type": "character varying",
+                        "source_length": 200,
+                        "source_precision": null,
+                        "source_scale": null,
+                        "source_nullable": true,
+                        "source_default": null
+                    },
+                    {
+                        "name": "category",
+                        "data_type": "STRING",
+                        "length": 100,
+                        "precision": null,
+                        "scale": null,
+                        "nullable": true,
+                        "default_value": null,
+                        "is_primary_key": false,
+                        "is_foreign_key": false,
+                        "is_unique": false,
+                        "ordinal_position": 3,
+                        "source_attribute": "category",
+                        "source_database_type": "character varying",
+                        "source_length": 100,
+                        "source_precision": null,
+                        "source_scale": null,
+                        "source_nullable": true,
+                        "source_default": null
+                    },
+                    {
+                        "name": "price",
+                        "data_type": "DECIMAL",
+                        "length": null,
+                        "precision": 10,
+                        "scale": 2,
+                        "nullable": true,
+                        "default_value": null,
+                        "is_primary_key": false,
+                        "is_foreign_key": false,
+                        "is_unique": false,
+                        "ordinal_position": 4,
+                        "source_attribute": "price",
+                        "source_database_type": "numeric",
+                        "source_length": null,
+                        "source_precision": 10,
+                        "source_scale": 2,
+                        "source_nullable": true,
+                        "source_default": null
+                    },
+                    {
+                        "name": "stock_quantity",
+                        "data_type": "INTEGER",
+                        "length": null,
+                        "precision": null,
+                        "scale": null,
+                        "nullable": true,
+                        "default_value": null,
+                        "is_primary_key": false,
+                        "is_foreign_key": false,
+                        "is_unique": false,
+                        "ordinal_position": 5,
+                        "source_attribute": "stock_quantity",
+                        "source_database_type": "integer",
+                        "source_length": null,
+                        "source_precision": 32,
+                        "source_scale": 0,
+                        "source_nullable": true,
+                        "source_default": null
+                    },
+                    {
+                        "name": "supplier_name",
+                        "data_type": "STRING",
+                        "length": 100,
+                        "precision": null,
+                        "scale": null,
+                        "nullable": true,
+                        "default_value": null,
+                        "is_primary_key": false,
+                        "is_foreign_key": false,
+                        "is_unique": false,
+                        "ordinal_position": 6,
+                        "source_attribute": "supplier_name",
+                        "source_database_type": "character varying",
+                        "source_length": 100,
+                        "source_precision": null,
+                        "source_scale": null,
+                        "source_nullable": true,
+                        "source_default": null
+                    },
+                    {
+                        "name": "is_active",
+                        "data_type": "BOOLEAN",
+                        "length": null,
+                        "precision": null,
+                        "scale": null,
+                        "nullable": true,
+                        "default_value": null,
+                        "is_primary_key": false,
+                        "is_foreign_key": false,
+                        "is_unique": false,
+                        "ordinal_position": 7,
+                        "source_attribute": "is_active",
+                        "source_database_type": "boolean",
+                        "source_length": null,
+                        "source_precision": null,
+                        "source_scale": null,
+                        "source_nullable": true,
+                        "source_default": "true"
+                    },
+                    {
+                        "name": "created_date",
+                        "data_type": "TIMESTAMP",
+                        "length": null,
+                        "precision": null,
+                        "scale": null,
+                        "nullable": true,
+                        "default_value": null,
+                        "is_primary_key": false,
+                        "is_foreign_key": false,
+                        "is_unique": false,
+                        "ordinal_position": 8,
+                        "source_attribute": "created_date",
+                        "source_database_type": "timestamp without time zone",
+                        "source_length": null,
+                        "source_precision": null,
+                        "source_scale": null,
+                        "source_nullable": true,
+                        "source_default": "CURRENT_TIMESTAMP"
+                    }
+                ],
+                "constraints": [
+                    {
+                        "name": "pk_product",
+                        "constraint_type": "PRIMARY_KEY",
+                        "table": "product",
+                        "columns": [
+                            "product_code"
+                        ],
+                        "referenced_table": null,
+                        "referenced_columns": [],
+                        "expression": null,
+                        "rationale": "Primary key preserved from the logical model."
+                    }
+                ],
+                "indexes": [
+                    {
+                        "name": "idx_product_pk",
+                        "table": "product",
+                        "columns": [
+                            "product_code"
+                        ],
+                        "is_unique": true,
+                        "purpose": "PRIMARY_KEY",
+                        "rationale": "Enforces and serves lookups on the primary key."
+                    }
+                ],
+                "storage": {
+                    "table": "product",
+                    "partition_candidates": [],
+                    "clustering_candidates": [],
+                    "rationale": "Lookup data is small enough to be scanned or cached in full; partitioning would add maintenance without reducing work."
+                },
+                "source_tables": [
+                    "bronze.product"
+                ]
+            }
+        ],
+        "design_notes": [
+            "Data types are generic storage classes. STRING(255) states the shape of the data, not a vendor type; mapping onto VARCHAR2, NVARCHAR or STRING happens during DDL generation.",
+            "Every foreign key carries an index recommendation. Unindexed foreign keys are a routine cause of slow joins and of lock escalation on parent deletes.",
+            "Check constraints are only added where the domain makes the rule certain. Amounts are deliberately left unconstrained because refunds, credits and adjustments are legitimately negative."
+        ]
+    },
+    "generated_from": "logical_model.json",
+    "generated_by": "claude-haiku-4-5-20251001"
+}

@@ -1,0 +1,224 @@
+{
+    "conceptual_model": {
+        "database_name": "datamodel",
+        "summary": "An e-commerce order management system that tracks customers, products, and orders. Customers place orders for products, with order line items and pricing tracked. The system manages inventory, customer credit limits, order status and fulfillment, and payment methods.",
+        "domains": [
+            {
+                "name": "Customer Management",
+                "description": "Core customer identity, contact information, and credit management.",
+                "entities": [
+                    "Customer"
+                ]
+            },
+            {
+                "name": "Product Catalog",
+                "description": "Product definitions, inventory levels, and supplier relationships.",
+                "entities": [
+                    "Product"
+                ]
+            },
+            {
+                "name": "Order Fulfillment",
+                "description": "Order creation, line item tracking, status, and shipping.",
+                "entities": [
+                    "Order",
+                    "Order Line Item",
+                    "Order Product"
+                ]
+            }
+        ],
+        "entities": [
+            {
+                "name": "Customer",
+                "description": "A party who places orders and purchases products. Identified by a unique customer code.",
+                "business_key": [
+                    "customer_code"
+                ],
+                "attributes": [
+                    "first_name",
+                    "last_name",
+                    "email",
+                    "phone_number",
+                    "date_of_birth",
+                    "gender",
+                    "city",
+                    "state",
+                    "country",
+                    "postal_code",
+                    "customer_status",
+                    "credit_limit",
+                    "is_active"
+                ],
+                "relationships": [
+                    {
+                        "related_entity": "Order",
+                        "verb_phrase": "references",
+                        "cardinality": "ONE_TO_MANY",
+                        "is_optional": false,
+                        "description": "Restored from source metadata: Order references Customer."
+                    }
+                ],
+                "source_tables": [
+                    "bronze.customer"
+                ]
+            },
+            {
+                "name": "Product",
+                "description": "An item offered for sale. Tracked by product code, with inventory, pricing, category, and supplier information.",
+                "business_key": [
+                    "product_code"
+                ],
+                "attributes": [
+                    "product_name",
+                    "category",
+                    "price",
+                    "stock_quantity",
+                    "supplier_name",
+                    "is_active",
+                    "created_date"
+                ],
+                "relationships": [
+                    {
+                        "related_entity": "Order Product",
+                        "verb_phrase": "references",
+                        "cardinality": "ONE_TO_MANY",
+                        "is_optional": false,
+                        "description": "Restored from source metadata: Order Product references Product."
+                    },
+                    {
+                        "related_entity": "Order",
+                        "verb_phrase": "references",
+                        "cardinality": "MANY_TO_MANY",
+                        "is_optional": false,
+                        "description": "Restored from source metadata: Order references Product."
+                    }
+                ],
+                "source_tables": [
+                    "bronze.product"
+                ]
+            },
+            {
+                "name": "Order",
+                "description": "A customer purchase transaction containing one or more products, with order status, payment details, and fulfillment tracking.",
+                "business_key": [
+                    "order_number"
+                ],
+                "attributes": [
+                    "order_date",
+                    "order_status",
+                    "payment_method",
+                    "total_amount",
+                    "tax_amount",
+                    "discount_amount",
+                    "shipping_amount",
+                    "shipped_date",
+                    "remarks",
+                    "created_by",
+                    "created_date"
+                ],
+                "relationships": [
+                    {
+                        "related_entity": "Order Item",
+                        "verb_phrase": "references",
+                        "cardinality": "ONE_TO_MANY",
+                        "is_optional": false,
+                        "description": "Restored from source metadata: Order Item references Order."
+                    },
+                    {
+                        "related_entity": "Order Product",
+                        "verb_phrase": "references",
+                        "cardinality": "ONE_TO_MANY",
+                        "is_optional": false,
+                        "description": "Restored from source metadata: Order Product references Order."
+                    }
+                ],
+                "source_tables": [
+                    "bronze.orders"
+                ]
+            },
+            {
+                "name": "Order Line Item",
+                "description": "A line item within an order, capturing the product name, quantity ordered, and pricing at order time. Denormalizes product information at the point of order.",
+                "business_key": [
+                    "order_id",
+                    "product_name"
+                ],
+                "attributes": [
+                    "product_name",
+                    "quantity",
+                    "unit_price",
+                    "total_price"
+                ],
+                "relationships": [],
+                "source_tables": [
+                    "bronze.order_item"
+                ]
+            },
+            {
+                "name": "Order Product",
+                "description": "A line item that links an order to a product with the quantity and selling price at the time of order. Serves as the transaction record for product fulfillment.",
+                "business_key": [
+                    "order_id",
+                    "product_id"
+                ],
+                "attributes": [
+                    "quantity",
+                    "selling_price"
+                ],
+                "relationships": [],
+                "source_tables": [
+                    "bronze.order_product"
+                ]
+            },
+            {
+                "name": "Order Item",
+                "description": "A denormalized order line containing product and pricing details. This entity appears to duplicate Order Product but retains product name as a text field rather than reference.",
+                "business_key": [
+                    "order_item_id"
+                ],
+                "attributes": [
+                    "product_name",
+                    "quantity",
+                    "unit_price",
+                    "total_price"
+                ],
+                "relationships": [],
+                "source_tables": [
+                    "bronze.order_item"
+                ]
+            }
+        ],
+        "business_rules": [
+            "A customer must have a valid credit limit; every order is associated with exactly one customer.",
+            "An order is assigned one or more line items; each line item refers to one or more products ordered.",
+            "The order status is controlled vocabulary: PENDING, SHIPPED, CANCELLED, or DELIVERED based on fulfillment state.",
+            "Payment method is constrained to Credit Card, Debit Card, or UPI.",
+            "An order carries tax, discount, and shipping amounts that contribute to the total amount.",
+            "The shipped_date is optional and only populated when order_status is SHIPPED or later.",
+            "Products are organized by category (Electronics, Accessories) and sourced from named suppliers.",
+            "Product pricing and availability (stock_quantity) are maintained in the Product master; order line items capture the selling price at order time.",
+            "A customer has an account status (ACTIVE or INACTIVE) and credit limit that governs purchasing authority."
+        ],
+        "assumptions": [
+            "The Order Line Item table (bronze.order_item) denormalizes product information at order time (product_name, unit_price, total_price) separately from the Product master. This allows historical pricing to be preserved even if the master product price changes later.",
+            "The Order Product table (bronze.order_product) is the normalized line item table linking orders to products with quantity and selling_price. It appears to be the authoritative transaction record, while Order Line Item may be a denormalized view or shadow table.",
+            "Both Order Line Item and Order Product are treated as separate entities rather than consolidated because they carry different attributes (one captures product_name as text, the other captures product_id as reference) and may serve different purposes (reporting vs. fulfillment).",
+            "The relationship 'bronze.orders.order_id -> bronze.product.product_id [MANY_TO_MANY]' is inferred through the Order Product junction table and does not represent a direct reference but rather the semantic many-to-many association between orders and products.",
+            "Customer status is a controlled vocabulary (sample shows ACTIVE only, but field allows for other statuses like INACTIVE).",
+            "Payment methods are constrained to Credit Card, Debit Card, or UPI based on sample data.",
+            "Order status values include PENDING, SHIPPED, CANCELLED, DELIVERED based on sample range shown (CANCELLED through SHIPPED).",
+            "The 'remarks' field in Order captures order lifecycle notes such as 'Awaiting Shipment' and 'In Transit'.",
+            "Customers, Products, and Orders are marked is_active to support soft-delete patterns; is_active=true for all sample rows indicates the base population is active.",
+            "Two columns were omitted from the Customer table analysis but are present in the source; their business meaning is not inferred."
+        ],
+        "recommendations": [
+            "Clarify the distinction and ownership between Order Line Item and Order Product. If both tables serve the same business purpose, consolidate to a single Order Line entity to reduce redundancy and maintenance cost.",
+            "Add explicit customer segment or tier information to enable targeted order promotions and credit policy differentiation.",
+            "Introduce an Order Status History or Audit trail entity to track state transitions (e.g., from PENDING to SHIPPED to DELIVERED) with timestamps, supporting analytics on fulfillment cycle time.",
+            "Consider a Supplier entity as a distinct master if supplier relationships are core to procurement strategy; currently supplier_name is denormalized in Product.",
+            "Document the business rules governing when shipped_date is populated versus left null, and whether a not-shipped order can have a shipped_date (33% null suggests conditional logic).",
+            "Validate whether the omitted columns from the Customer table carry business significance; if not omitted for privacy, include them in the model documentation."
+        ]
+    },
+    "generated_by": "claude-haiku-4-5-20251001"
+}

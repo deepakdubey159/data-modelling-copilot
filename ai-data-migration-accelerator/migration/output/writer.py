@@ -46,12 +46,25 @@ class OutputWriter:
 
         output/
 
-            20260721_224512/
+            20260721_224512_123456/
+
+        Microsecond precision (rather than the previous second-level
+        `%Y%m%d_%H%M%S`) makes two runs in the same second land in
+        different directories in the overwhelmingly common case. A numeric
+        suffix is appended on top of that for the rare case where the
+        clock's actual resolution is coarser than a microsecond (or two
+        calls land in the same tick) - this guarantees a distinct directory
+        per call rather than silently reusing/overwriting a prior run's
+        output.
         """
 
-        timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+        timestamp = datetime.now().strftime("%Y%m%d_%H%M%S_%f")
 
         run_directory = self.output_directory / timestamp
+        suffix = 1
+        while run_directory.exists():
+            run_directory = self.output_directory / f"{timestamp}_{suffix}"
+            suffix += 1
 
         run_directory.mkdir(parents=True, exist_ok=True)
         print(f"Output directory: {self.output_directory.resolve()}")

@@ -1,0 +1,3061 @@
+{
+    "physical_model": {
+        "database_name": "datamodel",
+        "summary": "20 tables and 75 columns, carrying 48 constraints and 41 recommended indexes. 9 tables are transactional, 6 hold master data and 5 are lookups; 4 are candidates for partitioning. Types, lengths and precision are generic \u2014 no vendor syntax appears until DDL generation.",
+        "naming_convention": {
+            "style": "snake_case",
+            "max_identifier_length": 30,
+            "notes": [
+                "18 foreign key columns were retyped to match the key they reference. A foreign key must be physically comparable to its parent column or the constraint cannot be created."
+            ]
+        },
+        "tables": [
+            {
+                "name": "audit_log",
+                "logical_entity": "Audit Log",
+                "subject_area": "System Administration",
+                "classification": "TRANSACTION",
+                "size_category": "LARGE",
+                "growth_rate": "MODERATE",
+                "columns": [
+                    {
+                        "name": "audit_id",
+                        "data_type": "INTEGER",
+                        "length": null,
+                        "precision": null,
+                        "scale": null,
+                        "nullable": false,
+                        "default_value": null,
+                        "is_primary_key": true,
+                        "is_foreign_key": false,
+                        "is_unique": false,
+                        "ordinal_position": 1,
+                        "source_attribute": "audit_id",
+                        "source_database_type": "integer",
+                        "source_length": null,
+                        "source_precision": 32,
+                        "source_scale": 0,
+                        "source_nullable": false,
+                        "source_default": "nextval('bronze.audit_log_audit_id_seq'::regclass)"
+                    },
+                    {
+                        "name": "table_name",
+                        "data_type": "STRING",
+                        "length": 100,
+                        "precision": null,
+                        "scale": null,
+                        "nullable": true,
+                        "default_value": null,
+                        "is_primary_key": false,
+                        "is_foreign_key": false,
+                        "is_unique": false,
+                        "ordinal_position": 2,
+                        "source_attribute": "table_name",
+                        "source_database_type": "character varying",
+                        "source_length": 100,
+                        "source_precision": null,
+                        "source_scale": null,
+                        "source_nullable": true,
+                        "source_default": null
+                    },
+                    {
+                        "name": "operation",
+                        "data_type": "STRING",
+                        "length": 20,
+                        "precision": null,
+                        "scale": null,
+                        "nullable": true,
+                        "default_value": null,
+                        "is_primary_key": false,
+                        "is_foreign_key": false,
+                        "is_unique": false,
+                        "ordinal_position": 3,
+                        "source_attribute": "operation",
+                        "source_database_type": "character varying",
+                        "source_length": 20,
+                        "source_precision": null,
+                        "source_scale": null,
+                        "source_nullable": true,
+                        "source_default": null
+                    },
+                    {
+                        "name": "user_name",
+                        "data_type": "STRING",
+                        "length": 100,
+                        "precision": null,
+                        "scale": null,
+                        "nullable": true,
+                        "default_value": null,
+                        "is_primary_key": false,
+                        "is_foreign_key": false,
+                        "is_unique": false,
+                        "ordinal_position": 4,
+                        "source_attribute": "user_name",
+                        "source_database_type": "character varying",
+                        "source_length": 100,
+                        "source_precision": null,
+                        "source_scale": null,
+                        "source_nullable": true,
+                        "source_default": null
+                    },
+                    {
+                        "name": "operation_timestamp",
+                        "data_type": "TIMESTAMP",
+                        "length": null,
+                        "precision": null,
+                        "scale": null,
+                        "nullable": true,
+                        "default_value": null,
+                        "is_primary_key": false,
+                        "is_foreign_key": false,
+                        "is_unique": false,
+                        "ordinal_position": 5,
+                        "source_attribute": "operation_timestamp",
+                        "source_database_type": "timestamp without time zone",
+                        "source_length": null,
+                        "source_precision": null,
+                        "source_scale": null,
+                        "source_nullable": true,
+                        "source_default": "CURRENT_TIMESTAMP"
+                    }
+                ],
+                "constraints": [
+                    {
+                        "name": "pk_audit_log",
+                        "constraint_type": "PRIMARY_KEY",
+                        "table": "audit_log",
+                        "columns": [
+                            "audit_id"
+                        ],
+                        "referenced_table": null,
+                        "referenced_columns": [],
+                        "expression": null,
+                        "rationale": "Primary key preserved from the logical model."
+                    }
+                ],
+                "indexes": [
+                    {
+                        "name": "idx_audit_log_pk",
+                        "table": "audit_log",
+                        "columns": [
+                            "audit_id"
+                        ],
+                        "is_unique": true,
+                        "purpose": "PRIMARY_KEY",
+                        "rationale": "Enforces and serves lookups on the primary key."
+                    }
+                ],
+                "storage": {
+                    "table": "audit_log",
+                    "partition_candidates": [
+                        "operation_timestamp"
+                    ],
+                    "clustering_candidates": [],
+                    "rationale": "Transaction volume accumulates over time, so partitioning on operation_timestamp lets queries prune to a date range."
+                },
+                "source_tables": [
+                    "bronze.audit_log"
+                ]
+            },
+            {
+                "name": "category",
+                "logical_entity": "Category",
+                "subject_area": "Master Data",
+                "classification": "LOOKUP",
+                "size_category": "SMALL",
+                "growth_rate": "STATIC",
+                "columns": [
+                    {
+                        "name": "category_name",
+                        "data_type": "STRING",
+                        "length": 100,
+                        "precision": null,
+                        "scale": null,
+                        "nullable": false,
+                        "default_value": null,
+                        "is_primary_key": true,
+                        "is_foreign_key": false,
+                        "is_unique": false,
+                        "ordinal_position": 1,
+                        "source_attribute": "category_name",
+                        "source_database_type": "character varying",
+                        "source_length": 100,
+                        "source_precision": null,
+                        "source_scale": null,
+                        "source_nullable": true,
+                        "source_default": null
+                    }
+                ],
+                "constraints": [
+                    {
+                        "name": "pk_category",
+                        "constraint_type": "PRIMARY_KEY",
+                        "table": "category",
+                        "columns": [
+                            "category_name"
+                        ],
+                        "referenced_table": null,
+                        "referenced_columns": [],
+                        "expression": null,
+                        "rationale": "Primary key preserved from the logical model."
+                    }
+                ],
+                "indexes": [
+                    {
+                        "name": "idx_category_pk",
+                        "table": "category",
+                        "columns": [
+                            "category_name"
+                        ],
+                        "is_unique": true,
+                        "purpose": "PRIMARY_KEY",
+                        "rationale": "Enforces and serves lookups on the primary key."
+                    }
+                ],
+                "storage": {
+                    "table": "category",
+                    "partition_candidates": [],
+                    "clustering_candidates": [],
+                    "rationale": "Lookup data is small enough to be scanned or cached in full; partitioning would add maintenance without reducing work."
+                },
+                "source_tables": [
+                    "bronze.category"
+                ]
+            },
+            {
+                "name": "city",
+                "logical_entity": "City",
+                "subject_area": "Master Data",
+                "classification": "MASTER",
+                "size_category": "MEDIUM",
+                "growth_rate": "LOW",
+                "columns": [
+                    {
+                        "name": "city_name",
+                        "data_type": "STRING",
+                        "length": 100,
+                        "precision": null,
+                        "scale": null,
+                        "nullable": false,
+                        "default_value": null,
+                        "is_primary_key": true,
+                        "is_foreign_key": false,
+                        "is_unique": false,
+                        "ordinal_position": 1,
+                        "source_attribute": "city_name",
+                        "source_database_type": "character varying",
+                        "source_length": 100,
+                        "source_precision": null,
+                        "source_scale": null,
+                        "source_nullable": true,
+                        "source_default": null
+                    },
+                    {
+                        "name": "state_name",
+                        "data_type": "STRING",
+                        "length": 100,
+                        "precision": null,
+                        "scale": null,
+                        "nullable": false,
+                        "default_value": null,
+                        "is_primary_key": false,
+                        "is_foreign_key": true,
+                        "is_unique": false,
+                        "ordinal_position": 2,
+                        "source_attribute": "state_name",
+                        "source_database_type": null,
+                        "source_length": null,
+                        "source_precision": null,
+                        "source_scale": null,
+                        "source_nullable": null,
+                        "source_default": null
+                    }
+                ],
+                "constraints": [
+                    {
+                        "name": "pk_city",
+                        "constraint_type": "PRIMARY_KEY",
+                        "table": "city",
+                        "columns": [
+                            "city_name"
+                        ],
+                        "referenced_table": null,
+                        "referenced_columns": [],
+                        "expression": null,
+                        "rationale": "Primary key preserved from the logical model."
+                    },
+                    {
+                        "name": "fk_city_state_name",
+                        "constraint_type": "FOREIGN_KEY",
+                        "table": "city",
+                        "columns": [
+                            "state_name"
+                        ],
+                        "referenced_table": "state",
+                        "referenced_columns": [
+                            "state_name"
+                        ],
+                        "expression": null,
+                        "rationale": "Preserves the relationship to State."
+                    }
+                ],
+                "indexes": [
+                    {
+                        "name": "idx_city_pk",
+                        "table": "city",
+                        "columns": [
+                            "city_name"
+                        ],
+                        "is_unique": true,
+                        "purpose": "PRIMARY_KEY",
+                        "rationale": "Enforces and serves lookups on the primary key."
+                    },
+                    {
+                        "name": "idx_city_state_name",
+                        "table": "city",
+                        "columns": [
+                            "state_name"
+                        ],
+                        "is_unique": false,
+                        "purpose": "FOREIGN_KEY",
+                        "rationale": "Foreign keys are joined on constantly and are scanned when the parent is deleted; an unindexed foreign key is a common cause of slow joins and lock escalation."
+                    }
+                ],
+                "storage": {
+                    "table": "city",
+                    "partition_candidates": [],
+                    "clustering_candidates": [
+                        "city_name"
+                    ],
+                    "rationale": "Master data is looked up by key; clustering on it keeps those reads to a minimum of blocks."
+                },
+                "source_tables": [
+                    "bronze.city"
+                ]
+            },
+            {
+                "name": "country",
+                "logical_entity": "Country",
+                "subject_area": "Master Data",
+                "classification": "LOOKUP",
+                "size_category": "SMALL",
+                "growth_rate": "STATIC",
+                "columns": [
+                    {
+                        "name": "country_code",
+                        "data_type": "STRING",
+                        "length": 5,
+                        "precision": null,
+                        "scale": null,
+                        "nullable": false,
+                        "default_value": null,
+                        "is_primary_key": true,
+                        "is_foreign_key": false,
+                        "is_unique": false,
+                        "ordinal_position": 1,
+                        "source_attribute": "country_code",
+                        "source_database_type": "character varying",
+                        "source_length": 5,
+                        "source_precision": null,
+                        "source_scale": null,
+                        "source_nullable": false,
+                        "source_default": null
+                    },
+                    {
+                        "name": "country_name",
+                        "data_type": "STRING",
+                        "length": 100,
+                        "precision": null,
+                        "scale": null,
+                        "nullable": false,
+                        "default_value": null,
+                        "is_primary_key": false,
+                        "is_foreign_key": false,
+                        "is_unique": false,
+                        "ordinal_position": 2,
+                        "source_attribute": "country_name",
+                        "source_database_type": "character varying",
+                        "source_length": 100,
+                        "source_precision": null,
+                        "source_scale": null,
+                        "source_nullable": false,
+                        "source_default": null
+                    },
+                    {
+                        "name": "created_at",
+                        "data_type": "TIMESTAMP",
+                        "length": null,
+                        "precision": null,
+                        "scale": null,
+                        "nullable": true,
+                        "default_value": null,
+                        "is_primary_key": false,
+                        "is_foreign_key": false,
+                        "is_unique": false,
+                        "ordinal_position": 3,
+                        "source_attribute": "created_at",
+                        "source_database_type": "timestamp without time zone",
+                        "source_length": null,
+                        "source_precision": null,
+                        "source_scale": null,
+                        "source_nullable": true,
+                        "source_default": "CURRENT_TIMESTAMP"
+                    }
+                ],
+                "constraints": [
+                    {
+                        "name": "pk_country",
+                        "constraint_type": "PRIMARY_KEY",
+                        "table": "country",
+                        "columns": [
+                            "country_code"
+                        ],
+                        "referenced_table": null,
+                        "referenced_columns": [],
+                        "expression": null,
+                        "rationale": "Primary key preserved from the logical model."
+                    }
+                ],
+                "indexes": [
+                    {
+                        "name": "idx_country_pk",
+                        "table": "country",
+                        "columns": [
+                            "country_code"
+                        ],
+                        "is_unique": true,
+                        "purpose": "PRIMARY_KEY",
+                        "rationale": "Enforces and serves lookups on the primary key."
+                    }
+                ],
+                "storage": {
+                    "table": "country",
+                    "partition_candidates": [],
+                    "clustering_candidates": [],
+                    "rationale": "Lookup data is small enough to be scanned or cached in full; partitioning would add maintenance without reducing work."
+                },
+                "source_tables": [
+                    "bronze.country"
+                ]
+            },
+            {
+                "name": "customer",
+                "logical_entity": "Customer",
+                "subject_area": "Master Data",
+                "classification": "MASTER",
+                "size_category": "MEDIUM",
+                "growth_rate": "LOW",
+                "columns": [
+                    {
+                        "name": "customer_number",
+                        "data_type": "STRING",
+                        "length": 20,
+                        "precision": null,
+                        "scale": null,
+                        "nullable": false,
+                        "default_value": null,
+                        "is_primary_key": true,
+                        "is_foreign_key": false,
+                        "is_unique": false,
+                        "ordinal_position": 1,
+                        "source_attribute": "customer_number",
+                        "source_database_type": "character varying",
+                        "source_length": 20,
+                        "source_precision": null,
+                        "source_scale": null,
+                        "source_nullable": true,
+                        "source_default": null
+                    },
+                    {
+                        "name": "first_name",
+                        "data_type": "STRING",
+                        "length": 100,
+                        "precision": null,
+                        "scale": null,
+                        "nullable": true,
+                        "default_value": null,
+                        "is_primary_key": false,
+                        "is_foreign_key": false,
+                        "is_unique": false,
+                        "ordinal_position": 2,
+                        "source_attribute": "first_name",
+                        "source_database_type": "character varying",
+                        "source_length": 100,
+                        "source_precision": null,
+                        "source_scale": null,
+                        "source_nullable": true,
+                        "source_default": null
+                    },
+                    {
+                        "name": "last_name",
+                        "data_type": "STRING",
+                        "length": 100,
+                        "precision": null,
+                        "scale": null,
+                        "nullable": true,
+                        "default_value": null,
+                        "is_primary_key": false,
+                        "is_foreign_key": false,
+                        "is_unique": false,
+                        "ordinal_position": 3,
+                        "source_attribute": "last_name",
+                        "source_database_type": "character varying",
+                        "source_length": 100,
+                        "source_precision": null,
+                        "source_scale": null,
+                        "source_nullable": true,
+                        "source_default": null
+                    },
+                    {
+                        "name": "email",
+                        "data_type": "STRING",
+                        "length": 150,
+                        "precision": null,
+                        "scale": null,
+                        "nullable": true,
+                        "default_value": null,
+                        "is_primary_key": false,
+                        "is_foreign_key": false,
+                        "is_unique": true,
+                        "ordinal_position": 4,
+                        "source_attribute": "email",
+                        "source_database_type": "character varying",
+                        "source_length": 150,
+                        "source_precision": null,
+                        "source_scale": null,
+                        "source_nullable": true,
+                        "source_default": null
+                    },
+                    {
+                        "name": "phone",
+                        "data_type": "STRING",
+                        "length": 20,
+                        "precision": null,
+                        "scale": null,
+                        "nullable": true,
+                        "default_value": null,
+                        "is_primary_key": false,
+                        "is_foreign_key": false,
+                        "is_unique": false,
+                        "ordinal_position": 5,
+                        "source_attribute": "phone",
+                        "source_database_type": "character varying",
+                        "source_length": 20,
+                        "source_precision": null,
+                        "source_scale": null,
+                        "source_nullable": true,
+                        "source_default": null
+                    },
+                    {
+                        "name": "credit_limit",
+                        "data_type": "DECIMAL",
+                        "length": null,
+                        "precision": 12,
+                        "scale": 2,
+                        "nullable": true,
+                        "default_value": null,
+                        "is_primary_key": false,
+                        "is_foreign_key": false,
+                        "is_unique": false,
+                        "ordinal_position": 6,
+                        "source_attribute": "credit_limit",
+                        "source_database_type": "numeric",
+                        "source_length": null,
+                        "source_precision": 12,
+                        "source_scale": 2,
+                        "source_nullable": true,
+                        "source_default": null
+                    },
+                    {
+                        "name": "status",
+                        "data_type": "STRING",
+                        "length": 20,
+                        "precision": null,
+                        "scale": null,
+                        "nullable": true,
+                        "default_value": null,
+                        "is_primary_key": false,
+                        "is_foreign_key": false,
+                        "is_unique": false,
+                        "ordinal_position": 7,
+                        "source_attribute": "status",
+                        "source_database_type": "character varying",
+                        "source_length": 20,
+                        "source_precision": null,
+                        "source_scale": null,
+                        "source_nullable": true,
+                        "source_default": null
+                    },
+                    {
+                        "name": "city_name",
+                        "data_type": "STRING",
+                        "length": 100,
+                        "precision": null,
+                        "scale": null,
+                        "nullable": true,
+                        "default_value": null,
+                        "is_primary_key": false,
+                        "is_foreign_key": true,
+                        "is_unique": false,
+                        "ordinal_position": 8,
+                        "source_attribute": "city_name",
+                        "source_database_type": null,
+                        "source_length": null,
+                        "source_precision": null,
+                        "source_scale": null,
+                        "source_nullable": null,
+                        "source_default": null
+                    }
+                ],
+                "constraints": [
+                    {
+                        "name": "pk_customer",
+                        "constraint_type": "PRIMARY_KEY",
+                        "table": "customer",
+                        "columns": [
+                            "customer_number"
+                        ],
+                        "referenced_table": null,
+                        "referenced_columns": [],
+                        "expression": null,
+                        "rationale": "Primary key preserved from the logical model."
+                    },
+                    {
+                        "name": "uq_customer_email",
+                        "constraint_type": "UNIQUE",
+                        "table": "customer",
+                        "columns": [
+                            "email"
+                        ],
+                        "referenced_table": null,
+                        "referenced_columns": [],
+                        "expression": null,
+                        "rationale": "Alternate key: identifies a row as reliably as the primary key."
+                    },
+                    {
+                        "name": "fk_customer_city_name",
+                        "constraint_type": "FOREIGN_KEY",
+                        "table": "customer",
+                        "columns": [
+                            "city_name"
+                        ],
+                        "referenced_table": "city",
+                        "referenced_columns": [
+                            "city_name"
+                        ],
+                        "expression": null,
+                        "rationale": "Preserves the relationship to City."
+                    }
+                ],
+                "indexes": [
+                    {
+                        "name": "idx_customer_pk",
+                        "table": "customer",
+                        "columns": [
+                            "customer_number"
+                        ],
+                        "is_unique": true,
+                        "purpose": "PRIMARY_KEY",
+                        "rationale": "Enforces and serves lookups on the primary key."
+                    },
+                    {
+                        "name": "idx_customer_email",
+                        "table": "customer",
+                        "columns": [
+                            "email"
+                        ],
+                        "is_unique": true,
+                        "purpose": "UNIQUE_CONSTRAINT",
+                        "rationale": "Enforces the alternate key."
+                    },
+                    {
+                        "name": "idx_customer_city_name",
+                        "table": "customer",
+                        "columns": [
+                            "city_name"
+                        ],
+                        "is_unique": false,
+                        "purpose": "FOREIGN_KEY",
+                        "rationale": "Foreign keys are joined on constantly and are scanned when the parent is deleted; an unindexed foreign key is a common cause of slow joins and lock escalation."
+                    }
+                ],
+                "storage": {
+                    "table": "customer",
+                    "partition_candidates": [],
+                    "clustering_candidates": [
+                        "customer_number"
+                    ],
+                    "rationale": "Master data is looked up by key; clustering on it keeps those reads to a minimum of blocks."
+                },
+                "source_tables": [
+                    "bronze.customer"
+                ]
+            },
+            {
+                "name": "department",
+                "logical_entity": "Department",
+                "subject_area": "Master Data",
+                "classification": "LOOKUP",
+                "size_category": "SMALL",
+                "growth_rate": "STATIC",
+                "columns": [
+                    {
+                        "name": "department_name",
+                        "data_type": "STRING",
+                        "length": 100,
+                        "precision": null,
+                        "scale": null,
+                        "nullable": false,
+                        "default_value": null,
+                        "is_primary_key": true,
+                        "is_foreign_key": false,
+                        "is_unique": false,
+                        "ordinal_position": 1,
+                        "source_attribute": "department_name",
+                        "source_database_type": "character varying",
+                        "source_length": 100,
+                        "source_precision": null,
+                        "source_scale": null,
+                        "source_nullable": true,
+                        "source_default": null
+                    }
+                ],
+                "constraints": [
+                    {
+                        "name": "pk_department",
+                        "constraint_type": "PRIMARY_KEY",
+                        "table": "department",
+                        "columns": [
+                            "department_name"
+                        ],
+                        "referenced_table": null,
+                        "referenced_columns": [],
+                        "expression": null,
+                        "rationale": "Primary key preserved from the logical model."
+                    }
+                ],
+                "indexes": [
+                    {
+                        "name": "idx_department_pk",
+                        "table": "department",
+                        "columns": [
+                            "department_name"
+                        ],
+                        "is_unique": true,
+                        "purpose": "PRIMARY_KEY",
+                        "rationale": "Enforces and serves lookups on the primary key."
+                    }
+                ],
+                "storage": {
+                    "table": "department",
+                    "partition_candidates": [],
+                    "clustering_candidates": [],
+                    "rationale": "Lookup data is small enough to be scanned or cached in full; partitioning would add maintenance without reducing work."
+                },
+                "source_tables": [
+                    "bronze.department"
+                ]
+            },
+            {
+                "name": "employee",
+                "logical_entity": "Employee",
+                "subject_area": "Master Data",
+                "classification": "MASTER",
+                "size_category": "MEDIUM",
+                "growth_rate": "LOW",
+                "columns": [
+                    {
+                        "name": "email",
+                        "data_type": "STRING",
+                        "length": 150,
+                        "precision": null,
+                        "scale": null,
+                        "nullable": false,
+                        "default_value": null,
+                        "is_primary_key": true,
+                        "is_foreign_key": false,
+                        "is_unique": false,
+                        "ordinal_position": 1,
+                        "source_attribute": "email",
+                        "source_database_type": "character varying",
+                        "source_length": 150,
+                        "source_precision": null,
+                        "source_scale": null,
+                        "source_nullable": true,
+                        "source_default": null
+                    },
+                    {
+                        "name": "first_name",
+                        "data_type": "STRING",
+                        "length": 100,
+                        "precision": null,
+                        "scale": null,
+                        "nullable": true,
+                        "default_value": null,
+                        "is_primary_key": false,
+                        "is_foreign_key": false,
+                        "is_unique": false,
+                        "ordinal_position": 2,
+                        "source_attribute": "first_name",
+                        "source_database_type": "character varying",
+                        "source_length": 100,
+                        "source_precision": null,
+                        "source_scale": null,
+                        "source_nullable": true,
+                        "source_default": null
+                    },
+                    {
+                        "name": "last_name",
+                        "data_type": "STRING",
+                        "length": 100,
+                        "precision": null,
+                        "scale": null,
+                        "nullable": true,
+                        "default_value": null,
+                        "is_primary_key": false,
+                        "is_foreign_key": false,
+                        "is_unique": false,
+                        "ordinal_position": 3,
+                        "source_attribute": "last_name",
+                        "source_database_type": "character varying",
+                        "source_length": 100,
+                        "source_precision": null,
+                        "source_scale": null,
+                        "source_nullable": true,
+                        "source_default": null
+                    },
+                    {
+                        "name": "salary",
+                        "data_type": "DECIMAL",
+                        "length": null,
+                        "precision": 12,
+                        "scale": 2,
+                        "nullable": true,
+                        "default_value": null,
+                        "is_primary_key": false,
+                        "is_foreign_key": false,
+                        "is_unique": false,
+                        "ordinal_position": 4,
+                        "source_attribute": "salary",
+                        "source_database_type": "numeric",
+                        "source_length": null,
+                        "source_precision": 12,
+                        "source_scale": 2,
+                        "source_nullable": true,
+                        "source_default": null
+                    },
+                    {
+                        "name": "hire_date",
+                        "data_type": "DATE",
+                        "length": null,
+                        "precision": null,
+                        "scale": null,
+                        "nullable": true,
+                        "default_value": null,
+                        "is_primary_key": false,
+                        "is_foreign_key": false,
+                        "is_unique": false,
+                        "ordinal_position": 5,
+                        "source_attribute": "hire_date",
+                        "source_database_type": "date",
+                        "source_length": null,
+                        "source_precision": null,
+                        "source_scale": null,
+                        "source_nullable": true,
+                        "source_default": null
+                    },
+                    {
+                        "name": "parent_email",
+                        "data_type": "STRING",
+                        "length": 150,
+                        "precision": null,
+                        "scale": null,
+                        "nullable": true,
+                        "default_value": null,
+                        "is_primary_key": false,
+                        "is_foreign_key": true,
+                        "is_unique": false,
+                        "ordinal_position": 6,
+                        "source_attribute": "Parent email",
+                        "source_database_type": null,
+                        "source_length": null,
+                        "source_precision": null,
+                        "source_scale": null,
+                        "source_nullable": null,
+                        "source_default": null
+                    },
+                    {
+                        "name": "department_name",
+                        "data_type": "STRING",
+                        "length": 100,
+                        "precision": null,
+                        "scale": null,
+                        "nullable": true,
+                        "default_value": null,
+                        "is_primary_key": false,
+                        "is_foreign_key": true,
+                        "is_unique": false,
+                        "ordinal_position": 7,
+                        "source_attribute": "department_name",
+                        "source_database_type": null,
+                        "source_length": null,
+                        "source_precision": null,
+                        "source_scale": null,
+                        "source_nullable": null,
+                        "source_default": null
+                    }
+                ],
+                "constraints": [
+                    {
+                        "name": "pk_employee",
+                        "constraint_type": "PRIMARY_KEY",
+                        "table": "employee",
+                        "columns": [
+                            "email"
+                        ],
+                        "referenced_table": null,
+                        "referenced_columns": [],
+                        "expression": null,
+                        "rationale": "Primary key preserved from the logical model."
+                    },
+                    {
+                        "name": "fk_employee_parent_email",
+                        "constraint_type": "FOREIGN_KEY",
+                        "table": "employee",
+                        "columns": [
+                            "parent_email"
+                        ],
+                        "referenced_table": "employee",
+                        "referenced_columns": [
+                            "email"
+                        ],
+                        "expression": null,
+                        "rationale": "Preserves the relationship to Employee."
+                    },
+                    {
+                        "name": "fk_employee_department_name",
+                        "constraint_type": "FOREIGN_KEY",
+                        "table": "employee",
+                        "columns": [
+                            "department_name"
+                        ],
+                        "referenced_table": "department",
+                        "referenced_columns": [
+                            "department_name"
+                        ],
+                        "expression": null,
+                        "rationale": "Preserves the relationship to Department."
+                    }
+                ],
+                "indexes": [
+                    {
+                        "name": "idx_employee_pk",
+                        "table": "employee",
+                        "columns": [
+                            "email"
+                        ],
+                        "is_unique": true,
+                        "purpose": "PRIMARY_KEY",
+                        "rationale": "Enforces and serves lookups on the primary key."
+                    },
+                    {
+                        "name": "idx_employee_parent_email",
+                        "table": "employee",
+                        "columns": [
+                            "parent_email"
+                        ],
+                        "is_unique": false,
+                        "purpose": "FOREIGN_KEY",
+                        "rationale": "Foreign keys are joined on constantly and are scanned when the parent is deleted; an unindexed foreign key is a common cause of slow joins and lock escalation."
+                    },
+                    {
+                        "name": "idx_employee_department_name",
+                        "table": "employee",
+                        "columns": [
+                            "department_name"
+                        ],
+                        "is_unique": false,
+                        "purpose": "FOREIGN_KEY",
+                        "rationale": "Foreign keys are joined on constantly and are scanned when the parent is deleted; an unindexed foreign key is a common cause of slow joins and lock escalation."
+                    }
+                ],
+                "storage": {
+                    "table": "employee",
+                    "partition_candidates": [],
+                    "clustering_candidates": [
+                        "email"
+                    ],
+                    "rationale": "Master data is looked up by key; clustering on it keeps those reads to a minimum of blocks."
+                },
+                "source_tables": [
+                    "bronze.employee"
+                ]
+            },
+            {
+                "name": "inventory",
+                "logical_entity": "Inventory",
+                "subject_area": "Inventory & Warehousing",
+                "classification": "TRANSACTION",
+                "size_category": "VERY_LARGE",
+                "growth_rate": "HIGH",
+                "columns": [
+                    {
+                        "name": "warehouse_name",
+                        "data_type": "STRING",
+                        "length": 100,
+                        "precision": null,
+                        "scale": null,
+                        "nullable": false,
+                        "default_value": null,
+                        "is_primary_key": true,
+                        "is_foreign_key": true,
+                        "is_unique": false,
+                        "ordinal_position": 1,
+                        "source_attribute": "warehouse_name",
+                        "source_database_type": null,
+                        "source_length": null,
+                        "source_precision": null,
+                        "source_scale": null,
+                        "source_nullable": null,
+                        "source_default": null
+                    },
+                    {
+                        "name": "product_name",
+                        "data_type": "STRING",
+                        "length": 100,
+                        "precision": null,
+                        "scale": null,
+                        "nullable": false,
+                        "default_value": null,
+                        "is_primary_key": true,
+                        "is_foreign_key": false,
+                        "is_unique": false,
+                        "ordinal_position": 2,
+                        "source_attribute": "product_name",
+                        "source_database_type": null,
+                        "source_length": null,
+                        "source_precision": null,
+                        "source_scale": null,
+                        "source_nullable": null,
+                        "source_default": null
+                    },
+                    {
+                        "name": "quantity",
+                        "data_type": "INTEGER",
+                        "length": null,
+                        "precision": null,
+                        "scale": null,
+                        "nullable": true,
+                        "default_value": null,
+                        "is_primary_key": false,
+                        "is_foreign_key": false,
+                        "is_unique": false,
+                        "ordinal_position": 3,
+                        "source_attribute": "quantity",
+                        "source_database_type": "integer",
+                        "source_length": null,
+                        "source_precision": 32,
+                        "source_scale": 0,
+                        "source_nullable": true,
+                        "source_default": null
+                    },
+                    {
+                        "name": "reorder_level",
+                        "data_type": "INTEGER",
+                        "length": null,
+                        "precision": null,
+                        "scale": null,
+                        "nullable": true,
+                        "default_value": null,
+                        "is_primary_key": false,
+                        "is_foreign_key": false,
+                        "is_unique": false,
+                        "ordinal_position": 4,
+                        "source_attribute": "reorder_level",
+                        "source_database_type": "integer",
+                        "source_length": null,
+                        "source_precision": 32,
+                        "source_scale": 0,
+                        "source_nullable": true,
+                        "source_default": null
+                    },
+                    {
+                        "name": "product_sku",
+                        "data_type": "STRING",
+                        "length": 50,
+                        "precision": null,
+                        "scale": null,
+                        "nullable": false,
+                        "default_value": null,
+                        "is_primary_key": false,
+                        "is_foreign_key": true,
+                        "is_unique": false,
+                        "ordinal_position": 5,
+                        "source_attribute": "Product sku",
+                        "source_database_type": null,
+                        "source_length": null,
+                        "source_precision": null,
+                        "source_scale": null,
+                        "source_nullable": null,
+                        "source_default": null
+                    }
+                ],
+                "constraints": [
+                    {
+                        "name": "pk_inventory",
+                        "constraint_type": "PRIMARY_KEY",
+                        "table": "inventory",
+                        "columns": [
+                            "warehouse_name",
+                            "product_name"
+                        ],
+                        "referenced_table": null,
+                        "referenced_columns": [],
+                        "expression": null,
+                        "rationale": "Composite key preserved from the logical model."
+                    },
+                    {
+                        "name": "fk_inventory_warehouse_name",
+                        "constraint_type": "FOREIGN_KEY",
+                        "table": "inventory",
+                        "columns": [
+                            "warehouse_name"
+                        ],
+                        "referenced_table": "warehouse",
+                        "referenced_columns": [
+                            "warehouse_name"
+                        ],
+                        "expression": null,
+                        "rationale": "Preserves the relationship to Warehouse."
+                    },
+                    {
+                        "name": "fk_inventory_product_sku",
+                        "constraint_type": "FOREIGN_KEY",
+                        "table": "inventory",
+                        "columns": [
+                            "product_sku"
+                        ],
+                        "referenced_table": "product",
+                        "referenced_columns": [
+                            "sku"
+                        ],
+                        "expression": null,
+                        "rationale": "Preserves the relationship to Product."
+                    },
+                    {
+                        "name": "ck_inventory_quantity",
+                        "constraint_type": "CHECK",
+                        "table": "inventory",
+                        "columns": [
+                            "quantity"
+                        ],
+                        "referenced_table": null,
+                        "referenced_columns": [],
+                        "expression": "quantity >= 0",
+                        "rationale": "A counted quantity cannot be negative."
+                    }
+                ],
+                "indexes": [
+                    {
+                        "name": "idx_inventory_pk",
+                        "table": "inventory",
+                        "columns": [
+                            "warehouse_name",
+                            "product_name"
+                        ],
+                        "is_unique": true,
+                        "purpose": "PRIMARY_KEY",
+                        "rationale": "Enforces and serves lookups on the primary key."
+                    },
+                    {
+                        "name": "idx_inventory_product_sku",
+                        "table": "inventory",
+                        "columns": [
+                            "product_sku"
+                        ],
+                        "is_unique": false,
+                        "purpose": "FOREIGN_KEY",
+                        "rationale": "Foreign keys are joined on constantly and are scanned when the parent is deleted; an unindexed foreign key is a common cause of slow joins and lock escalation."
+                    }
+                ],
+                "storage": {
+                    "table": "inventory",
+                    "partition_candidates": [],
+                    "clustering_candidates": [
+                        "warehouse_name",
+                        "product_sku"
+                    ],
+                    "rationale": "Clustering on warehouse_name, product_sku co-locates rows that are joined and filtered together."
+                },
+                "source_tables": [
+                    "bronze.inventory"
+                ]
+            },
+            {
+                "name": "order",
+                "logical_entity": "Order",
+                "subject_area": "Sales & Ordering",
+                "classification": "TRANSACTION",
+                "size_category": "LARGE",
+                "growth_rate": "MODERATE",
+                "columns": [
+                    {
+                        "name": "order_id",
+                        "data_type": "INTEGER",
+                        "length": null,
+                        "precision": null,
+                        "scale": null,
+                        "nullable": false,
+                        "default_value": null,
+                        "is_primary_key": true,
+                        "is_foreign_key": false,
+                        "is_unique": false,
+                        "ordinal_position": 1,
+                        "source_attribute": "order_id",
+                        "source_database_type": "integer",
+                        "source_length": null,
+                        "source_precision": 32,
+                        "source_scale": 0,
+                        "source_nullable": false,
+                        "source_default": "nextval('bronze.orders_order_id_seq'::regclass)"
+                    },
+                    {
+                        "name": "order_date",
+                        "data_type": "DATE",
+                        "length": null,
+                        "precision": null,
+                        "scale": null,
+                        "nullable": true,
+                        "default_value": null,
+                        "is_primary_key": false,
+                        "is_foreign_key": false,
+                        "is_unique": false,
+                        "ordinal_position": 2,
+                        "source_attribute": "order_date",
+                        "source_database_type": "date",
+                        "source_length": null,
+                        "source_precision": null,
+                        "source_scale": null,
+                        "source_nullable": true,
+                        "source_default": null
+                    },
+                    {
+                        "name": "order_status",
+                        "data_type": "STRING",
+                        "length": 20,
+                        "precision": null,
+                        "scale": null,
+                        "nullable": true,
+                        "default_value": null,
+                        "is_primary_key": false,
+                        "is_foreign_key": false,
+                        "is_unique": false,
+                        "ordinal_position": 3,
+                        "source_attribute": "order_status",
+                        "source_database_type": "character varying",
+                        "source_length": 20,
+                        "source_precision": null,
+                        "source_scale": null,
+                        "source_nullable": true,
+                        "source_default": null
+                    },
+                    {
+                        "name": "customer_number",
+                        "data_type": "STRING",
+                        "length": 20,
+                        "precision": null,
+                        "scale": null,
+                        "nullable": true,
+                        "default_value": null,
+                        "is_primary_key": false,
+                        "is_foreign_key": true,
+                        "is_unique": false,
+                        "ordinal_position": 4,
+                        "source_attribute": "customer_number",
+                        "source_database_type": null,
+                        "source_length": null,
+                        "source_precision": null,
+                        "source_scale": null,
+                        "source_nullable": null,
+                        "source_default": null
+                    },
+                    {
+                        "name": "employee_email",
+                        "data_type": "STRING",
+                        "length": 150,
+                        "precision": null,
+                        "scale": null,
+                        "nullable": true,
+                        "default_value": null,
+                        "is_primary_key": false,
+                        "is_foreign_key": true,
+                        "is_unique": false,
+                        "ordinal_position": 5,
+                        "source_attribute": "Employee email",
+                        "source_database_type": null,
+                        "source_length": null,
+                        "source_precision": null,
+                        "source_scale": null,
+                        "source_nullable": null,
+                        "source_default": null
+                    }
+                ],
+                "constraints": [
+                    {
+                        "name": "pk_order",
+                        "constraint_type": "PRIMARY_KEY",
+                        "table": "order",
+                        "columns": [
+                            "order_id"
+                        ],
+                        "referenced_table": null,
+                        "referenced_columns": [],
+                        "expression": null,
+                        "rationale": "Primary key preserved from the logical model."
+                    },
+                    {
+                        "name": "fk_order_customer_number",
+                        "constraint_type": "FOREIGN_KEY",
+                        "table": "order",
+                        "columns": [
+                            "customer_number"
+                        ],
+                        "referenced_table": "customer",
+                        "referenced_columns": [
+                            "customer_number"
+                        ],
+                        "expression": null,
+                        "rationale": "Preserves the relationship to Customer."
+                    },
+                    {
+                        "name": "fk_order_employee_email",
+                        "constraint_type": "FOREIGN_KEY",
+                        "table": "order",
+                        "columns": [
+                            "employee_email"
+                        ],
+                        "referenced_table": "employee",
+                        "referenced_columns": [
+                            "email"
+                        ],
+                        "expression": null,
+                        "rationale": "Preserves the relationship to Employee."
+                    }
+                ],
+                "indexes": [
+                    {
+                        "name": "idx_order_pk",
+                        "table": "order",
+                        "columns": [
+                            "order_id"
+                        ],
+                        "is_unique": true,
+                        "purpose": "PRIMARY_KEY",
+                        "rationale": "Enforces and serves lookups on the primary key."
+                    },
+                    {
+                        "name": "idx_order_customer_number",
+                        "table": "order",
+                        "columns": [
+                            "customer_number"
+                        ],
+                        "is_unique": false,
+                        "purpose": "FOREIGN_KEY",
+                        "rationale": "Foreign keys are joined on constantly and are scanned when the parent is deleted; an unindexed foreign key is a common cause of slow joins and lock escalation."
+                    },
+                    {
+                        "name": "idx_order_employee_email",
+                        "table": "order",
+                        "columns": [
+                            "employee_email"
+                        ],
+                        "is_unique": false,
+                        "purpose": "FOREIGN_KEY",
+                        "rationale": "Foreign keys are joined on constantly and are scanned when the parent is deleted; an unindexed foreign key is a common cause of slow joins and lock escalation."
+                    }
+                ],
+                "storage": {
+                    "table": "order",
+                    "partition_candidates": [
+                        "order_date"
+                    ],
+                    "clustering_candidates": [
+                        "customer_number",
+                        "employee_email"
+                    ],
+                    "rationale": "Transaction volume accumulates over time, so partitioning on order_date lets queries prune to a date range. Clustering on customer_number, employee_email co-locates rows that are joined and filtered together."
+                },
+                "source_tables": [
+                    "bronze.orders"
+                ]
+            },
+            {
+                "name": "order_line_item",
+                "logical_entity": "Order Line Item",
+                "subject_area": "Sales & Ordering",
+                "classification": "TRANSACTION",
+                "size_category": "VERY_LARGE",
+                "growth_rate": "HIGH",
+                "columns": [
+                    {
+                        "name": "order_id",
+                        "data_type": "INTEGER",
+                        "length": null,
+                        "precision": null,
+                        "scale": null,
+                        "nullable": false,
+                        "default_value": null,
+                        "is_primary_key": true,
+                        "is_foreign_key": true,
+                        "is_unique": false,
+                        "ordinal_position": 1,
+                        "source_attribute": "order_id",
+                        "source_database_type": "integer",
+                        "source_length": null,
+                        "source_precision": 32,
+                        "source_scale": 0,
+                        "source_nullable": false,
+                        "source_default": null
+                    },
+                    {
+                        "name": "line_number",
+                        "data_type": "INTEGER",
+                        "length": null,
+                        "precision": null,
+                        "scale": null,
+                        "nullable": false,
+                        "default_value": null,
+                        "is_primary_key": true,
+                        "is_foreign_key": false,
+                        "is_unique": false,
+                        "ordinal_position": 2,
+                        "source_attribute": "line_number",
+                        "source_database_type": "integer",
+                        "source_length": null,
+                        "source_precision": 32,
+                        "source_scale": 0,
+                        "source_nullable": false,
+                        "source_default": null
+                    },
+                    {
+                        "name": "quantity",
+                        "data_type": "INTEGER",
+                        "length": null,
+                        "precision": null,
+                        "scale": null,
+                        "nullable": true,
+                        "default_value": null,
+                        "is_primary_key": false,
+                        "is_foreign_key": false,
+                        "is_unique": false,
+                        "ordinal_position": 3,
+                        "source_attribute": "quantity",
+                        "source_database_type": "integer",
+                        "source_length": null,
+                        "source_precision": 32,
+                        "source_scale": 0,
+                        "source_nullable": true,
+                        "source_default": null
+                    },
+                    {
+                        "name": "unit_price",
+                        "data_type": "DECIMAL",
+                        "length": null,
+                        "precision": 12,
+                        "scale": 2,
+                        "nullable": true,
+                        "default_value": null,
+                        "is_primary_key": false,
+                        "is_foreign_key": false,
+                        "is_unique": false,
+                        "ordinal_position": 4,
+                        "source_attribute": "unit_price",
+                        "source_database_type": "numeric",
+                        "source_length": null,
+                        "source_precision": 12,
+                        "source_scale": 2,
+                        "source_nullable": true,
+                        "source_default": null
+                    },
+                    {
+                        "name": "product_sku",
+                        "data_type": "STRING",
+                        "length": 50,
+                        "precision": null,
+                        "scale": null,
+                        "nullable": true,
+                        "default_value": null,
+                        "is_primary_key": false,
+                        "is_foreign_key": true,
+                        "is_unique": false,
+                        "ordinal_position": 5,
+                        "source_attribute": "Product sku",
+                        "source_database_type": null,
+                        "source_length": null,
+                        "source_precision": null,
+                        "source_scale": null,
+                        "source_nullable": null,
+                        "source_default": null
+                    }
+                ],
+                "constraints": [
+                    {
+                        "name": "pk_order_line_item",
+                        "constraint_type": "PRIMARY_KEY",
+                        "table": "order_line_item",
+                        "columns": [
+                            "order_id",
+                            "line_number"
+                        ],
+                        "referenced_table": null,
+                        "referenced_columns": [],
+                        "expression": null,
+                        "rationale": "Composite key preserved from the logical model."
+                    },
+                    {
+                        "name": "fk_order_line_item_order_id",
+                        "constraint_type": "FOREIGN_KEY",
+                        "table": "order_line_item",
+                        "columns": [
+                            "order_id"
+                        ],
+                        "referenced_table": "order",
+                        "referenced_columns": [
+                            "order_id"
+                        ],
+                        "expression": null,
+                        "rationale": "Preserves the relationship to Order."
+                    },
+                    {
+                        "name": "fk_order_line_item_product_sku",
+                        "constraint_type": "FOREIGN_KEY",
+                        "table": "order_line_item",
+                        "columns": [
+                            "product_sku"
+                        ],
+                        "referenced_table": "product",
+                        "referenced_columns": [
+                            "sku"
+                        ],
+                        "expression": null,
+                        "rationale": "Preserves the relationship to Product."
+                    },
+                    {
+                        "name": "ck_order_line_item_quantity",
+                        "constraint_type": "CHECK",
+                        "table": "order_line_item",
+                        "columns": [
+                            "quantity"
+                        ],
+                        "referenced_table": null,
+                        "referenced_columns": [],
+                        "expression": "quantity >= 0",
+                        "rationale": "A counted quantity cannot be negative."
+                    }
+                ],
+                "indexes": [
+                    {
+                        "name": "idx_order_line_item_pk",
+                        "table": "order_line_item",
+                        "columns": [
+                            "order_id",
+                            "line_number"
+                        ],
+                        "is_unique": true,
+                        "purpose": "PRIMARY_KEY",
+                        "rationale": "Enforces and serves lookups on the primary key."
+                    },
+                    {
+                        "name": "idx_order_line_item_product",
+                        "table": "order_line_item",
+                        "columns": [
+                            "product_sku"
+                        ],
+                        "is_unique": false,
+                        "purpose": "FOREIGN_KEY",
+                        "rationale": "Foreign keys are joined on constantly and are scanned when the parent is deleted; an unindexed foreign key is a common cause of slow joins and lock escalation."
+                    }
+                ],
+                "storage": {
+                    "table": "order_line_item",
+                    "partition_candidates": [],
+                    "clustering_candidates": [
+                        "order_id",
+                        "product_sku"
+                    ],
+                    "rationale": "Clustering on order_id, product_sku co-locates rows that are joined and filtered together."
+                },
+                "source_tables": [
+                    "bronze.order_item"
+                ]
+            },
+            {
+                "name": "payment",
+                "logical_entity": "Payment",
+                "subject_area": "Financial",
+                "classification": "TRANSACTION",
+                "size_category": "LARGE",
+                "growth_rate": "MODERATE",
+                "columns": [
+                    {
+                        "name": "payment_id",
+                        "data_type": "INTEGER",
+                        "length": null,
+                        "precision": null,
+                        "scale": null,
+                        "nullable": false,
+                        "default_value": null,
+                        "is_primary_key": true,
+                        "is_foreign_key": false,
+                        "is_unique": false,
+                        "ordinal_position": 1,
+                        "source_attribute": "payment_id",
+                        "source_database_type": "integer",
+                        "source_length": null,
+                        "source_precision": 32,
+                        "source_scale": 0,
+                        "source_nullable": false,
+                        "source_default": "nextval('bronze.payment_payment_id_seq'::regclass)"
+                    },
+                    {
+                        "name": "payment_method",
+                        "data_type": "STRING",
+                        "length": 50,
+                        "precision": null,
+                        "scale": null,
+                        "nullable": true,
+                        "default_value": null,
+                        "is_primary_key": false,
+                        "is_foreign_key": false,
+                        "is_unique": false,
+                        "ordinal_position": 2,
+                        "source_attribute": "payment_method",
+                        "source_database_type": "character varying",
+                        "source_length": 50,
+                        "source_precision": null,
+                        "source_scale": null,
+                        "source_nullable": true,
+                        "source_default": null
+                    },
+                    {
+                        "name": "payment_date",
+                        "data_type": "DATE",
+                        "length": null,
+                        "precision": null,
+                        "scale": null,
+                        "nullable": true,
+                        "default_value": null,
+                        "is_primary_key": false,
+                        "is_foreign_key": false,
+                        "is_unique": false,
+                        "ordinal_position": 3,
+                        "source_attribute": "payment_date",
+                        "source_database_type": "date",
+                        "source_length": null,
+                        "source_precision": null,
+                        "source_scale": null,
+                        "source_nullable": true,
+                        "source_default": null
+                    },
+                    {
+                        "name": "amount",
+                        "data_type": "DECIMAL",
+                        "length": null,
+                        "precision": 12,
+                        "scale": 2,
+                        "nullable": true,
+                        "default_value": null,
+                        "is_primary_key": false,
+                        "is_foreign_key": false,
+                        "is_unique": false,
+                        "ordinal_position": 4,
+                        "source_attribute": "amount",
+                        "source_database_type": "numeric",
+                        "source_length": null,
+                        "source_precision": 12,
+                        "source_scale": 2,
+                        "source_nullable": true,
+                        "source_default": null
+                    },
+                    {
+                        "name": "order_id",
+                        "data_type": "INTEGER",
+                        "length": null,
+                        "precision": null,
+                        "scale": null,
+                        "nullable": true,
+                        "default_value": null,
+                        "is_primary_key": false,
+                        "is_foreign_key": true,
+                        "is_unique": false,
+                        "ordinal_position": 5,
+                        "source_attribute": "order_id",
+                        "source_database_type": "integer",
+                        "source_length": null,
+                        "source_precision": 32,
+                        "source_scale": 0,
+                        "source_nullable": true,
+                        "source_default": null
+                    }
+                ],
+                "constraints": [
+                    {
+                        "name": "pk_payment",
+                        "constraint_type": "PRIMARY_KEY",
+                        "table": "payment",
+                        "columns": [
+                            "payment_id"
+                        ],
+                        "referenced_table": null,
+                        "referenced_columns": [],
+                        "expression": null,
+                        "rationale": "Primary key preserved from the logical model."
+                    },
+                    {
+                        "name": "fk_payment_order_id",
+                        "constraint_type": "FOREIGN_KEY",
+                        "table": "payment",
+                        "columns": [
+                            "order_id"
+                        ],
+                        "referenced_table": "order",
+                        "referenced_columns": [
+                            "order_id"
+                        ],
+                        "expression": null,
+                        "rationale": "Preserves the relationship to Order."
+                    }
+                ],
+                "indexes": [
+                    {
+                        "name": "idx_payment_pk",
+                        "table": "payment",
+                        "columns": [
+                            "payment_id"
+                        ],
+                        "is_unique": true,
+                        "purpose": "PRIMARY_KEY",
+                        "rationale": "Enforces and serves lookups on the primary key."
+                    },
+                    {
+                        "name": "idx_payment_order_id",
+                        "table": "payment",
+                        "columns": [
+                            "order_id"
+                        ],
+                        "is_unique": false,
+                        "purpose": "FOREIGN_KEY",
+                        "rationale": "Foreign keys are joined on constantly and are scanned when the parent is deleted; an unindexed foreign key is a common cause of slow joins and lock escalation."
+                    }
+                ],
+                "storage": {
+                    "table": "payment",
+                    "partition_candidates": [
+                        "payment_date"
+                    ],
+                    "clustering_candidates": [
+                        "order_id"
+                    ],
+                    "rationale": "Transaction volume accumulates over time, so partitioning on payment_date lets queries prune to a date range. Clustering on order_id co-locates rows that are joined and filtered together."
+                },
+                "source_tables": [
+                    "bronze.payment"
+                ]
+            },
+            {
+                "name": "product",
+                "logical_entity": "Product",
+                "subject_area": "Master Data",
+                "classification": "MASTER",
+                "size_category": "MEDIUM",
+                "growth_rate": "LOW",
+                "columns": [
+                    {
+                        "name": "sku",
+                        "data_type": "STRING",
+                        "length": 50,
+                        "precision": null,
+                        "scale": null,
+                        "nullable": false,
+                        "default_value": null,
+                        "is_primary_key": true,
+                        "is_foreign_key": false,
+                        "is_unique": false,
+                        "ordinal_position": 1,
+                        "source_attribute": "sku",
+                        "source_database_type": "character varying",
+                        "source_length": 50,
+                        "source_precision": null,
+                        "source_scale": null,
+                        "source_nullable": true,
+                        "source_default": null
+                    },
+                    {
+                        "name": "product_name",
+                        "data_type": "STRING",
+                        "length": 200,
+                        "precision": null,
+                        "scale": null,
+                        "nullable": true,
+                        "default_value": null,
+                        "is_primary_key": false,
+                        "is_foreign_key": false,
+                        "is_unique": false,
+                        "ordinal_position": 2,
+                        "source_attribute": "product_name",
+                        "source_database_type": "character varying",
+                        "source_length": 200,
+                        "source_precision": null,
+                        "source_scale": null,
+                        "source_nullable": true,
+                        "source_default": null
+                    },
+                    {
+                        "name": "unit_price",
+                        "data_type": "DECIMAL",
+                        "length": null,
+                        "precision": 12,
+                        "scale": 2,
+                        "nullable": true,
+                        "default_value": null,
+                        "is_primary_key": false,
+                        "is_foreign_key": false,
+                        "is_unique": false,
+                        "ordinal_position": 3,
+                        "source_attribute": "unit_price",
+                        "source_database_type": "numeric",
+                        "source_length": null,
+                        "source_precision": 12,
+                        "source_scale": 2,
+                        "source_nullable": true,
+                        "source_default": null
+                    },
+                    {
+                        "name": "status",
+                        "data_type": "STRING",
+                        "length": 20,
+                        "precision": null,
+                        "scale": null,
+                        "nullable": true,
+                        "default_value": null,
+                        "is_primary_key": false,
+                        "is_foreign_key": false,
+                        "is_unique": false,
+                        "ordinal_position": 4,
+                        "source_attribute": "status",
+                        "source_database_type": "character varying",
+                        "source_length": 20,
+                        "source_precision": null,
+                        "source_scale": null,
+                        "source_nullable": true,
+                        "source_default": null
+                    },
+                    {
+                        "name": "supplier_name",
+                        "data_type": "STRING",
+                        "length": 200,
+                        "precision": null,
+                        "scale": null,
+                        "nullable": true,
+                        "default_value": null,
+                        "is_primary_key": false,
+                        "is_foreign_key": true,
+                        "is_unique": false,
+                        "ordinal_position": 5,
+                        "source_attribute": "supplier_name",
+                        "source_database_type": null,
+                        "source_length": null,
+                        "source_precision": null,
+                        "source_scale": null,
+                        "source_nullable": null,
+                        "source_default": null
+                    },
+                    {
+                        "name": "category_name",
+                        "data_type": "STRING",
+                        "length": 100,
+                        "precision": null,
+                        "scale": null,
+                        "nullable": true,
+                        "default_value": null,
+                        "is_primary_key": false,
+                        "is_foreign_key": true,
+                        "is_unique": false,
+                        "ordinal_position": 6,
+                        "source_attribute": "category_name",
+                        "source_database_type": null,
+                        "source_length": null,
+                        "source_precision": null,
+                        "source_scale": null,
+                        "source_nullable": null,
+                        "source_default": null
+                    }
+                ],
+                "constraints": [
+                    {
+                        "name": "pk_product",
+                        "constraint_type": "PRIMARY_KEY",
+                        "table": "product",
+                        "columns": [
+                            "sku"
+                        ],
+                        "referenced_table": null,
+                        "referenced_columns": [],
+                        "expression": null,
+                        "rationale": "Primary key preserved from the logical model."
+                    },
+                    {
+                        "name": "fk_product_supplier_name",
+                        "constraint_type": "FOREIGN_KEY",
+                        "table": "product",
+                        "columns": [
+                            "supplier_name"
+                        ],
+                        "referenced_table": "supplier",
+                        "referenced_columns": [
+                            "supplier_name"
+                        ],
+                        "expression": null,
+                        "rationale": "Preserves the relationship to Supplier."
+                    },
+                    {
+                        "name": "fk_product_category_name",
+                        "constraint_type": "FOREIGN_KEY",
+                        "table": "product",
+                        "columns": [
+                            "category_name"
+                        ],
+                        "referenced_table": "category",
+                        "referenced_columns": [
+                            "category_name"
+                        ],
+                        "expression": null,
+                        "rationale": "Preserves the relationship to Category."
+                    }
+                ],
+                "indexes": [
+                    {
+                        "name": "idx_product_pk",
+                        "table": "product",
+                        "columns": [
+                            "sku"
+                        ],
+                        "is_unique": true,
+                        "purpose": "PRIMARY_KEY",
+                        "rationale": "Enforces and serves lookups on the primary key."
+                    },
+                    {
+                        "name": "idx_product_supplier_name",
+                        "table": "product",
+                        "columns": [
+                            "supplier_name"
+                        ],
+                        "is_unique": false,
+                        "purpose": "FOREIGN_KEY",
+                        "rationale": "Foreign keys are joined on constantly and are scanned when the parent is deleted; an unindexed foreign key is a common cause of slow joins and lock escalation."
+                    },
+                    {
+                        "name": "idx_product_category_name",
+                        "table": "product",
+                        "columns": [
+                            "category_name"
+                        ],
+                        "is_unique": false,
+                        "purpose": "FOREIGN_KEY",
+                        "rationale": "Foreign keys are joined on constantly and are scanned when the parent is deleted; an unindexed foreign key is a common cause of slow joins and lock escalation."
+                    }
+                ],
+                "storage": {
+                    "table": "product",
+                    "partition_candidates": [],
+                    "clustering_candidates": [
+                        "sku"
+                    ],
+                    "rationale": "Master data is looked up by key; clustering on it keeps those reads to a minimum of blocks."
+                },
+                "source_tables": [
+                    "bronze.product"
+                ]
+            },
+            {
+                "name": "product_promotion_association",
+                "logical_entity": "Product Promotion Association",
+                "subject_area": "Master Data",
+                "classification": "TRANSACTION",
+                "size_category": "VERY_LARGE",
+                "growth_rate": "HIGH",
+                "columns": [
+                    {
+                        "name": "product_sku",
+                        "data_type": "STRING",
+                        "length": 50,
+                        "precision": null,
+                        "scale": null,
+                        "nullable": false,
+                        "default_value": null,
+                        "is_primary_key": true,
+                        "is_foreign_key": true,
+                        "is_unique": false,
+                        "ordinal_position": 1,
+                        "source_attribute": "Product sku",
+                        "source_database_type": null,
+                        "source_length": null,
+                        "source_precision": null,
+                        "source_scale": null,
+                        "source_nullable": null,
+                        "source_default": null
+                    },
+                    {
+                        "name": "promotion_name",
+                        "data_type": "STRING",
+                        "length": 200,
+                        "precision": null,
+                        "scale": null,
+                        "nullable": false,
+                        "default_value": null,
+                        "is_primary_key": true,
+                        "is_foreign_key": true,
+                        "is_unique": false,
+                        "ordinal_position": 2,
+                        "source_attribute": "promotion_name",
+                        "source_database_type": null,
+                        "source_length": null,
+                        "source_precision": null,
+                        "source_scale": null,
+                        "source_nullable": null,
+                        "source_default": null
+                    }
+                ],
+                "constraints": [
+                    {
+                        "name": "pk_product_promotion",
+                        "constraint_type": "PRIMARY_KEY",
+                        "table": "product_promotion_association",
+                        "columns": [
+                            "product_sku",
+                            "promotion_name"
+                        ],
+                        "referenced_table": null,
+                        "referenced_columns": [],
+                        "expression": null,
+                        "rationale": "Composite key preserved from the logical model."
+                    },
+                    {
+                        "name": "fk_product_promotion",
+                        "constraint_type": "FOREIGN_KEY",
+                        "table": "product_promotion_association",
+                        "columns": [
+                            "product_sku"
+                        ],
+                        "referenced_table": "product",
+                        "referenced_columns": [
+                            "sku"
+                        ],
+                        "expression": null,
+                        "rationale": "Preserves the relationship to Product."
+                    },
+                    {
+                        "name": "fk_product_promotion",
+                        "constraint_type": "FOREIGN_KEY",
+                        "table": "product_promotion_association",
+                        "columns": [
+                            "promotion_name"
+                        ],
+                        "referenced_table": "promotion",
+                        "referenced_columns": [
+                            "promotion_name"
+                        ],
+                        "expression": null,
+                        "rationale": "Preserves the relationship to Promotion."
+                    }
+                ],
+                "indexes": [
+                    {
+                        "name": "idx_product_promotion",
+                        "table": "product_promotion_association",
+                        "columns": [
+                            "product_sku",
+                            "promotion_name"
+                        ],
+                        "is_unique": true,
+                        "purpose": "PRIMARY_KEY",
+                        "rationale": "Enforces and serves lookups on the primary key."
+                    },
+                    {
+                        "name": "idx_product_promotion",
+                        "table": "product_promotion_association",
+                        "columns": [
+                            "promotion_name"
+                        ],
+                        "is_unique": false,
+                        "purpose": "FOREIGN_KEY",
+                        "rationale": "Foreign keys are joined on constantly and are scanned when the parent is deleted; an unindexed foreign key is a common cause of slow joins and lock escalation."
+                    }
+                ],
+                "storage": {
+                    "table": "product_promotion_association",
+                    "partition_candidates": [],
+                    "clustering_candidates": [
+                        "product_sku",
+                        "promotion_name"
+                    ],
+                    "rationale": "Clustering on product_sku, promotion_name co-locates rows that are joined and filtered together."
+                },
+                "source_tables": []
+            },
+            {
+                "name": "product_warehouse_association",
+                "logical_entity": "Product Warehouse Association",
+                "subject_area": "Master Data",
+                "classification": "TRANSACTION",
+                "size_category": "VERY_LARGE",
+                "growth_rate": "HIGH",
+                "columns": [
+                    {
+                        "name": "product_sku",
+                        "data_type": "STRING",
+                        "length": 50,
+                        "precision": null,
+                        "scale": null,
+                        "nullable": false,
+                        "default_value": null,
+                        "is_primary_key": true,
+                        "is_foreign_key": true,
+                        "is_unique": false,
+                        "ordinal_position": 1,
+                        "source_attribute": "Product sku",
+                        "source_database_type": null,
+                        "source_length": null,
+                        "source_precision": null,
+                        "source_scale": null,
+                        "source_nullable": null,
+                        "source_default": null
+                    },
+                    {
+                        "name": "warehouse_name",
+                        "data_type": "STRING",
+                        "length": 100,
+                        "precision": null,
+                        "scale": null,
+                        "nullable": false,
+                        "default_value": null,
+                        "is_primary_key": true,
+                        "is_foreign_key": true,
+                        "is_unique": false,
+                        "ordinal_position": 2,
+                        "source_attribute": "warehouse_name",
+                        "source_database_type": null,
+                        "source_length": null,
+                        "source_precision": null,
+                        "source_scale": null,
+                        "source_nullable": null,
+                        "source_default": null
+                    }
+                ],
+                "constraints": [
+                    {
+                        "name": "pk_product_warehouse",
+                        "constraint_type": "PRIMARY_KEY",
+                        "table": "product_warehouse_association",
+                        "columns": [
+                            "product_sku",
+                            "warehouse_name"
+                        ],
+                        "referenced_table": null,
+                        "referenced_columns": [],
+                        "expression": null,
+                        "rationale": "Composite key preserved from the logical model."
+                    },
+                    {
+                        "name": "fk_product_warehouse",
+                        "constraint_type": "FOREIGN_KEY",
+                        "table": "product_warehouse_association",
+                        "columns": [
+                            "product_sku"
+                        ],
+                        "referenced_table": "product",
+                        "referenced_columns": [
+                            "sku"
+                        ],
+                        "expression": null,
+                        "rationale": "Preserves the relationship to Product."
+                    },
+                    {
+                        "name": "fk_product_warehouse",
+                        "constraint_type": "FOREIGN_KEY",
+                        "table": "product_warehouse_association",
+                        "columns": [
+                            "warehouse_name"
+                        ],
+                        "referenced_table": "warehouse",
+                        "referenced_columns": [
+                            "warehouse_name"
+                        ],
+                        "expression": null,
+                        "rationale": "Preserves the relationship to Warehouse."
+                    }
+                ],
+                "indexes": [
+                    {
+                        "name": "idx_product_warehouse",
+                        "table": "product_warehouse_association",
+                        "columns": [
+                            "product_sku",
+                            "warehouse_name"
+                        ],
+                        "is_unique": true,
+                        "purpose": "PRIMARY_KEY",
+                        "rationale": "Enforces and serves lookups on the primary key."
+                    },
+                    {
+                        "name": "idx_product_warehouse",
+                        "table": "product_warehouse_association",
+                        "columns": [
+                            "warehouse_name"
+                        ],
+                        "is_unique": false,
+                        "purpose": "FOREIGN_KEY",
+                        "rationale": "Foreign keys are joined on constantly and are scanned when the parent is deleted; an unindexed foreign key is a common cause of slow joins and lock escalation."
+                    }
+                ],
+                "storage": {
+                    "table": "product_warehouse_association",
+                    "partition_candidates": [],
+                    "clustering_candidates": [
+                        "product_sku",
+                        "warehouse_name"
+                    ],
+                    "rationale": "Clustering on product_sku, warehouse_name co-locates rows that are joined and filtered together."
+                },
+                "source_tables": []
+            },
+            {
+                "name": "promotion",
+                "logical_entity": "Promotion",
+                "subject_area": "Sales & Ordering",
+                "classification": "LOOKUP",
+                "size_category": "SMALL",
+                "growth_rate": "STATIC",
+                "columns": [
+                    {
+                        "name": "promotion_name",
+                        "data_type": "STRING",
+                        "length": 200,
+                        "precision": null,
+                        "scale": null,
+                        "nullable": false,
+                        "default_value": null,
+                        "is_primary_key": true,
+                        "is_foreign_key": false,
+                        "is_unique": false,
+                        "ordinal_position": 1,
+                        "source_attribute": "promotion_name",
+                        "source_database_type": "character varying",
+                        "source_length": 200,
+                        "source_precision": null,
+                        "source_scale": null,
+                        "source_nullable": true,
+                        "source_default": null
+                    },
+                    {
+                        "name": "discount_percent",
+                        "data_type": "DECIMAL",
+                        "length": null,
+                        "precision": 5,
+                        "scale": 2,
+                        "nullable": true,
+                        "default_value": null,
+                        "is_primary_key": false,
+                        "is_foreign_key": false,
+                        "is_unique": false,
+                        "ordinal_position": 2,
+                        "source_attribute": "discount_percent",
+                        "source_database_type": "numeric",
+                        "source_length": null,
+                        "source_precision": 5,
+                        "source_scale": 2,
+                        "source_nullable": true,
+                        "source_default": null
+                    }
+                ],
+                "constraints": [
+                    {
+                        "name": "pk_promotion",
+                        "constraint_type": "PRIMARY_KEY",
+                        "table": "promotion",
+                        "columns": [
+                            "promotion_name"
+                        ],
+                        "referenced_table": null,
+                        "referenced_columns": [],
+                        "expression": null,
+                        "rationale": "Primary key preserved from the logical model."
+                    },
+                    {
+                        "name": "ck_promotion_discount_percent",
+                        "constraint_type": "CHECK",
+                        "table": "promotion",
+                        "columns": [
+                            "discount_percent"
+                        ],
+                        "referenced_table": null,
+                        "referenced_columns": [],
+                        "expression": "discount_percent BETWEEN 0 AND 100",
+                        "rationale": "A percentage cannot fall outside 0-100."
+                    }
+                ],
+                "indexes": [
+                    {
+                        "name": "idx_promotion_pk",
+                        "table": "promotion",
+                        "columns": [
+                            "promotion_name"
+                        ],
+                        "is_unique": true,
+                        "purpose": "PRIMARY_KEY",
+                        "rationale": "Enforces and serves lookups on the primary key."
+                    }
+                ],
+                "storage": {
+                    "table": "promotion",
+                    "partition_candidates": [],
+                    "clustering_candidates": [],
+                    "rationale": "Lookup data is small enough to be scanned or cached in full; partitioning would add maintenance without reducing work."
+                },
+                "source_tables": [
+                    "bronze.promotion"
+                ]
+            },
+            {
+                "name": "return_order",
+                "logical_entity": "Return Order",
+                "subject_area": "Fulfillment & Logistics",
+                "classification": "TRANSACTION",
+                "size_category": "LARGE",
+                "growth_rate": "MODERATE",
+                "columns": [
+                    {
+                        "name": "return_id",
+                        "data_type": "INTEGER",
+                        "length": null,
+                        "precision": null,
+                        "scale": null,
+                        "nullable": false,
+                        "default_value": null,
+                        "is_primary_key": true,
+                        "is_foreign_key": false,
+                        "is_unique": false,
+                        "ordinal_position": 1,
+                        "source_attribute": "return_id",
+                        "source_database_type": "integer",
+                        "source_length": null,
+                        "source_precision": 32,
+                        "source_scale": 0,
+                        "source_nullable": false,
+                        "source_default": "nextval('bronze.return_order_return_id_seq'::regclass)"
+                    },
+                    {
+                        "name": "return_reason",
+                        "data_type": "STRING",
+                        "length": 200,
+                        "precision": null,
+                        "scale": null,
+                        "nullable": true,
+                        "default_value": null,
+                        "is_primary_key": false,
+                        "is_foreign_key": false,
+                        "is_unique": false,
+                        "ordinal_position": 2,
+                        "source_attribute": "return_reason",
+                        "source_database_type": "character varying",
+                        "source_length": 200,
+                        "source_precision": null,
+                        "source_scale": null,
+                        "source_nullable": true,
+                        "source_default": null
+                    },
+                    {
+                        "name": "product_sku",
+                        "data_type": "STRING",
+                        "length": 50,
+                        "precision": null,
+                        "scale": null,
+                        "nullable": true,
+                        "default_value": null,
+                        "is_primary_key": false,
+                        "is_foreign_key": true,
+                        "is_unique": false,
+                        "ordinal_position": 3,
+                        "source_attribute": "Product sku",
+                        "source_database_type": null,
+                        "source_length": null,
+                        "source_precision": null,
+                        "source_scale": null,
+                        "source_nullable": null,
+                        "source_default": null
+                    },
+                    {
+                        "name": "order_id",
+                        "data_type": "INTEGER",
+                        "length": null,
+                        "precision": null,
+                        "scale": null,
+                        "nullable": true,
+                        "default_value": null,
+                        "is_primary_key": false,
+                        "is_foreign_key": true,
+                        "is_unique": false,
+                        "ordinal_position": 4,
+                        "source_attribute": "order_id",
+                        "source_database_type": "integer",
+                        "source_length": null,
+                        "source_precision": 32,
+                        "source_scale": 0,
+                        "source_nullable": true,
+                        "source_default": null
+                    }
+                ],
+                "constraints": [
+                    {
+                        "name": "pk_return_order",
+                        "constraint_type": "PRIMARY_KEY",
+                        "table": "return_order",
+                        "columns": [
+                            "return_id"
+                        ],
+                        "referenced_table": null,
+                        "referenced_columns": [],
+                        "expression": null,
+                        "rationale": "Primary key preserved from the logical model."
+                    },
+                    {
+                        "name": "fk_return_order_product_sku",
+                        "constraint_type": "FOREIGN_KEY",
+                        "table": "return_order",
+                        "columns": [
+                            "product_sku"
+                        ],
+                        "referenced_table": "product",
+                        "referenced_columns": [
+                            "sku"
+                        ],
+                        "expression": null,
+                        "rationale": "Preserves the relationship to Product."
+                    },
+                    {
+                        "name": "fk_return_order_order_id",
+                        "constraint_type": "FOREIGN_KEY",
+                        "table": "return_order",
+                        "columns": [
+                            "order_id"
+                        ],
+                        "referenced_table": "order",
+                        "referenced_columns": [
+                            "order_id"
+                        ],
+                        "expression": null,
+                        "rationale": "Preserves the relationship to Order."
+                    }
+                ],
+                "indexes": [
+                    {
+                        "name": "idx_return_order_pk",
+                        "table": "return_order",
+                        "columns": [
+                            "return_id"
+                        ],
+                        "is_unique": true,
+                        "purpose": "PRIMARY_KEY",
+                        "rationale": "Enforces and serves lookups on the primary key."
+                    },
+                    {
+                        "name": "idx_return_order_product_sku",
+                        "table": "return_order",
+                        "columns": [
+                            "product_sku"
+                        ],
+                        "is_unique": false,
+                        "purpose": "FOREIGN_KEY",
+                        "rationale": "Foreign keys are joined on constantly and are scanned when the parent is deleted; an unindexed foreign key is a common cause of slow joins and lock escalation."
+                    },
+                    {
+                        "name": "idx_return_order_order_id",
+                        "table": "return_order",
+                        "columns": [
+                            "order_id"
+                        ],
+                        "is_unique": false,
+                        "purpose": "FOREIGN_KEY",
+                        "rationale": "Foreign keys are joined on constantly and are scanned when the parent is deleted; an unindexed foreign key is a common cause of slow joins and lock escalation."
+                    }
+                ],
+                "storage": {
+                    "table": "return_order",
+                    "partition_candidates": [],
+                    "clustering_candidates": [
+                        "product_sku",
+                        "order_id"
+                    ],
+                    "rationale": "Clustering on product_sku, order_id co-locates rows that are joined and filtered together."
+                },
+                "source_tables": [
+                    "bronze.return_order"
+                ]
+            },
+            {
+                "name": "shipment",
+                "logical_entity": "Shipment",
+                "subject_area": "Fulfillment & Logistics",
+                "classification": "TRANSACTION",
+                "size_category": "LARGE",
+                "growth_rate": "MODERATE",
+                "columns": [
+                    {
+                        "name": "tracking_number",
+                        "data_type": "STRING",
+                        "length": 100,
+                        "precision": null,
+                        "scale": null,
+                        "nullable": false,
+                        "default_value": null,
+                        "is_primary_key": true,
+                        "is_foreign_key": false,
+                        "is_unique": false,
+                        "ordinal_position": 1,
+                        "source_attribute": "tracking_number",
+                        "source_database_type": "character varying",
+                        "source_length": 100,
+                        "source_precision": null,
+                        "source_scale": null,
+                        "source_nullable": true,
+                        "source_default": null
+                    },
+                    {
+                        "name": "shipped_date",
+                        "data_type": "DATE",
+                        "length": null,
+                        "precision": null,
+                        "scale": null,
+                        "nullable": true,
+                        "default_value": null,
+                        "is_primary_key": false,
+                        "is_foreign_key": false,
+                        "is_unique": false,
+                        "ordinal_position": 2,
+                        "source_attribute": "shipped_date",
+                        "source_database_type": "date",
+                        "source_length": null,
+                        "source_precision": null,
+                        "source_scale": null,
+                        "source_nullable": true,
+                        "source_default": null
+                    },
+                    {
+                        "name": "warehouse_name",
+                        "data_type": "STRING",
+                        "length": 100,
+                        "precision": null,
+                        "scale": null,
+                        "nullable": true,
+                        "default_value": null,
+                        "is_primary_key": false,
+                        "is_foreign_key": true,
+                        "is_unique": false,
+                        "ordinal_position": 3,
+                        "source_attribute": "warehouse_name",
+                        "source_database_type": null,
+                        "source_length": null,
+                        "source_precision": null,
+                        "source_scale": null,
+                        "source_nullable": null,
+                        "source_default": null
+                    },
+                    {
+                        "name": "order_id",
+                        "data_type": "INTEGER",
+                        "length": null,
+                        "precision": null,
+                        "scale": null,
+                        "nullable": true,
+                        "default_value": null,
+                        "is_primary_key": false,
+                        "is_foreign_key": true,
+                        "is_unique": false,
+                        "ordinal_position": 4,
+                        "source_attribute": "order_id",
+                        "source_database_type": "integer",
+                        "source_length": null,
+                        "source_precision": 32,
+                        "source_scale": 0,
+                        "source_nullable": true,
+                        "source_default": null
+                    }
+                ],
+                "constraints": [
+                    {
+                        "name": "pk_shipment",
+                        "constraint_type": "PRIMARY_KEY",
+                        "table": "shipment",
+                        "columns": [
+                            "tracking_number"
+                        ],
+                        "referenced_table": null,
+                        "referenced_columns": [],
+                        "expression": null,
+                        "rationale": "Primary key preserved from the logical model."
+                    },
+                    {
+                        "name": "fk_shipment_warehouse_name",
+                        "constraint_type": "FOREIGN_KEY",
+                        "table": "shipment",
+                        "columns": [
+                            "warehouse_name"
+                        ],
+                        "referenced_table": "warehouse",
+                        "referenced_columns": [
+                            "warehouse_name"
+                        ],
+                        "expression": null,
+                        "rationale": "Preserves the relationship to Warehouse."
+                    },
+                    {
+                        "name": "fk_shipment_order_id",
+                        "constraint_type": "FOREIGN_KEY",
+                        "table": "shipment",
+                        "columns": [
+                            "order_id"
+                        ],
+                        "referenced_table": "order",
+                        "referenced_columns": [
+                            "order_id"
+                        ],
+                        "expression": null,
+                        "rationale": "Preserves the relationship to Order."
+                    }
+                ],
+                "indexes": [
+                    {
+                        "name": "idx_shipment_pk",
+                        "table": "shipment",
+                        "columns": [
+                            "tracking_number"
+                        ],
+                        "is_unique": true,
+                        "purpose": "PRIMARY_KEY",
+                        "rationale": "Enforces and serves lookups on the primary key."
+                    },
+                    {
+                        "name": "idx_shipment_warehouse_name",
+                        "table": "shipment",
+                        "columns": [
+                            "warehouse_name"
+                        ],
+                        "is_unique": false,
+                        "purpose": "FOREIGN_KEY",
+                        "rationale": "Foreign keys are joined on constantly and are scanned when the parent is deleted; an unindexed foreign key is a common cause of slow joins and lock escalation."
+                    },
+                    {
+                        "name": "idx_shipment_order_id",
+                        "table": "shipment",
+                        "columns": [
+                            "order_id"
+                        ],
+                        "is_unique": false,
+                        "purpose": "FOREIGN_KEY",
+                        "rationale": "Foreign keys are joined on constantly and are scanned when the parent is deleted; an unindexed foreign key is a common cause of slow joins and lock escalation."
+                    }
+                ],
+                "storage": {
+                    "table": "shipment",
+                    "partition_candidates": [
+                        "shipped_date"
+                    ],
+                    "clustering_candidates": [
+                        "warehouse_name",
+                        "order_id"
+                    ],
+                    "rationale": "Transaction volume accumulates over time, so partitioning on shipped_date lets queries prune to a date range. Clustering on warehouse_name, order_id co-locates rows that are joined and filtered together."
+                },
+                "source_tables": [
+                    "bronze.shipment"
+                ]
+            },
+            {
+                "name": "state",
+                "logical_entity": "State",
+                "subject_area": "Master Data",
+                "classification": "MASTER",
+                "size_category": "MEDIUM",
+                "growth_rate": "LOW",
+                "columns": [
+                    {
+                        "name": "state_name",
+                        "data_type": "STRING",
+                        "length": 100,
+                        "precision": null,
+                        "scale": null,
+                        "nullable": false,
+                        "default_value": null,
+                        "is_primary_key": true,
+                        "is_foreign_key": false,
+                        "is_unique": false,
+                        "ordinal_position": 1,
+                        "source_attribute": "state_name",
+                        "source_database_type": "character varying",
+                        "source_length": 100,
+                        "source_precision": null,
+                        "source_scale": null,
+                        "source_nullable": true,
+                        "source_default": null
+                    },
+                    {
+                        "name": "country_code",
+                        "data_type": "STRING",
+                        "length": 5,
+                        "precision": null,
+                        "scale": null,
+                        "nullable": false,
+                        "default_value": null,
+                        "is_primary_key": false,
+                        "is_foreign_key": true,
+                        "is_unique": false,
+                        "ordinal_position": 2,
+                        "source_attribute": "country_code",
+                        "source_database_type": null,
+                        "source_length": null,
+                        "source_precision": null,
+                        "source_scale": null,
+                        "source_nullable": null,
+                        "source_default": null
+                    }
+                ],
+                "constraints": [
+                    {
+                        "name": "pk_state",
+                        "constraint_type": "PRIMARY_KEY",
+                        "table": "state",
+                        "columns": [
+                            "state_name"
+                        ],
+                        "referenced_table": null,
+                        "referenced_columns": [],
+                        "expression": null,
+                        "rationale": "Primary key preserved from the logical model."
+                    },
+                    {
+                        "name": "fk_state_country_code",
+                        "constraint_type": "FOREIGN_KEY",
+                        "table": "state",
+                        "columns": [
+                            "country_code"
+                        ],
+                        "referenced_table": "country",
+                        "referenced_columns": [
+                            "country_code"
+                        ],
+                        "expression": null,
+                        "rationale": "Preserves the relationship to Country."
+                    }
+                ],
+                "indexes": [
+                    {
+                        "name": "idx_state_pk",
+                        "table": "state",
+                        "columns": [
+                            "state_name"
+                        ],
+                        "is_unique": true,
+                        "purpose": "PRIMARY_KEY",
+                        "rationale": "Enforces and serves lookups on the primary key."
+                    },
+                    {
+                        "name": "idx_state_country_code",
+                        "table": "state",
+                        "columns": [
+                            "country_code"
+                        ],
+                        "is_unique": false,
+                        "purpose": "FOREIGN_KEY",
+                        "rationale": "Foreign keys are joined on constantly and are scanned when the parent is deleted; an unindexed foreign key is a common cause of slow joins and lock escalation."
+                    }
+                ],
+                "storage": {
+                    "table": "state",
+                    "partition_candidates": [],
+                    "clustering_candidates": [
+                        "state_name"
+                    ],
+                    "rationale": "Master data is looked up by key; clustering on it keeps those reads to a minimum of blocks."
+                },
+                "source_tables": [
+                    "bronze.state"
+                ]
+            },
+            {
+                "name": "supplier",
+                "logical_entity": "Supplier",
+                "subject_area": "Master Data",
+                "classification": "LOOKUP",
+                "size_category": "SMALL",
+                "growth_rate": "STATIC",
+                "columns": [
+                    {
+                        "name": "supplier_name",
+                        "data_type": "STRING",
+                        "length": 200,
+                        "precision": null,
+                        "scale": null,
+                        "nullable": false,
+                        "default_value": null,
+                        "is_primary_key": true,
+                        "is_foreign_key": false,
+                        "is_unique": false,
+                        "ordinal_position": 1,
+                        "source_attribute": "supplier_name",
+                        "source_database_type": "character varying",
+                        "source_length": 200,
+                        "source_precision": null,
+                        "source_scale": null,
+                        "source_nullable": true,
+                        "source_default": null
+                    },
+                    {
+                        "name": "contact_name",
+                        "data_type": "STRING",
+                        "length": 200,
+                        "precision": null,
+                        "scale": null,
+                        "nullable": true,
+                        "default_value": null,
+                        "is_primary_key": false,
+                        "is_foreign_key": false,
+                        "is_unique": false,
+                        "ordinal_position": 2,
+                        "source_attribute": "contact_name",
+                        "source_database_type": "character varying",
+                        "source_length": 200,
+                        "source_precision": null,
+                        "source_scale": null,
+                        "source_nullable": true,
+                        "source_default": null
+                    },
+                    {
+                        "name": "email",
+                        "data_type": "STRING",
+                        "length": 200,
+                        "precision": null,
+                        "scale": null,
+                        "nullable": true,
+                        "default_value": null,
+                        "is_primary_key": false,
+                        "is_foreign_key": false,
+                        "is_unique": true,
+                        "ordinal_position": 3,
+                        "source_attribute": "email",
+                        "source_database_type": "character varying",
+                        "source_length": 200,
+                        "source_precision": null,
+                        "source_scale": null,
+                        "source_nullable": true,
+                        "source_default": null
+                    },
+                    {
+                        "name": "phone",
+                        "data_type": "STRING",
+                        "length": 30,
+                        "precision": null,
+                        "scale": null,
+                        "nullable": true,
+                        "default_value": null,
+                        "is_primary_key": false,
+                        "is_foreign_key": false,
+                        "is_unique": false,
+                        "ordinal_position": 4,
+                        "source_attribute": "phone",
+                        "source_database_type": "character varying",
+                        "source_length": 30,
+                        "source_precision": null,
+                        "source_scale": null,
+                        "source_nullable": true,
+                        "source_default": null
+                    }
+                ],
+                "constraints": [
+                    {
+                        "name": "pk_supplier",
+                        "constraint_type": "PRIMARY_KEY",
+                        "table": "supplier",
+                        "columns": [
+                            "supplier_name"
+                        ],
+                        "referenced_table": null,
+                        "referenced_columns": [],
+                        "expression": null,
+                        "rationale": "Primary key preserved from the logical model."
+                    },
+                    {
+                        "name": "uq_supplier_email",
+                        "constraint_type": "UNIQUE",
+                        "table": "supplier",
+                        "columns": [
+                            "email"
+                        ],
+                        "referenced_table": null,
+                        "referenced_columns": [],
+                        "expression": null,
+                        "rationale": "Alternate key: identifies a row as reliably as the primary key."
+                    }
+                ],
+                "indexes": [
+                    {
+                        "name": "idx_supplier_pk",
+                        "table": "supplier",
+                        "columns": [
+                            "supplier_name"
+                        ],
+                        "is_unique": true,
+                        "purpose": "PRIMARY_KEY",
+                        "rationale": "Enforces and serves lookups on the primary key."
+                    },
+                    {
+                        "name": "idx_supplier_email",
+                        "table": "supplier",
+                        "columns": [
+                            "email"
+                        ],
+                        "is_unique": true,
+                        "purpose": "UNIQUE_CONSTRAINT",
+                        "rationale": "Enforces the alternate key."
+                    }
+                ],
+                "storage": {
+                    "table": "supplier",
+                    "partition_candidates": [],
+                    "clustering_candidates": [],
+                    "rationale": "Lookup data is small enough to be scanned or cached in full; partitioning would add maintenance without reducing work."
+                },
+                "source_tables": [
+                    "bronze.supplier"
+                ]
+            },
+            {
+                "name": "warehouse",
+                "logical_entity": "Warehouse",
+                "subject_area": "Inventory & Warehousing",
+                "classification": "MASTER",
+                "size_category": "MEDIUM",
+                "growth_rate": "LOW",
+                "columns": [
+                    {
+                        "name": "warehouse_name",
+                        "data_type": "STRING",
+                        "length": 100,
+                        "precision": null,
+                        "scale": null,
+                        "nullable": false,
+                        "default_value": null,
+                        "is_primary_key": true,
+                        "is_foreign_key": false,
+                        "is_unique": false,
+                        "ordinal_position": 1,
+                        "source_attribute": "warehouse_name",
+                        "source_database_type": "character varying",
+                        "source_length": 100,
+                        "source_precision": null,
+                        "source_scale": null,
+                        "source_nullable": true,
+                        "source_default": null
+                    },
+                    {
+                        "name": "city_name",
+                        "data_type": "STRING",
+                        "length": 100,
+                        "precision": null,
+                        "scale": null,
+                        "nullable": true,
+                        "default_value": null,
+                        "is_primary_key": false,
+                        "is_foreign_key": true,
+                        "is_unique": false,
+                        "ordinal_position": 2,
+                        "source_attribute": "city_name",
+                        "source_database_type": null,
+                        "source_length": null,
+                        "source_precision": null,
+                        "source_scale": null,
+                        "source_nullable": null,
+                        "source_default": null
+                    }
+                ],
+                "constraints": [
+                    {
+                        "name": "pk_warehouse",
+                        "constraint_type": "PRIMARY_KEY",
+                        "table": "warehouse",
+                        "columns": [
+                            "warehouse_name"
+                        ],
+                        "referenced_table": null,
+                        "referenced_columns": [],
+                        "expression": null,
+                        "rationale": "Primary key preserved from the logical model."
+                    },
+                    {
+                        "name": "fk_warehouse_city_name",
+                        "constraint_type": "FOREIGN_KEY",
+                        "table": "warehouse",
+                        "columns": [
+                            "city_name"
+                        ],
+                        "referenced_table": "city",
+                        "referenced_columns": [
+                            "city_name"
+                        ],
+                        "expression": null,
+                        "rationale": "Preserves the relationship to City."
+                    }
+                ],
+                "indexes": [
+                    {
+                        "name": "idx_warehouse_pk",
+                        "table": "warehouse",
+                        "columns": [
+                            "warehouse_name"
+                        ],
+                        "is_unique": true,
+                        "purpose": "PRIMARY_KEY",
+                        "rationale": "Enforces and serves lookups on the primary key."
+                    },
+                    {
+                        "name": "idx_warehouse_city_name",
+                        "table": "warehouse",
+                        "columns": [
+                            "city_name"
+                        ],
+                        "is_unique": false,
+                        "purpose": "FOREIGN_KEY",
+                        "rationale": "Foreign keys are joined on constantly and are scanned when the parent is deleted; an unindexed foreign key is a common cause of slow joins and lock escalation."
+                    }
+                ],
+                "storage": {
+                    "table": "warehouse",
+                    "partition_candidates": [],
+                    "clustering_candidates": [
+                        "warehouse_name"
+                    ],
+                    "rationale": "Master data is looked up by key; clustering on it keeps those reads to a minimum of blocks."
+                },
+                "source_tables": [
+                    "bronze.warehouse"
+                ]
+            }
+        ],
+        "design_notes": [
+            "Data types are generic storage classes. STRING(255) states the shape of the data, not a vendor type; mapping onto VARCHAR2, NVARCHAR or STRING happens during DDL generation.",
+            "Every foreign key carries an index recommendation. Unindexed foreign keys are a routine cause of slow joins and of lock escalation on parent deletes.",
+            "Check constraints are only added where the domain makes the rule certain. Amounts are deliberately left unconstrained because refunds, credits and adjustments are legitimately negative."
+        ]
+    },
+    "generated_from": "logical_model.json",
+    "generated_by": "claude-haiku-4-5-20251001"
+}

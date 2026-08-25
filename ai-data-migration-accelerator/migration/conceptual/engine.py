@@ -31,7 +31,7 @@ from migration.conceptual.models import (
     ConceptualModel,
     ConceptualModelPackage,
 )
-from migration.conceptual.parser import parse_conceptual_model
+from migration.conceptual.parser import parse_conceptual_model, ConceptualModelParseError
 from migration.conceptual.prompt_builder import PromptBuilder
 from migration.profiler.models import ProfilePackage
 from migration.relationship.models import RelationshipPackage
@@ -75,7 +75,10 @@ class ConceptualModelEngine:
         profile: ProfilePackage | None = None,
         relationships: RelationshipPackage | None = None,
     ) -> ConceptualModelPackage:
-        """Run the full flow and return a validated package."""
+        """Run the full flow and return a validated package.
+
+        If the LLM response has duplicate entity names, retries once with a
+        focused correction prompt. Other validation errors fail immediately."""
         context = self.build_context(metadata, profile, relationships)
 
         system_prompt = self.prompt_builder.build_system_prompt()
@@ -90,7 +93,37 @@ class ConceptualModelEngine:
         )
 
         raw = self.client.complete(system_prompt, user_prompt, schema)
-        model = parse_conceptual_model(raw)
+
+        try:
+            model = self._parse_and_reconcile(
+                raw,
+                context,
+                metadata,
+                relationships,
+            )
+        except ConceptualModelParseError as exc:
+            # Retry once if the error is duplicate entity names
+            duplicates = exc.duplicate_entity_names
+            if duplicates:
+                logger.warning(
+                    "Response had duplicate entity names: %s. Retrying with correction prompt.",
+                    ", ".join(f"'{name}'" for name in duplicates),
+                )
+                correction_user_prompt = self.prompt_builder.build_correction_prompt_for_duplicates(
+                    raw, duplicates
+                )
+                retry_raw = self.client.complete(system_prompt, correction_user_prompt, schema)
+                # Parse the retry response; this one must succeed or fail hard
+                model = self._parse_and_reconcile(
+                    retry_raw,
+                    context,
+                    metadata,
+                    relationships,
+                )
+                logger.info("Retry succeeded; duplicate entity names corrected.")
+            else:
+                # Not a duplicate-name error; fail normally
+                raise
 
         logger.info(
             "Conceptual model parsed: %s domains, %s entities, %s business rules",
@@ -102,6 +135,23 @@ class ConceptualModelEngine:
         return ConceptualModelPackage(
             conceptual_model=model,
             generated_by=self.model_name or getattr(self.client, "model", None),
+        )
+
+    def _parse_and_reconcile(
+        self,
+        raw: str,
+        context: BusinessContext,
+        metadata: MetadataPackage,
+        relationships: RelationshipPackage | None,
+    ) -> ConceptualModel:
+        """Parse and reconcile a conceptual model response.
+
+        Extracted into a separate method so it can be reused by retries."""
+        return parse_conceptual_model(
+            raw,
+            expected_relationship_count=context.total_relationships,
+            source_relationships=relationships.relationships if relationships else None,
+            known_tables=self._known_tables(metadata),
         )
 
     def build_context(
@@ -120,5 +170,15 @@ class ConceptualModelEngine:
             profile=profile.profile if profile is not None else None,
             relationships=relationships.relationships if relationships is not None else None,
         )
+
+    @staticmethod
+    def _known_tables(metadata: MetadataPackage) -> list[tuple[str, str]]:
+        """(schema, table) pairs from source metadata, for reconciliation
+        fallback matching. Deterministic ground truth - not LLM-reported."""
+        return [
+            (schema.schema_name, table.table_name)
+            for schema in metadata.metadata.schemas
+            for table in schema.tables
+        ]
 
 

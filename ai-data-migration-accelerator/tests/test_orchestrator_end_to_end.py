@@ -249,6 +249,14 @@ def test_full_run_produces_every_artifact(tmp_path: Path, fake_connector):
         "logical_model.json",
         "logical_model.md",
         "logical_model.html",
+        "physical_model.json",
+        "physical_model.md",
+        "physical_model.html",
+        "databricks.sql",
+        "ddl.json",
+        "estimation.json",
+        "estimation.md",
+        "estimation.html",
         "summary.txt",
     }
 
@@ -295,6 +303,97 @@ def test_logical_toggle_disables_only_the_logical_step(tmp_path: Path, fake_conn
 
     assert "conceptual_model.json" in produced
     assert "logical_model.json" not in produced
+
+
+def test_physical_model_is_derived_from_the_logical_model(tmp_path: Path, fake_connector):
+    """Module 6 runs inside the pipeline, not only as a standalone script."""
+    MigrationOrchestrator(
+        _config(tmp_path), llm_client=StubLLMClient(LLM_RESPONSE)
+    ).run()
+
+    run = _run_directory(tmp_path)
+    physical = json.loads((run / "physical_model.json").read_text(encoding="utf-8"))
+    model = physical["physical_model"]
+
+    assert physical["generated_from"] == "logical_model.json"
+    assert {t["name"] for t in model["tables"]}
+    assert model["tables"]
+
+    html = (run / "physical_model.html").read_text(encoding="utf-8")
+    assert html.startswith("<!DOCTYPE html>")
+    assert "Physical Data Model" in html
+
+
+def test_physical_model_is_skipped_when_the_logical_model_is(
+    tmp_path: Path, fake_connector
+):
+    """Without a logical model there is nothing to derive a physical model from."""
+    config = _config(tmp_path)
+    config.artifacts.logical_model = False
+
+    MigrationOrchestrator(config, llm_client=StubLLMClient(LLM_RESPONSE)).run()
+
+    produced = {p.name for p in _run_directory(tmp_path).iterdir()}
+
+    assert "logical_model.json" not in produced
+    assert "physical_model.json" not in produced
+
+
+def test_physical_toggle_disables_only_the_physical_step(tmp_path: Path, fake_connector):
+    config = _config(tmp_path)
+    config.artifacts.physical_model = False
+
+    MigrationOrchestrator(config, llm_client=StubLLMClient(LLM_RESPONSE)).run()
+
+    produced = {p.name for p in _run_directory(tmp_path).iterdir()}
+
+    assert "logical_model.json" in produced
+    assert "physical_model.json" not in produced
+
+
+def test_ddl_is_generated_from_physical_model(tmp_path: Path, fake_connector):
+    """DDL generation is the final step in the pipeline."""
+    MigrationOrchestrator(
+        _config(tmp_path), llm_client=StubLLMClient(LLM_RESPONSE)
+    ).run()
+
+    run = _run_directory(tmp_path)
+    produced = {p.name for p in run.iterdir()}
+
+    assert "databricks.sql" in produced
+    assert "ddl.json" in produced
+
+    sql_file = run / "databricks.sql"
+    assert sql_file.exists()
+    sql = sql_file.read_text(encoding="utf-8")
+
+    assert "CREATE TABLE" in sql
+    assert "`customer`" in sql or "`orders`" in sql
+
+
+def test_ddl_is_skipped_when_physical_model_is(tmp_path: Path, fake_connector):
+    """Without a physical model there is nothing to generate DDL from."""
+    config = _config(tmp_path)
+    config.artifacts.physical_model = False
+
+    MigrationOrchestrator(config, llm_client=StubLLMClient(LLM_RESPONSE)).run()
+
+    produced = {p.name for p in _run_directory(tmp_path).iterdir()}
+
+    assert "physical_model.json" not in produced
+    assert "databricks.sql" not in produced
+
+
+def test_ddl_toggle_disables_only_the_ddl_step(tmp_path: Path, fake_connector):
+    config = _config(tmp_path)
+    config.artifacts.ddl = False
+
+    MigrationOrchestrator(config, llm_client=StubLLMClient(LLM_RESPONSE)).run()
+
+    produced = {p.name for p in _run_directory(tmp_path).iterdir()}
+
+    assert "physical_model.json" in produced
+    assert "databricks.sql" not in produced
 
 
 def test_conceptual_html_is_produced_and_self_contained(tmp_path: Path, fake_connector):

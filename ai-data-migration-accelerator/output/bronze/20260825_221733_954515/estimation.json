@@ -1,0 +1,90 @@
+{
+    "estimation_result": {
+        "source_type": "postgres",
+        "target_type": "databricks",
+        "complexity_level": "HIGH",
+        "complexity_factors": {
+            "table_count": 7,
+            "total_columns": 54,
+            "primary_key_relationships": 7,
+            "foreign_key_relationships": 6,
+            "complex_relationships": 1,
+            "unique_constraints": 3,
+            "check_constraints": 3,
+            "large_tables": 3,
+            "views_count": 0,
+            "procedures_count": 0,
+            "triggers_count": 0,
+            "datatype_conversions": 0,
+            "target_specific_complexity": 5,
+            "db2_legacy_datatypes": 0,
+            "db2_lob_columns": 0,
+            "db2_graphic_columns": 0,
+            "db2_decimal_columns": 0,
+            "db2_indexes": 0,
+            "db2_xml_columns": 0
+        },
+        "effort_components": [
+            {
+                "name": "Analysis & Discovery",
+                "effort_days": 4.324999999999999,
+                "description": "Schema profiling, relationship discovery: 4.3 person-days; calendar duration: ~5.4 days with 1 person(s).",
+                "drivers": []
+            },
+            {
+                "name": "Modeling & Design",
+                "effort_days": 2.9375,
+                "description": "Logical & physical model design: 2.9 person-days; calendar duration: ~3.7 days with 1 person(s).",
+                "drivers": []
+            },
+            {
+                "name": "Development & Conversion",
+                "effort_days": 4.8625,
+                "description": "DDL generation, transformation logic, type mapping: 4.9 person-days; calendar duration: ~6.1 days with 1 person(s).",
+                "drivers": []
+            },
+            {
+                "name": "Testing & Validation",
+                "effort_days": 3.8125,
+                "description": "Functional, data, integration testing: 3.8 person-days; calendar duration: ~4.8 days with 1 person(s).",
+                "drivers": []
+            },
+            {
+                "name": "Deployment & Cutover",
+                "effort_days": 2.0,
+                "description": "Migration execution, cutover, validation: 2.0 person-days; calendar duration: ~2.5 days with 1 person(s).",
+                "drivers": []
+            }
+        ],
+        "total_effort_days": 17.9375,
+        "total_effort_weeks": 3.5875,
+        "total_effort_months": 0.8153409090909091,
+        "discovery_effort_days": 4.324999999999999,
+        "modeling_effort_days": 2.9375,
+        "ddl_effort_days": 4.8625,
+        "conversion_effort_days": 4.8625,
+        "testing_effort_days": 3.8125,
+        "migration_effort_days": 2.0,
+        "assumptions": [
+            "Schema contains 7 tables with 54 total columns.",
+            "Found 6 foreign key relationships.",
+            "3 tables classified as large (>1M rows).",
+            "Team size: 1 person(s) at 8.0 hours/day.",
+            "Productivity factor: 80% (overhead accounted for).",
+            "Assumes standard complexity migration with historical project data."
+        ],
+        "risks": [
+            "Large tables (3) may require partitioning strategy.",
+            "Complex relationships (1) may need custom logic.",
+            "High complexity may increase discovery and testing effort.",
+            "Single-person team may have coordination bottlenecks."
+        ],
+        "recommendations": [
+            "Use partitioning/parallelization for large tables.",
+            "Consider adding 1-2 team members to reduce calendar duration from 1 \u2192 3."
+        ],
+        "confidence_level": "MEDIUM"
+    },
+    "generated_from": "physical_model.json",
+    "generated_by": "EffortEstimator"
+}

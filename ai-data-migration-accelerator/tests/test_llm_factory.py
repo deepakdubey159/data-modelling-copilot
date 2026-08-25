@@ -96,11 +96,13 @@ def test_blank_api_key_counts_as_missing(monkeypatch):
         create_llm_client(_config())
 
 
-def test_openai_provider_is_refused_with_a_clear_message(monkeypatch):
-    monkeypatch.setenv("ANTHROPIC_API_KEY", "sk-test-key")
+def test_openai_provider_is_now_supported(monkeypatch):
+    monkeypatch.setenv("OPENAI_API_KEY", "sk-test-key")
 
-    with pytest.raises(UnsupportedProviderError, match="anthropic"):
-        create_llm_client(_config(provider=LLMProvider.OPENAI))
+    client = create_llm_client(_config(provider=LLMProvider.OPENAI, api_key_env="OPENAI_API_KEY"))
+
+    from migration.llm.openai import OpenAIClient
+    assert isinstance(client, OpenAIClient)
 
 
 def test_temperature_in_config_logs_a_warning(monkeypatch, caplog):
@@ -151,6 +153,6 @@ def test_client_does_not_import_anthropic_at_construction():
 
 def test_client_never_stores_a_temperature():
     """The one field that would cause a 400 must not be plumbed through."""
-    client = AnthropicClient()
+    client = AnthropicClient(model="claude-opus-5")
 
     assert not hasattr(client, "temperature")

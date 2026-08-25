@@ -31,30 +31,47 @@ logger = logging.getLogger(__name__)
 class PostgresConnector(BaseConnector):
     """Source connector for PostgreSQL databases."""
 
-    def __init__(self, host: str, port: int, database: str, username: str, password: str):
-        super().__init__(host, port, database, username, password)
+    def __init__(
+        self,
+        host: str,
+        port: int,
+        database: str,
+        username: str,
+        password: str,
+        connection_timeout: int = 30,
+    ):
+        super().__init__(host, port, database, username, password, connection_timeout)
         self._engine: Engine | None = None
 
     # -- Lifecycle -----------------------------------------------------
 
     def connect(self) -> None:
-        url =  URL.create(drivername="postgresql+psycopg",
-                             username=self.username,
-                                password=self.password,
-                                host=self.host,
-                                port=self.port,
-                                database=self.database,
+        url = URL.create(
+            drivername="postgresql+psycopg",
+            username=self.username,
+            password=self.password,
+            host=self.host,
+            port=self.port,
+            database=self.database,
         )
         try:
-            self._engine = create_engine(url, pool_pre_ping=True)
+            # Pass connection_timeout to psycopg via connect_args
+            self._engine = create_engine(
+                url,
+                pool_pre_ping=True,
+                connect_args={"connect_timeout": self.connection_timeout},
+            )
             # Force an actual connection attempt now, rather than lazily
             # on first query, so connect() fails fast and loudly.
             with self._engine.connect():
                 pass
             self._is_connected = True
             logger.info(
-                "Connected to PostgreSQL database '%s' at %s:%s",
-                self.database, self.host, self.port,
+                "Connected to PostgreSQL database '%s' at %s:%s (timeout=%ds)",
+                self.database,
+                self.host,
+                self.port,
+                self.connection_timeout,
             )
         except SQLAlchemyError as exc:
             self._is_connected = False

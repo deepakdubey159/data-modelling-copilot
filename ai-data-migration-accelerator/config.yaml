@@ -4,22 +4,27 @@ project:
 
 source:
   type: postgres
-  host: localhost
-  port: 5432
-  database: datamodel
-  username: postgres
-  # Prefer the environment variable. Falls back to the literal below so an
-  # existing local setup keeps working; remove the default before sharing.
-  password: 'Visionet@1234'
+  host: ${SOURCE_DB_HOST:-localhost}
+  port: ${SOURCE_DB_PORT:-5432}
+  database: ${SOURCE_DB_NAME:-datamodel}
+  username: ${SOURCE_DB_USER:-postgres}
+  password: ${SOURCE_DB_PASSWORD}
   schema:
     - bronze
+  connection_timeout: 10
 
 target:
   type: databricks
+  host_env: DATABRICKS_HOST
+  token_env: DATABRICKS_TOKEN
+  http_path_env: DATABRICKS_HTTP_PATH
+  workspace_path_env: DATABRICKS_WORKSPACE_PATH
+  catalog: dblearn
+  schema: bronze
 
 llm:
   provider: anthropic
-  model: claude-opus-5
+  model: claude-haiku-4-5-20251001
 
   # Reasoning depth: low | medium | high | xhigh | max.
   # This replaces `temperature`, which current Claude models reject.
@@ -31,6 +36,18 @@ llm:
   # Environment variable holding the key. The key itself never goes in this
   # file - config.yaml is not git-ignored.
   api_key_env: ANTHROPIC_API_KEY
+
+estimation:
+  # Team configuration for effort estimation
+  team_size: 2
+  hours_per_day: 8.0
+  productivity_factor: 0.8
+  # Phase parallelization (fraction of overlap with previous phase)
+  phase_parallelization:
+    modeling: 0.0
+    development: 0.1
+    testing: 0.2
+    deployment: 0.0
 
 artifacts:
   profile: true

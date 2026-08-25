@@ -1,0 +1,2156 @@
+{
+    "metadata": {
+        "database_name": "datamodel",
+        "source_database_type": "postgres",
+        "schemas": [
+            {
+                "schema_name": "bronze",
+                "tables": [
+                    {
+                        "table_name": "audit_log",
+                        "table_type": "BASE TABLE",
+                        "columns": [
+                            {
+                                "name": "audit_id",
+                                "data_type": "integer",
+                                "nullable": false,
+                                "default_value": "nextval('bronze.audit_log_audit_id_seq'::regclass)",
+                                "ordinal_position": 1,
+                                "character_length": null,
+                                "numeric_precision": 32,
+                                "numeric_scale": 0,
+                                "is_primary_key": true,
+                                "is_foreign_key": false,
+                                "comment": null
+                            },
+                            {
+                                "name": "table_name",
+                                "data_type": "character varying",
+                                "nullable": true,
+                                "default_value": null,
+                                "ordinal_position": 2,
+                                "character_length": 100,
+                                "numeric_precision": null,
+                                "numeric_scale": null,
+                                "is_primary_key": false,
+                                "is_foreign_key": false,
+                                "comment": null
+                            },
+                            {
+                                "name": "operation",
+                                "data_type": "character varying",
+                                "nullable": true,
+                                "default_value": null,
+                                "ordinal_position": 3,
+                                "character_length": 20,
+                                "numeric_precision": null,
+                                "numeric_scale": null,
+                                "is_primary_key": false,
+                                "is_foreign_key": false,
+                                "comment": null
+                            },
+                            {
+                                "name": "user_name",
+                                "data_type": "character varying",
+                                "nullable": true,
+                                "default_value": null,
+                                "ordinal_position": 4,
+                                "character_length": 100,
+                                "numeric_precision": null,
+                                "numeric_scale": null,
+                                "is_primary_key": false,
+                                "is_foreign_key": false,
+                                "comment": null
+                            },
+                            {
+                                "name": "operation_timestamp",
+                                "data_type": "timestamp without time zone",
+                                "nullable": true,
+                                "default_value": "CURRENT_TIMESTAMP",
+                                "ordinal_position": 5,
+                                "character_length": null,
+                                "numeric_precision": null,
+                                "numeric_scale": null,
+                                "is_primary_key": false,
+                                "is_foreign_key": false,
+                                "comment": null
+                            }
+                        ],
+                        "primary_keys": [
+                            {
+                                "constraint_name": "audit_log_pkey",
+                                "columns": [
+                                    "audit_id"
+                                ]
+                            }
+                        ],
+                        "foreign_keys": [],
+                        "indexes": [
+                            {
+                                "index_name": "audit_log_pkey",
+                                "definition": "CREATE UNIQUE INDEX audit_log_pkey ON bronze.audit_log USING btree (audit_id)"
+                            }
+                        ],
+                        "constraints": [
+                            {
+                                "constraint_name": "audit_log_pkey",
+                                "constraint_type": "PRIMARY KEY"
+                            },
+                            {
+                                "constraint_name": "audit_log_audit_id_not_null",
+                                "constraint_type": "CHECK"
+                            }
+                        ],
+                        "statistics": {
+                            "row_estimate": 0,
+                            "dead_row_estimate": 0,
+                            "last_analyze": null,
+                            "last_autoanalyze": null
+                        }
+                    },
+                    {
+                        "table_name": "category",
+                        "table_type": "BASE TABLE",
+                        "columns": [
+                            {
+                                "name": "category_id",
+                                "data_type": "integer",
+                                "nullable": false,
+                                "default_value": "nextval('bronze.category_category_id_seq'::regclass)",
+                                "ordinal_position": 1,
+                                "character_length": null,
+                                "numeric_precision": 32,
+                                "numeric_scale": 0,
+                                "is_primary_key": true,
+                                "is_foreign_key": false,
+                                "comment": null
+                            },
+                            {
+                                "name": "category_name",
+                                "data_type": "character varying",
+                                "nullable": true,
+                                "default_value": null,
+                                "ordinal_position": 2,
+                                "character_length": 100,
+                                "numeric_precision": null,
+                                "numeric_scale": null,
+                                "is_primary_key": false,
+                                "is_foreign_key": false,
+                                "comment": null
+                            }
+                        ],
+                        "primary_keys": [
+                            {
+                                "constraint_name": "category_pkey",
+                                "columns": [
+                                    "category_id"
+                                ]
+                            }
+                        ],
+                        "foreign_keys": [],
+                        "indexes": [
+                            {
+                                "index_name": "category_category_name_key",
+                                "definition": "CREATE UNIQUE INDEX category_category_name_key ON bronze.category USING btree (category_name)"
+                            },
+                            {
+                                "index_name": "category_pkey",
+                                "definition": "CREATE UNIQUE INDEX category_pkey ON bronze.category USING btree (category_id)"
+                            }
+                        ],
+                        "constraints": [
+                            {
+                                "constraint_name": "category_category_id_not_null",
+                                "constraint_type": "CHECK"
+                            },
+                            {
+                                "constraint_name": "category_category_name_key",
+                                "constraint_type": "UNIQUE"
+                            },
+                            {
+                                "constraint_name": "category_pkey",
+                                "constraint_type": "PRIMARY KEY"
+                            }
+                        ],
+                        "statistics": {
+                            "row_estimate": 0,
+                            "dead_row_estimate": 0,
+                            "last_analyze": null,
+                            "last_autoanalyze": null
+                        }
+                    },
+                    {
+                        "table_name": "city",
+                        "table_type": "BASE TABLE",
+                        "columns": [
+                            {
+                                "name": "city_id",
+                                "data_type": "integer",
+                                "nullable": false,
+                                "default_value": "nextval('bronze.city_city_id_seq'::regclass)",
+                                "ordinal_position": 1,
+                                "character_length": null,
+                                "numeric_precision": 32,
+                                "numeric_scale": 0,
+                                "is_primary_key": true,
+                                "is_foreign_key": false,
+                                "comment": null
+                            },
+                            {
+                                "name": "state_id",
+                                "data_type": "integer",
+                                "nullable": false,
+                                "default_value": null,
+                                "ordinal_position": 2,
+                                "character_length": null,
+                                "numeric_precision": 32,
+                                "numeric_scale": 0,
+                                "is_primary_key": false,
+                                "is_foreign_key": true,
+                                "comment": null
+                            },
+                            {
+                                "name": "city_name",
+                                "data_type": "character varying",
+                                "nullable": true,
+                                "default_value": null,
+                                "ordinal_position": 3,
+                                "character_length": 100,
+                                "numeric_precision": null,
+                                "numeric_scale": null,
+                                "is_primary_key": false,
+                                "is_foreign_key": false,
+                                "comment": null
+                            }
+                        ],
+                        "primary_keys": [
+                            {
+                                "constraint_name": "city_pkey",
+                                "columns": [
+                                    "city_id"
+                                ]
+                            }
+                        ],
+                        "foreign_keys": [
+                            {
+                                "constraint_name": "city_state_id_fkey",
+                                "column": "state_id",
+                                "referenced_schema": "bronze",
+                                "referenced_table": "state",
+                                "referenced_column": "state_id"
+                            }
+                        ],
+                        "indexes": [
+                            {
+                                "index_name": "city_pkey",
+                                "definition": "CREATE UNIQUE INDEX city_pkey ON bronze.city USING btree (city_id)"
+                            }
+                        ],
+                        "constraints": [
+                            {
+                                "constraint_name": "city_state_id_not_null",
+                                "constraint_type": "CHECK"
+                            },
+                            {
+                                "constraint_name": "city_pkey",
+                                "constraint_type": "PRIMARY KEY"
+                            },
+                            {
+                                "constraint_name": "city_state_id_fkey",
+                                "constraint_type": "FOREIGN KEY"
+                            },
+                            {
+                                "constraint_name": "city_city_id_not_null",
+                                "constraint_type": "CHECK"
+                            }
+                        ],
+                        "statistics": {
+                            "row_estimate": 0,
+                            "dead_row_estimate": 0,
+                            "last_analyze": null,
+                            "last_autoanalyze": null
+                        }
+                    },
+                    {
+                        "table_name": "country",
+                        "table_type": "BASE TABLE",
+                        "columns": [
+                            {
+                                "name": "country_id",
+                                "data_type": "integer",
+                                "nullable": false,
+                                "default_value": "nextval('bronze.country_country_id_seq'::regclass)",
+                                "ordinal_position": 1,
+                                "character_length": null,
+                                "numeric_precision": 32,
+                                "numeric_scale": 0,
+                                "is_primary_key": true,
+                                "is_foreign_key": false,
+                                "comment": null
+                            },
+                            {
+                                "name": "country_code",
+                                "data_type": "character varying",
+                                "nullable": false,
+                                "default_value": null,
+                                "ordinal_position": 2,
+                                "character_length": 5,
+                                "numeric_precision": null,
+                                "numeric_scale": null,
+                                "is_primary_key": false,
+                                "is_foreign_key": false,
+                                "comment": null
+                            },
+                            {
+                                "name": "country_name",
+                                "data_type": "character varying",
+                                "nullable": false,
+                                "default_value": null,
+                                "ordinal_position": 3,
+                                "character_length": 100,
+                                "numeric_precision": null,
+                                "numeric_scale": null,
+                                "is_primary_key": false,
+                                "is_foreign_key": false,
+                                "comment": null
+                            },
+                            {
+                                "name": "created_at",
+                                "data_type": "timestamp without time zone",
+                                "nullable": true,
+                                "default_value": "CURRENT_TIMESTAMP",
+                                "ordinal_position": 4,
+                                "character_length": null,
+                                "numeric_precision": null,
+                                "numeric_scale": null,
+                                "is_primary_key": false,
+                                "is_foreign_key": false,
+                                "comment": null
+                            }
+                        ],
+                        "primary_keys": [
+                            {
+                                "constraint_name": "country_pkey",
+                                "columns": [
+                                    "country_id"
+                                ]
+                            }
+                        ],
+                        "foreign_keys": [],
+                        "indexes": [
+                            {
+                                "index_name": "country_country_code_key",
+                                "definition": "CREATE UNIQUE INDEX country_country_code_key ON bronze.country USING btree (country_code)"
+                            },
+                            {
+                                "index_name": "country_pkey",
+                                "definition": "CREATE UNIQUE INDEX country_pkey ON bronze.country USING btree (country_id)"
+                            }
+                        ],
+                        "constraints": [
+                            {
+                                "constraint_name": "country_country_name_not_null",
+                                "constraint_type": "CHECK"
+                            },
+                            {
+                                "constraint_name": "country_country_code_key",
+                                "constraint_type": "UNIQUE"
+                            },
+                            {
+                                "constraint_name": "country_country_code_not_null",
+                                "constraint_type": "CHECK"
+                            },
+                            {
+                                "constraint_name": "country_country_id_not_null",
+                                "constraint_type": "CHECK"
+                            },
+                            {
+                                "constraint_name": "country_pkey",
+                                "constraint_type": "PRIMARY KEY"
+                            }
+                        ],
+                        "statistics": {
+                            "row_estimate": 0,
+                            "dead_row_estimate": 0,
+                            "last_analyze": null,
+                            "last_autoanalyze": null
+                        }
+                    },
+                    {
+                        "table_name": "customer",
+                        "table_type": "BASE TABLE",
+                        "columns": [
+                            {
+                                "name": "customer_id",
+                                "data_type": "integer",
+                                "nullable": false,
+                                "default_value": "nextval('bronze.customer_customer_id_seq'::regclass)",
+                                "ordinal_position": 1,
+                                "character_length": null,
+                                "numeric_precision": 32,
+                                "numeric_scale": 0,
+                                "is_primary_key": true,
+                                "is_foreign_key": false,
+                                "comment": null
+                            },
+                            {
+                                "name": "customer_number",
+                                "data_type": "character varying",
+                                "nullable": true,
+                                "default_value": null,
+                                "ordinal_position": 2,
+                                "character_length": 20,
+                                "numeric_precision": null,
+                                "numeric_scale": null,
+                                "is_primary_key": false,
+                                "is_foreign_key": false,
+                                "comment": null
+                            },
+                            {
+                                "name": "first_name",
+                                "data_type": "character varying",
+                                "nullable": true,
+                                "default_value": null,
+                                "ordinal_position": 3,
+                                "character_length": 100,
+                                "numeric_precision": null,
+                                "numeric_scale": null,
+                                "is_primary_key": false,
+                                "is_foreign_key": false,
+                                "comment": null
+                            },
+                            {
+                                "name": "last_name",
+                                "data_type": "character varying",
+                                "nullable": true,
+                                "default_value": null,
+                                "ordinal_position": 4,
+                                "character_length": 100,
+                                "numeric_precision": null,
+                                "numeric_scale": null,
+                                "is_primary_key": false,
+                                "is_foreign_key": false,
+                                "comment": null
+                            },
+                            {
+                                "name": "email",
+                                "data_type": "character varying",
+                                "nullable": true,
+                                "default_value": null,
+                                "ordinal_position": 5,
+                                "character_length": 150,
+                                "numeric_precision": null,
+                                "numeric_scale": null,
+                                "is_primary_key": false,
+                                "is_foreign_key": false,
+                                "comment": null
+                            },
+                            {
+                                "name": "phone",
+                                "data_type": "character varying",
+                                "nullable": true,
+                                "default_value": null,
+                                "ordinal_position": 6,
+                                "character_length": 20,
+                                "numeric_precision": null,
+                                "numeric_scale": null,
+                                "is_primary_key": false,
+                                "is_foreign_key": false,
+                                "comment": null
+                            },
+                            {
+                                "name": "city_id",
+                                "data_type": "integer",
+                                "nullable": true,
+                                "default_value": null,
+                                "ordinal_position": 7,
+                                "character_length": null,
+                                "numeric_precision": 32,
+                                "numeric_scale": 0,
+                                "is_primary_key": false,
+                                "is_foreign_key": true,
+                                "comment": null
+                            },
+                            {
+                                "name": "credit_limit",
+                                "data_type": "numeric",
+                                "nullable": true,
+                                "default_value": null,
+                                "ordinal_position": 8,
+                                "character_length": null,
+                                "numeric_precision": 12,
+                                "numeric_scale": 2,
+                                "is_primary_key": false,
+                                "is_foreign_key": false,
+                                "comment": null
+                            },
+                            {
+                                "name": "status",
+                                "data_type": "character varying",
+                                "nullable": true,
+                                "default_value": null,
+                                "ordinal_position": 9,
+                                "character_length": 20,
+                                "numeric_precision": null,
+                                "numeric_scale": null,
+                                "is_primary_key": false,
+                                "is_foreign_key": false,
+                                "comment": null
+                            }
+                        ],
+                        "primary_keys": [
+                            {
+                                "constraint_name": "customer_pkey",
+                                "columns": [
+                                    "customer_id"
+                                ]
+                            }
+                        ],
+                        "foreign_keys": [
+                            {
+                                "constraint_name": "customer_city_id_fkey",
+                                "column": "city_id",
+                                "referenced_schema": "bronze",
+                                "referenced_table": "city",
+                                "referenced_column": "city_id"
+                            }
+                        ],
+                        "indexes": [
+                            {
+                                "index_name": "customer_customer_number_key",
+                                "definition": "CREATE UNIQUE INDEX customer_customer_number_key ON bronze.customer USING btree (customer_number)"
+                            },
+                            {
+                                "index_name": "customer_email_key",
+                                "definition": "CREATE UNIQUE INDEX customer_email_key ON bronze.customer USING btree (email)"
+                            },
+                            {
+                                "index_name": "customer_pkey",
+                                "definition": "CREATE UNIQUE INDEX customer_pkey ON bronze.customer USING btree (customer_id)"
+                            }
+                        ],
+                        "constraints": [
+                            {
+                                "constraint_name": "customer_city_id_fkey",
+                                "constraint_type": "FOREIGN KEY"
+                            },
+                            {
+                                "constraint_name": "customer_status_check",
+                                "constraint_type": "CHECK"
+                            },
+                            {
+                                "constraint_name": "customer_customer_id_not_null",
+                                "constraint_type": "CHECK"
+                            },
+                            {
+                                "constraint_name": "customer_pkey",
+                                "constraint_type": "PRIMARY KEY"
+                            },
+                            {
+                                "constraint_name": "customer_customer_number_key",
+                                "constraint_type": "UNIQUE"
+                            },
+                            {
+                                "constraint_name": "customer_email_key",
+                                "constraint_type": "UNIQUE"
+                            }
+                        ],
+                        "statistics": {
+                            "row_estimate": 0,
+                            "dead_row_estimate": 0,
+                            "last_analyze": null,
+                            "last_autoanalyze": null
+                        }
+                    },
+                    {
+                        "table_name": "department",
+                        "table_type": "BASE TABLE",
+                        "columns": [
+                            {
+                                "name": "department_id",
+                                "data_type": "integer",
+                                "nullable": false,
+                                "default_value": "nextval('bronze.department_department_id_seq'::regclass)",
+                                "ordinal_position": 1,
+                                "character_length": null,
+                                "numeric_precision": 32,
+                                "numeric_scale": 0,
+                                "is_primary_key": true,
+                                "is_foreign_key": false,
+                                "comment": null
+                            },
+                            {
+                                "name": "department_name",
+                                "data_type": "character varying",
+                                "nullable": true,
+                                "default_value": null,
+                                "ordinal_position": 2,
+                                "character_length": 100,
+                                "numeric_precision": null,
+                                "numeric_scale": null,
+                                "is_primary_key": false,
+                                "is_foreign_key": false,
+                                "comment": null
+                            }
+                        ],
+                        "primary_keys": [
+                            {
+                                "constraint_name": "department_pkey",
+                                "columns": [
+                                    "department_id"
+                                ]
+                            }
+                        ],
+                        "foreign_keys": [],
+                        "indexes": [
+                            {
+                                "index_name": "department_department_name_key",
+                                "definition": "CREATE UNIQUE INDEX department_department_name_key ON bronze.department USING btree (department_name)"
+                            },
+                            {
+                                "index_name": "department_pkey",
+                                "definition": "CREATE UNIQUE INDEX department_pkey ON bronze.department USING btree (department_id)"
+                            }
+                        ],
+                        "constraints": [
+                            {
+                                "constraint_name": "department_pkey",
+                                "constraint_type": "PRIMARY KEY"
+                            },
+                            {
+                                "constraint_name": "department_department_name_key",
+                                "constraint_type": "UNIQUE"
+                            },
+                            {
+                                "constraint_name": "department_department_id_not_null",
+                                "constraint_type": "CHECK"
+                            }
+                        ],
+                        "statistics": {
+                            "row_estimate": 0,
+                            "dead_row_estimate": 0,
+                            "last_analyze": null,
+                            "last_autoanalyze": null
+                        }
+                    },
+                    {
+                        "table_name": "employee",
+                        "table_type": "BASE TABLE",
+                        "columns": [
+                            {
+                                "name": "employee_id",
+                                "data_type": "integer",
+                                "nullable": false,
+                                "default_value": "nextval('bronze.employee_employee_id_seq'::regclass)",
+                                "ordinal_position": 1,
+                                "character_length": null,
+                                "numeric_precision": 32,
+                                "numeric_scale": 0,
+                                "is_primary_key": true,
+                                "is_foreign_key": false,
+                                "comment": null
+                            },
+                            {
+                                "name": "manager_id",
+                                "data_type": "integer",
+                                "nullable": true,
+                                "default_value": null,
+                                "ordinal_position": 2,
+                                "character_length": null,
+                                "numeric_precision": 32,
+                                "numeric_scale": 0,
+                                "is_primary_key": false,
+                                "is_foreign_key": true,
+                                "comment": null
+                            },
+                            {
+                                "name": "department_id",
+                                "data_type": "integer",
+                                "nullable": true,
+                                "default_value": null,
+                                "ordinal_position": 3,
+                                "character_length": null,
+                                "numeric_precision": 32,
+                                "numeric_scale": 0,
+                                "is_primary_key": false,
+                                "is_foreign_key": true,
+                                "comment": null
+                            },
+                            {
+                                "name": "first_name",
+                                "data_type": "character varying",
+                                "nullable": true,
+                                "default_value": null,
+                                "ordinal_position": 4,
+                                "character_length": 100,
+                                "numeric_precision": null,
+                                "numeric_scale": null,
+                                "is_primary_key": false,
+                                "is_foreign_key": false,
+                                "comment": null
+                            },
+                            {
+                                "name": "last_name",
+                                "data_type": "character varying",
+                                "nullable": true,
+                                "default_value": null,
+                                "ordinal_position": 5,
+                                "character_length": 100,
+                                "numeric_precision": null,
+                                "numeric_scale": null,
+                                "is_primary_key": false,
+                                "is_foreign_key": false,
+                                "comment": null
+                            },
+                            {
+                                "name": "email",
+                                "data_type": "character varying",
+                                "nullable": true,
+                                "default_value": null,
+                                "ordinal_position": 6,
+                                "character_length": 150,
+                                "numeric_precision": null,
+                                "numeric_scale": null,
+                                "is_primary_key": false,
+                                "is_foreign_key": false,
+                                "comment": null
+                            },
+                            {
+                                "name": "salary",
+                                "data_type": "numeric",
+                                "nullable": true,
+                                "default_value": null,
+                                "ordinal_position": 7,
+                                "character_length": null,
+                                "numeric_precision": 12,
+                                "numeric_scale": 2,
+                                "is_primary_key": false,
+                                "is_foreign_key": false,
+                                "comment": null
+                            },
+                            {
+                                "name": "hire_date",
+                                "data_type": "date",
+                                "nullable": true,
+                                "default_value": null,
+                                "ordinal_position": 8,
+                                "character_length": null,
+                                "numeric_precision": null,
+                                "numeric_scale": null,
+                                "is_primary_key": false,
+                                "is_foreign_key": false,
+                                "comment": null
+                            }
+                        ],
+                        "primary_keys": [
+                            {
+                                "constraint_name": "employee_pkey",
+                                "columns": [
+                                    "employee_id"
+                                ]
+                            }
+                        ],
+                        "foreign_keys": [
+                            {
+                                "constraint_name": "employee_manager_id_fkey",
+                                "column": "manager_id",
+                                "referenced_schema": "bronze",
+                                "referenced_table": "employee",
+                                "referenced_column": "employee_id"
+                            },
+                            {
+                                "constraint_name": "employee_department_id_fkey",
+                                "column": "department_id",
+                                "referenced_schema": "bronze",
+                                "referenced_table": "department",
+                                "referenced_column": "department_id"
+                            }
+                        ],
+                        "indexes": [
+                            {
+                                "index_name": "employee_email_key",
+                                "definition": "CREATE UNIQUE INDEX employee_email_key ON bronze.employee USING btree (email)"
+                            },
+                            {
+                                "index_name": "employee_pkey",
+                                "definition": "CREATE UNIQUE INDEX employee_pkey ON bronze.employee USING btree (employee_id)"
+                            }
+                        ],
+                        "constraints": [
+                            {
+                                "constraint_name": "employee_department_id_fkey",
+                                "constraint_type": "FOREIGN KEY"
+                            },
+                            {
+                                "constraint_name": "employee_employee_id_not_null",
+                                "constraint_type": "CHECK"
+                            },
+                            {
+                                "constraint_name": "employee_pkey",
+                                "constraint_type": "PRIMARY KEY"
+                            },
+                            {
+                                "constraint_name": "employee_email_key",
+                                "constraint_type": "UNIQUE"
+                            },
+                            {
+                                "constraint_name": "employee_manager_id_fkey",
+                                "constraint_type": "FOREIGN KEY"
+                            }
+                        ],
+                        "statistics": {
+                            "row_estimate": 0,
+                            "dead_row_estimate": 0,
+                            "last_analyze": null,
+                            "last_autoanalyze": null
+                        }
+                    },
+                    {
+                        "table_name": "inventory",
+                        "table_type": "BASE TABLE",
+                        "columns": [
+                            {
+                                "name": "warehouse_id",
+                                "data_type": "integer",
+                                "nullable": false,
+                                "default_value": null,
+                                "ordinal_position": 1,
+                                "character_length": null,
+                                "numeric_precision": 32,
+                                "numeric_scale": 0,
+                                "is_primary_key": true,
+                                "is_foreign_key": true,
+                                "comment": null
+                            },
+                            {
+                                "name": "product_id",
+                                "data_type": "integer",
+                                "nullable": false,
+                                "default_value": null,
+                                "ordinal_position": 2,
+                                "character_length": null,
+                                "numeric_precision": 32,
+                                "numeric_scale": 0,
+                                "is_primary_key": true,
+                                "is_foreign_key": true,
+                                "comment": null
+                            },
+                            {
+                                "name": "quantity",
+                                "data_type": "integer",
+                                "nullable": true,
+                                "default_value": null,
+                                "ordinal_position": 3,
+                                "character_length": null,
+                                "numeric_precision": 32,
+                                "numeric_scale": 0,
+                                "is_primary_key": false,
+                                "is_foreign_key": false,
+                                "comment": null
+                            },
+                            {
+                                "name": "reorder_level",
+                                "data_type": "integer",
+                                "nullable": true,
+                                "default_value": null,
+                                "ordinal_position": 4,
+                                "character_length": null,
+                                "numeric_precision": 32,
+                                "numeric_scale": 0,
+                                "is_primary_key": false,
+                                "is_foreign_key": false,
+                                "comment": null
+                            }
+                        ],
+                        "primary_keys": [
+                            {
+                                "constraint_name": "inventory_pkey",
+                                "columns": [
+                                    "warehouse_id",
+                                    "product_id"
+                                ]
+                            }
+                        ],
+                        "foreign_keys": [
+                            {
+                                "constraint_name": "inventory_warehouse_id_fkey",
+                                "column": "warehouse_id",
+                                "referenced_schema": "bronze",
+                                "referenced_table": "warehouse",
+                                "referenced_column": "warehouse_id"
+                            },
+                            {
+                                "constraint_name": "inventory_product_id_fkey",
+                                "column": "product_id",
+                                "referenced_schema": "bronze",
+                                "referenced_table": "product",
+                                "referenced_column": "product_id"
+                            }
+                        ],
+                        "indexes": [
+                            {
+                                "index_name": "inventory_pkey",
+                                "definition": "CREATE UNIQUE INDEX inventory_pkey ON bronze.inventory USING btree (warehouse_id, product_id)"
+                            }
+                        ],
+                        "constraints": [
+                            {
+                                "constraint_name": "inventory_warehouse_id_fkey",
+                                "constraint_type": "FOREIGN KEY"
+                            },
+                            {
+                                "constraint_name": "inventory_pkey",
+                                "constraint_type": "PRIMARY KEY"
+                            },
+                            {
+                                "constraint_name": "inventory_product_id_not_null",
+                                "constraint_type": "CHECK"
+                            },
+                            {
+                                "constraint_name": "inventory_warehouse_id_not_null",
+                                "constraint_type": "CHECK"
+                            },
+                            {
+                                "constraint_name": "inventory_product_id_fkey",
+                                "constraint_type": "FOREIGN KEY"
+                            }
+                        ],
+                        "statistics": {
+                            "row_estimate": 0,
+                            "dead_row_estimate": 0,
+                            "last_analyze": null,
+                            "last_autoanalyze": null
+                        }
+                    },
+                    {
+                        "table_name": "order_item",
+                        "table_type": "BASE TABLE",
+                        "columns": [
+                            {
+                                "name": "order_id",
+                                "data_type": "integer",
+                                "nullable": false,
+                                "default_value": null,
+                                "ordinal_position": 1,
+                                "character_length": null,
+                                "numeric_precision": 32,
+                                "numeric_scale": 0,
+                                "is_primary_key": true,
+                                "is_foreign_key": true,
+                                "comment": null
+                            },
+                            {
+                                "name": "line_number",
+                                "data_type": "integer",
+                                "nullable": false,
+                                "default_value": null,
+                                "ordinal_position": 2,
+                                "character_length": null,
+                                "numeric_precision": 32,
+                                "numeric_scale": 0,
+                                "is_primary_key": true,
+                                "is_foreign_key": false,
+                                "comment": null
+                            },
+                            {
+                                "name": "product_id",
+                                "data_type": "integer",
+                                "nullable": true,
+                                "default_value": null,
+                                "ordinal_position": 3,
+                                "character_length": null,
+                                "numeric_precision": 32,
+                                "numeric_scale": 0,
+                                "is_primary_key": false,
+                                "is_foreign_key": true,
+                                "comment": null
+                            },
+                            {
+                                "name": "quantity",
+                                "data_type": "integer",
+                                "nullable": true,
+                                "default_value": null,
+                                "ordinal_position": 4,
+                                "character_length": null,
+                                "numeric_precision": 32,
+                                "numeric_scale": 0,
+                                "is_primary_key": false,
+                                "is_foreign_key": false,
+                                "comment": null
+                            },
+                            {
+                                "name": "unit_price",
+                                "data_type": "numeric",
+                                "nullable": true,
+                                "default_value": null,
+                                "ordinal_position": 5,
+                                "character_length": null,
+                                "numeric_precision": 12,
+                                "numeric_scale": 2,
+                                "is_primary_key": false,
+                                "is_foreign_key": false,
+                                "comment": null
+                            }
+                        ],
+                        "primary_keys": [
+                            {
+                                "constraint_name": "order_item_pkey",
+                                "columns": [
+                                    "order_id",
+                                    "line_number"
+                                ]
+                            }
+                        ],
+                        "foreign_keys": [
+                            {
+                                "constraint_name": "order_item_product_id_fkey",
+                                "column": "product_id",
+                                "referenced_schema": "bronze",
+                                "referenced_table": "product",
+                                "referenced_column": "product_id"
+                            },
+                            {
+                                "constraint_name": "order_item_order_id_fkey",
+                                "column": "order_id",
+                                "referenced_schema": "bronze",
+                                "referenced_table": "orders",
+                                "referenced_column": "order_id"
+                            }
+                        ],
+                        "indexes": [
+                            {
+                                "index_name": "order_item_pkey",
+                                "definition": "CREATE UNIQUE INDEX order_item_pkey ON bronze.order_item USING btree (order_id, line_number)"
+                            }
+                        ],
+                        "constraints": [
+                            {
+                                "constraint_name": "order_item_pkey",
+                                "constraint_type": "PRIMARY KEY"
+                            },
+                            {
+                                "constraint_name": "order_item_product_id_fkey",
+                                "constraint_type": "FOREIGN KEY"
+                            },
+                            {
+                                "constraint_name": "order_item_line_number_not_null",
+                                "constraint_type": "CHECK"
+                            },
+                            {
+                                "constraint_name": "order_item_order_id_not_null",
+                                "constraint_type": "CHECK"
+                            },
+                            {
+                                "constraint_name": "order_item_order_id_fkey",
+                                "constraint_type": "FOREIGN KEY"
+                            }
+                        ],
+                        "statistics": {
+                            "row_estimate": 0,
+                            "dead_row_estimate": 0,
+                            "last_analyze": null,
+                            "last_autoanalyze": null
+                        }
+                    },
+                    {
+                        "table_name": "orders",
+                        "table_type": "BASE TABLE",
+                        "columns": [
+                            {
+                                "name": "order_id",
+                                "data_type": "integer",
+                                "nullable": false,
+                                "default_value": "nextval('bronze.orders_order_id_seq'::regclass)",
+                                "ordinal_position": 1,
+                                "character_length": null,
+                                "numeric_precision": 32,
+                                "numeric_scale": 0,
+                                "is_primary_key": true,
+                                "is_foreign_key": false,
+                                "comment": null
+                            },
+                            {
+                                "name": "customer_id",
+                                "data_type": "integer",
+                                "nullable": true,
+                                "default_value": null,
+                                "ordinal_position": 2,
+                                "character_length": null,
+                                "numeric_precision": 32,
+                                "numeric_scale": 0,
+                                "is_primary_key": false,
+                                "is_foreign_key": true,
+                                "comment": null
+                            },
+                            {
+                                "name": "sales_rep_id",
+                                "data_type": "integer",
+                                "nullable": true,
+                                "default_value": null,
+                                "ordinal_position": 3,
+                                "character_length": null,
+                                "numeric_precision": 32,
+                                "numeric_scale": 0,
+                                "is_primary_key": false,
+                                "is_foreign_key": true,
+                                "comment": null
+                            },
+                            {
+                                "name": "order_date",
+                                "data_type": "date",
+                                "nullable": true,
+                                "default_value": null,
+                                "ordinal_position": 4,
+                                "character_length": null,
+                                "numeric_precision": null,
+                                "numeric_scale": null,
+                                "is_primary_key": false,
+                                "is_foreign_key": false,
+                                "comment": null
+                            },
+                            {
+                                "name": "order_status",
+                                "data_type": "character varying",
+                                "nullable": true,
+                                "default_value": null,
+                                "ordinal_position": 5,
+                                "character_length": 20,
+                                "numeric_precision": null,
+                                "numeric_scale": null,
+                                "is_primary_key": false,
+                                "is_foreign_key": false,
+                                "comment": null
+                            }
+                        ],
+                        "primary_keys": [
+                            {
+                                "constraint_name": "orders_pkey",
+                                "columns": [
+                                    "order_id"
+                                ]
+                            }
+                        ],
+                        "foreign_keys": [
+                            {
+                                "constraint_name": "orders_customer_id_fkey",
+                                "column": "customer_id",
+                                "referenced_schema": "bronze",
+                                "referenced_table": "customer",
+                                "referenced_column": "customer_id"
+                            },
+                            {
+                                "constraint_name": "orders_sales_rep_id_fkey",
+                                "column": "sales_rep_id",
+                                "referenced_schema": "bronze",
+                                "referenced_table": "employee",
+                                "referenced_column": "employee_id"
+                            }
+                        ],
+                        "indexes": [
+                            {
+                                "index_name": "orders_pkey",
+                                "definition": "CREATE UNIQUE INDEX orders_pkey ON bronze.orders USING btree (order_id)"
+                            }
+                        ],
+                        "constraints": [
+                            {
+                                "constraint_name": "orders_pkey",
+                                "constraint_type": "PRIMARY KEY"
+                            },
+                            {
+                                "constraint_name": "orders_customer_id_fkey",
+                                "constraint_type": "FOREIGN KEY"
+                            },
+                            {
+                                "constraint_name": "orders_sales_rep_id_fkey",
+                                "constraint_type": "FOREIGN KEY"
+                            },
+                            {
+                                "constraint_name": "orders_order_id_not_null",
+                                "constraint_type": "CHECK"
+                            }
+                        ],
+                        "statistics": {
+                            "row_estimate": 0,
+                            "dead_row_estimate": 0,
+                            "last_analyze": null,
+                            "last_autoanalyze": null
+                        }
+                    },
+                    {
+                        "table_name": "payment",
+                        "table_type": "BASE TABLE",
+                        "columns": [
+                            {
+                                "name": "payment_id",
+                                "data_type": "integer",
+                                "nullable": false,
+                                "default_value": "nextval('bronze.payment_payment_id_seq'::regclass)",
+                                "ordinal_position": 1,
+                                "character_length": null,
+                                "numeric_precision": 32,
+                                "numeric_scale": 0,
+                                "is_primary_key": true,
+                                "is_foreign_key": false,
+                                "comment": null
+                            },
+                            {
+                                "name": "order_id",
+                                "data_type": "integer",
+                                "nullable": true,
+                                "default_value": null,
+                                "ordinal_position": 2,
+                                "character_length": null,
+                                "numeric_precision": 32,
+                                "numeric_scale": 0,
+                                "is_primary_key": false,
+                                "is_foreign_key": true,
+                                "comment": null
+                            },
+                            {
+                                "name": "payment_method",
+                                "data_type": "character varying",
+                                "nullable": true,
+                                "default_value": null,
+                                "ordinal_position": 3,
+                                "character_length": 50,
+                                "numeric_precision": null,
+                                "numeric_scale": null,
+                                "is_primary_key": false,
+                                "is_foreign_key": false,
+                                "comment": null
+                            },
+                            {
+                                "name": "payment_date",
+                                "data_type": "date",
+                                "nullable": true,
+                                "default_value": null,
+                                "ordinal_position": 4,
+                                "character_length": null,
+                                "numeric_precision": null,
+                                "numeric_scale": null,
+                                "is_primary_key": false,
+                                "is_foreign_key": false,
+                                "comment": null
+                            },
+                            {
+                                "name": "amount",
+                                "data_type": "numeric",
+                                "nullable": true,
+                                "default_value": null,
+                                "ordinal_position": 5,
+                                "character_length": null,
+                                "numeric_precision": 12,
+                                "numeric_scale": 2,
+                                "is_primary_key": false,
+                                "is_foreign_key": false,
+                                "comment": null
+                            }
+                        ],
+                        "primary_keys": [
+                            {
+                                "constraint_name": "payment_pkey",
+                                "columns": [
+                                    "payment_id"
+                                ]
+                            }
+                        ],
+                        "foreign_keys": [
+                            {
+                                "constraint_name": "payment_order_id_fkey",
+                                "column": "order_id",
+                                "referenced_schema": "bronze",
+                                "referenced_table": "orders",
+                                "referenced_column": "order_id"
+                            }
+                        ],
+                        "indexes": [
+                            {
+                                "index_name": "payment_order_id_key",
+                                "definition": "CREATE UNIQUE INDEX payment_order_id_key ON bronze.payment USING btree (order_id)"
+                            },
+                            {
+                                "index_name": "payment_pkey",
+                                "definition": "CREATE UNIQUE INDEX payment_pkey ON bronze.payment USING btree (payment_id)"
+                            }
+                        ],
+                        "constraints": [
+                            {
+                                "constraint_name": "payment_order_id_key",
+                                "constraint_type": "UNIQUE"
+                            },
+                            {
+                                "constraint_name": "payment_payment_id_not_null",
+                                "constraint_type": "CHECK"
+                            },
+                            {
+                                "constraint_name": "payment_pkey",
+                                "constraint_type": "PRIMARY KEY"
+                            },
+                            {
+                                "constraint_name": "payment_order_id_fkey",
+                                "constraint_type": "FOREIGN KEY"
+                            }
+                        ],
+                        "statistics": {
+                            "row_estimate": 0,
+                            "dead_row_estimate": 0,
+                            "last_analyze": null,
+                            "last_autoanalyze": null
+                        }
+                    },
+                    {
+                        "table_name": "product",
+                        "table_type": "BASE TABLE",
+                        "columns": [
+                            {
+                                "name": "product_id",
+                                "data_type": "integer",
+                                "nullable": false,
+                                "default_value": "nextval('bronze.product_product_id_seq'::regclass)",
+                                "ordinal_position": 1,
+                                "character_length": null,
+                                "numeric_precision": 32,
+                                "numeric_scale": 0,
+                                "is_primary_key": true,
+                                "is_foreign_key": false,
+                                "comment": null
+                            },
+                            {
+                                "name": "supplier_id",
+                                "data_type": "integer",
+                                "nullable": true,
+                                "default_value": null,
+                                "ordinal_position": 2,
+                                "character_length": null,
+                                "numeric_precision": 32,
+                                "numeric_scale": 0,
+                                "is_primary_key": false,
+                                "is_foreign_key": true,
+                                "comment": null
+                            },
+                            {
+                                "name": "category_id",
+                                "data_type": "integer",
+                                "nullable": true,
+                                "default_value": null,
+                                "ordinal_position": 3,
+                                "character_length": null,
+                                "numeric_precision": 32,
+                                "numeric_scale": 0,
+                                "is_primary_key": false,
+                                "is_foreign_key": true,
+                                "comment": null
+                            },
+                            {
+                                "name": "sku",
+                                "data_type": "character varying",
+                                "nullable": true,
+                                "default_value": null,
+                                "ordinal_position": 4,
+                                "character_length": 50,
+                                "numeric_precision": null,
+                                "numeric_scale": null,
+                                "is_primary_key": false,
+                                "is_foreign_key": false,
+                                "comment": null
+                            },
+                            {
+                                "name": "product_name",
+                                "data_type": "character varying",
+                                "nullable": true,
+                                "default_value": null,
+                                "ordinal_position": 5,
+                                "character_length": 200,
+                                "numeric_precision": null,
+                                "numeric_scale": null,
+                                "is_primary_key": false,
+                                "is_foreign_key": false,
+                                "comment": null
+                            },
+                            {
+                                "name": "unit_price",
+                                "data_type": "numeric",
+                                "nullable": true,
+                                "default_value": null,
+                                "ordinal_position": 6,
+                                "character_length": null,
+                                "numeric_precision": 12,
+                                "numeric_scale": 2,
+                                "is_primary_key": false,
+                                "is_foreign_key": false,
+                                "comment": null
+                            },
+                            {
+                                "name": "status",
+                                "data_type": "character varying",
+                                "nullable": true,
+                                "default_value": null,
+                                "ordinal_position": 7,
+                                "character_length": 20,
+                                "numeric_precision": null,
+                                "numeric_scale": null,
+                                "is_primary_key": false,
+                                "is_foreign_key": false,
+                                "comment": null
+                            }
+                        ],
+                        "primary_keys": [
+                            {
+                                "constraint_name": "product_pkey",
+                                "columns": [
+                                    "product_id"
+                                ]
+                            }
+                        ],
+                        "foreign_keys": [
+                            {
+                                "constraint_name": "product_category_id_fkey",
+                                "column": "category_id",
+                                "referenced_schema": "bronze",
+                                "referenced_table": "category",
+                                "referenced_column": "category_id"
+                            },
+                            {
+                                "constraint_name": "product_supplier_id_fkey",
+                                "column": "supplier_id",
+                                "referenced_schema": "bronze",
+                                "referenced_table": "supplier",
+                                "referenced_column": "supplier_id"
+                            }
+                        ],
+                        "indexes": [
+                            {
+                                "index_name": "product_pkey",
+                                "definition": "CREATE UNIQUE INDEX product_pkey ON bronze.product USING btree (product_id)"
+                            },
+                            {
+                                "index_name": "product_sku_key",
+                                "definition": "CREATE UNIQUE INDEX product_sku_key ON bronze.product USING btree (sku)"
+                            }
+                        ],
+                        "constraints": [
+                            {
+                                "constraint_name": "product_pkey",
+                                "constraint_type": "PRIMARY KEY"
+                            },
+                            {
+                                "constraint_name": "product_category_id_fkey",
+                                "constraint_type": "FOREIGN KEY"
+                            },
+                            {
+                                "constraint_name": "product_sku_key",
+                                "constraint_type": "UNIQUE"
+                            },
+                            {
+                                "constraint_name": "product_supplier_id_fkey",
+                                "constraint_type": "FOREIGN KEY"
+                            },
+                            {
+                                "constraint_name": "product_product_id_not_null",
+                                "constraint_type": "CHECK"
+                            }
+                        ],
+                        "statistics": {
+                            "row_estimate": 0,
+                            "dead_row_estimate": 0,
+                            "last_analyze": null,
+                            "last_autoanalyze": null
+                        }
+                    },
+                    {
+                        "table_name": "product_promotion",
+                        "table_type": "BASE TABLE",
+                        "columns": [
+                            {
+                                "name": "product_id",
+                                "data_type": "integer",
+                                "nullable": false,
+                                "default_value": null,
+                                "ordinal_position": 1,
+                                "character_length": null,
+                                "numeric_precision": 32,
+                                "numeric_scale": 0,
+                                "is_primary_key": true,
+                                "is_foreign_key": true,
+                                "comment": null
+                            },
+                            {
+                                "name": "promotion_id",
+                                "data_type": "integer",
+                                "nullable": false,
+                                "default_value": null,
+                                "ordinal_position": 2,
+                                "character_length": null,
+                                "numeric_precision": 32,
+                                "numeric_scale": 0,
+                                "is_primary_key": true,
+                                "is_foreign_key": true,
+                                "comment": null
+                            }
+                        ],
+                        "primary_keys": [
+                            {
+                                "constraint_name": "product_promotion_pkey",
+                                "columns": [
+                                    "product_id",
+                                    "promotion_id"
+                                ]
+                            }
+                        ],
+                        "foreign_keys": [
+                            {
+                                "constraint_name": "product_promotion_promotion_id_fkey",
+                                "column": "promotion_id",
+                                "referenced_schema": "bronze",
+                                "referenced_table": "promotion",
+                                "referenced_column": "promotion_id"
+                            },
+                            {
+                                "constraint_name": "product_promotion_product_id_fkey",
+                                "column": "product_id",
+                                "referenced_schema": "bronze",
+                                "referenced_table": "product",
+                                "referenced_column": "product_id"
+                            }
+                        ],
+                        "indexes": [
+                            {
+                                "index_name": "product_promotion_pkey",
+                                "definition": "CREATE UNIQUE INDEX product_promotion_pkey ON bronze.product_promotion USING btree (product_id, promotion_id)"
+                            }
+                        ],
+                        "constraints": [
+                            {
+                                "constraint_name": "product_promotion_promotion_id_fkey",
+                                "constraint_type": "FOREIGN KEY"
+                            },
+                            {
+                                "constraint_name": "product_promotion_product_id_fkey",
+                                "constraint_type": "FOREIGN KEY"
+                            },
+                            {
+                                "constraint_name": "product_promotion_pkey",
+                                "constraint_type": "PRIMARY KEY"
+                            },
+                            {
+                                "constraint_name": "product_promotion_promotion_id_not_null",
+                                "constraint_type": "CHECK"
+                            },
+                            {
+                                "constraint_name": "product_promotion_product_id_not_null",
+                                "constraint_type": "CHECK"
+                            }
+                        ],
+                        "statistics": {
+                            "row_estimate": 0,
+                            "dead_row_estimate": 0,
+                            "last_analyze": null,
+                            "last_autoanalyze": null
+                        }
+                    },
+                    {
+                        "table_name": "promotion",
+                        "table_type": "BASE TABLE",
+                        "columns": [
+                            {
+                                "name": "promotion_id",
+                                "data_type": "integer",
+                                "nullable": false,
+                                "default_value": "nextval('bronze.promotion_promotion_id_seq'::regclass)",
+                                "ordinal_position": 1,
+                                "character_length": null,
+                                "numeric_precision": 32,
+                                "numeric_scale": 0,
+                                "is_primary_key": true,
+                                "is_foreign_key": false,
+                                "comment": null
+                            },
+                            {
+                                "name": "promotion_name",
+                                "data_type": "character varying",
+                                "nullable": true,
+                                "default_value": null,
+                                "ordinal_position": 2,
+                                "character_length": 200,
+                                "numeric_precision": null,
+                                "numeric_scale": null,
+                                "is_primary_key": false,
+                                "is_foreign_key": false,
+                                "comment": null
+                            },
+                            {
+                                "name": "discount_percent",
+                                "data_type": "numeric",
+                                "nullable": true,
+                                "default_value": null,
+                                "ordinal_position": 3,
+                                "character_length": null,
+                                "numeric_precision": 5,
+                                "numeric_scale": 2,
+                                "is_primary_key": false,
+                                "is_foreign_key": false,
+                                "comment": null
+                            }
+                        ],
+                        "primary_keys": [
+                            {
+                                "constraint_name": "promotion_pkey",
+                                "columns": [
+                                    "promotion_id"
+                                ]
+                            }
+                        ],
+                        "foreign_keys": [],
+                        "indexes": [
+                            {
+                                "index_name": "promotion_pkey",
+                                "definition": "CREATE UNIQUE INDEX promotion_pkey ON bronze.promotion USING btree (promotion_id)"
+                            }
+                        ],
+                        "constraints": [
+                            {
+                                "constraint_name": "promotion_pkey",
+                                "constraint_type": "PRIMARY KEY"
+                            },
+                            {
+                                "constraint_name": "promotion_promotion_id_not_null",
+                                "constraint_type": "CHECK"
+                            }
+                        ],
+                        "statistics": {
+                            "row_estimate": 0,
+                            "dead_row_estimate": 0,
+                            "last_analyze": null,
+                            "last_autoanalyze": null
+                        }
+                    },
+                    {
+                        "table_name": "return_order",
+                        "table_type": "BASE TABLE",
+                        "columns": [
+                            {
+                                "name": "return_id",
+                                "data_type": "integer",
+                                "nullable": false,
+                                "default_value": "nextval('bronze.return_order_return_id_seq'::regclass)",
+                                "ordinal_position": 1,
+                                "character_length": null,
+                                "numeric_precision": 32,
+                                "numeric_scale": 0,
+                                "is_primary_key": true,
+                                "is_foreign_key": false,
+                                "comment": null
+                            },
+                            {
+                                "name": "order_id",
+                                "data_type": "integer",
+                                "nullable": true,
+                                "default_value": null,
+                                "ordinal_position": 2,
+                                "character_length": null,
+                                "numeric_precision": 32,
+                                "numeric_scale": 0,
+                                "is_primary_key": false,
+                                "is_foreign_key": true,
+                                "comment": null
+                            },
+                            {
+                                "name": "product_id",
+                                "data_type": "integer",
+                                "nullable": true,
+                                "default_value": null,
+                                "ordinal_position": 3,
+                                "character_length": null,
+                                "numeric_precision": 32,
+                                "numeric_scale": 0,
+                                "is_primary_key": false,
+                                "is_foreign_key": true,
+                                "comment": null
+                            },
+                            {
+                                "name": "return_reason",
+                                "data_type": "character varying",
+                                "nullable": true,
+                                "default_value": null,
+                                "ordinal_position": 4,
+                                "character_length": 200,
+                                "numeric_precision": null,
+                                "numeric_scale": null,
+                                "is_primary_key": false,
+                                "is_foreign_key": false,
+                                "comment": null
+                            }
+                        ],
+                        "primary_keys": [
+                            {
+                                "constraint_name": "return_order_pkey",
+                                "columns": [
+                                    "return_id"
+                                ]
+                            }
+                        ],
+                        "foreign_keys": [
+                            {
+                                "constraint_name": "return_order_order_id_fkey",
+                                "column": "order_id",
+                                "referenced_schema": "bronze",
+                                "referenced_table": "orders",
+                                "referenced_column": "order_id"
+                            },
+                            {
+                                "constraint_name": "return_order_product_id_fkey",
+                                "column": "product_id",
+                                "referenced_schema": "bronze",
+                                "referenced_table": "product",
+                                "referenced_column": "product_id"
+                            }
+                        ],
+                        "indexes": [
+                            {
+                                "index_name": "return_order_pkey",
+                                "definition": "CREATE UNIQUE INDEX return_order_pkey ON bronze.return_order USING btree (return_id)"
+                            }
+                        ],
+                        "constraints": [
+                            {
+                                "constraint_name": "return_order_return_id_not_null",
+                                "constraint_type": "CHECK"
+                            },
+                            {
+                                "constraint_name": "return_order_product_id_fkey",
+                                "constraint_type": "FOREIGN KEY"
+                            },
+                            {
+                                "constraint_name": "return_order_order_id_fkey",
+                                "constraint_type": "FOREIGN KEY"
+                            },
+                            {
+                                "constraint_name": "return_order_pkey",
+                                "constraint_type": "PRIMARY KEY"
+                            }
+                        ],
+                        "statistics": {
+                            "row_estimate": 0,
+                            "dead_row_estimate": 0,
+                            "last_analyze": null,
+                            "last_autoanalyze": null
+                        }
+                    },
+                    {
+                        "table_name": "shipment",
+                        "table_type": "BASE TABLE",
+                        "columns": [
+                            {
+                                "name": "shipment_id",
+                                "data_type": "integer",
+                                "nullable": false,
+                                "default_value": "nextval('bronze.shipment_shipment_id_seq'::regclass)",
+                                "ordinal_position": 1,
+                                "character_length": null,
+                                "numeric_precision": 32,
+                                "numeric_scale": 0,
+                                "is_primary_key": true,
+                                "is_foreign_key": false,
+                                "comment": null
+                            },
+                            {
+                                "name": "order_id",
+                                "data_type": "integer",
+                                "nullable": true,
+                                "default_value": null,
+                                "ordinal_position": 2,
+                                "character_length": null,
+                                "numeric_precision": 32,
+                                "numeric_scale": 0,
+                                "is_primary_key": false,
+                                "is_foreign_key": true,
+                                "comment": null
+                            },
+                            {
+                                "name": "warehouse_id",
+                                "data_type": "integer",
+                                "nullable": true,
+                                "default_value": null,
+                                "ordinal_position": 3,
+                                "character_length": null,
+                                "numeric_precision": 32,
+                                "numeric_scale": 0,
+                                "is_primary_key": false,
+                                "is_foreign_key": true,
+                                "comment": null
+                            },
+                            {
+                                "name": "shipped_date",
+                                "data_type": "date",
+                                "nullable": true,
+                                "default_value": null,
+                                "ordinal_position": 4,
+                                "character_length": null,
+                                "numeric_precision": null,
+                                "numeric_scale": null,
+                                "is_primary_key": false,
+                                "is_foreign_key": false,
+                                "comment": null
+                            },
+                            {
+                                "name": "tracking_number",
+                                "data_type": "character varying",
+                                "nullable": true,
+                                "default_value": null,
+                                "ordinal_position": 5,
+                                "character_length": 100,
+                                "numeric_precision": null,
+                                "numeric_scale": null,
+                                "is_primary_key": false,
+                                "is_foreign_key": false,
+                                "comment": null
+                            }
+                        ],
+                        "primary_keys": [
+                            {
+                                "constraint_name": "shipment_pkey",
+                                "columns": [
+                                    "shipment_id"
+                                ]
+                            }
+                        ],
+                        "foreign_keys": [
+                            {
+                                "constraint_name": "shipment_order_id_fkey",
+                                "column": "order_id",
+                                "referenced_schema": "bronze",
+                                "referenced_table": "orders",
+                                "referenced_column": "order_id"
+                            },
+                            {
+                                "constraint_name": "shipment_warehouse_id_fkey",
+                                "column": "warehouse_id",
+                                "referenced_schema": "bronze",
+                                "referenced_table": "warehouse",
+                                "referenced_column": "warehouse_id"
+                            }
+                        ],
+                        "indexes": [
+                            {
+                                "index_name": "shipment_pkey",
+                                "definition": "CREATE UNIQUE INDEX shipment_pkey ON bronze.shipment USING btree (shipment_id)"
+                            }
+                        ],
+                        "constraints": [
+                            {
+                                "constraint_name": "shipment_order_id_fkey",
+                                "constraint_type": "FOREIGN KEY"
+                            },
+                            {
+                                "constraint_name": "shipment_shipment_id_not_null",
+                                "constraint_type": "CHECK"
+                            },
+                            {
+                                "constraint_name": "shipment_pkey",
+                                "constraint_type": "PRIMARY KEY"
+                            },
+                            {
+                                "constraint_name": "shipment_warehouse_id_fkey",
+                                "constraint_type": "FOREIGN KEY"
+                            }
+                        ],
+                        "statistics": {
+                            "row_estimate": 0,
+                            "dead_row_estimate": 0,
+                            "last_analyze": null,
+                            "last_autoanalyze": null
+                        }
+                    },
+                    {
+                        "table_name": "state",
+                        "table_type": "BASE TABLE",
+                        "columns": [
+                            {
+                                "name": "state_id",
+                                "data_type": "integer",
+                                "nullable": false,
+                                "default_value": "nextval('bronze.state_state_id_seq'::regclass)",
+                                "ordinal_position": 1,
+                                "character_length": null,
+                                "numeric_precision": 32,
+                                "numeric_scale": 0,
+                                "is_primary_key": true,
+                                "is_foreign_key": false,
+                                "comment": null
+                            },
+                            {
+                                "name": "country_id",
+                                "data_type": "integer",
+                                "nullable": false,
+                                "default_value": null,
+                                "ordinal_position": 2,
+                                "character_length": null,
+                                "numeric_precision": 32,
+                                "numeric_scale": 0,
+                                "is_primary_key": false,
+                                "is_foreign_key": true,
+                                "comment": null
+                            },
+                            {
+                                "name": "state_name",
+                                "data_type": "character varying",
+                                "nullable": true,
+                                "default_value": null,
+                                "ordinal_position": 3,
+                                "character_length": 100,
+                                "numeric_precision": null,
+                                "numeric_scale": null,
+                                "is_primary_key": false,
+                                "is_foreign_key": false,
+                                "comment": null
+                            }
+                        ],
+                        "primary_keys": [
+                            {
+                                "constraint_name": "state_pkey",
+                                "columns": [
+                                    "state_id"
+                                ]
+                            }
+                        ],
+                        "foreign_keys": [
+                            {
+                                "constraint_name": "fk_state_country",
+                                "column": "country_id",
+                                "referenced_schema": "bronze",
+                                "referenced_table": "country",
+                                "referenced_column": "country_id"
+                            }
+                        ],
+                        "indexes": [
+                            {
+                                "index_name": "state_pkey",
+                                "definition": "CREATE UNIQUE INDEX state_pkey ON bronze.state USING btree (state_id)"
+                            }
+                        ],
+                        "constraints": [
+                            {
+                                "constraint_name": "state_state_id_not_null",
+                                "constraint_type": "CHECK"
+                            },
+                            {
+                                "constraint_name": "state_pkey",
+                                "constraint_type": "PRIMARY KEY"
+                            },
+                            {
+                                "constraint_name": "state_country_id_not_null",
+                                "constraint_type": "CHECK"
+                            },
+                            {
+                                "constraint_name": "fk_state_country",
+                                "constraint_type": "FOREIGN KEY"
+                            }
+                        ],
+                        "statistics": {
+                            "row_estimate": 0,
+                            "dead_row_estimate": 0,
+                            "last_analyze": null,
+                            "last_autoanalyze": null
+                        }
+                    },
+                    {
+                        "table_name": "supplier",
+                        "table_type": "BASE TABLE",
+                        "columns": [
+                            {
+                                "name": "supplier_id",
+                                "data_type": "integer",
+                                "nullable": false,
+                                "default_value": "nextval('bronze.supplier_supplier_id_seq'::regclass)",
+                                "ordinal_position": 1,
+                                "character_length": null,
+                                "numeric_precision": 32,
+                                "numeric_scale": 0,
+                                "is_primary_key": true,
+                                "is_foreign_key": false,
+                                "comment": null
+                            },
+                            {
+                                "name": "supplier_name",
+                                "data_type": "character varying",
+                                "nullable": true,
+                                "default_value": null,
+                                "ordinal_position": 2,
+                                "character_length": 200,
+                                "numeric_precision": null,
+                                "numeric_scale": null,
+                                "is_primary_key": false,
+                                "is_foreign_key": false,
+                                "comment": null
+                            },
+                            {
+                                "name": "contact_name",
+                                "data_type": "character varying",
+                                "nullable": true,
+                                "default_value": null,
+                                "ordinal_position": 3,
+                                "character_length": 200,
+                                "numeric_precision": null,
+                                "numeric_scale": null,
+                                "is_primary_key": false,
+                                "is_foreign_key": false,
+                                "comment": null
+                            },
+                            {
+                                "name": "email",
+                                "data_type": "character varying",
+                                "nullable": true,
+                                "default_value": null,
+                                "ordinal_position": 4,
+                                "character_length": 200,
+                                "numeric_precision": null,
+                                "numeric_scale": null,
+                                "is_primary_key": false,
+                                "is_foreign_key": false,
+                                "comment": null
+                            },
+                            {
+                                "name": "phone",
+                                "data_type": "character varying",
+                                "nullable": true,
+                                "default_value": null,
+                                "ordinal_position": 5,
+                                "character_length": 30,
+                                "numeric_precision": null,
+                                "numeric_scale": null,
+                                "is_primary_key": false,
+                                "is_foreign_key": false,
+                                "comment": null
+                            }
+                        ],
+                        "primary_keys": [
+                            {
+                                "constraint_name": "supplier_pkey",
+                                "columns": [
+                                    "supplier_id"
+                                ]
+                            }
+                        ],
+                        "foreign_keys": [],
+                        "indexes": [
+                            {
+                                "index_name": "supplier_pkey",
+                                "definition": "CREATE UNIQUE INDEX supplier_pkey ON bronze.supplier USING btree (supplier_id)"
+                            }
+                        ],
+                        "constraints": [
+                            {
+                                "constraint_name": "supplier_supplier_id_not_null",
+                                "constraint_type": "CHECK"
+                            },
+                            {
+                                "constraint_name": "supplier_pkey",
+                                "constraint_type": "PRIMARY KEY"
+                            }
+                        ],
+                        "statistics": {
+                            "row_estimate": 0,
+                            "dead_row_estimate": 0,
+                            "last_analyze": null,
+                            "last_autoanalyze": null
+                        }
+                    },
+                    {
+                        "table_name": "warehouse",
+                        "table_type": "BASE TABLE",
+                        "columns": [
+                            {
+                                "name": "warehouse_id",
+                                "data_type": "integer",
+                                "nullable": false,
+                                "default_value": "nextval('bronze.warehouse_warehouse_id_seq'::regclass)",
+                                "ordinal_position": 1,
+                                "character_length": null,
+                                "numeric_precision": 32,
+                                "numeric_scale": 0,
+                                "is_primary_key": true,
+                                "is_foreign_key": false,
+                                "comment": null
+                            },
+                            {
+                                "name": "warehouse_name",
+                                "data_type": "character varying",
+                                "nullable": true,
+                                "default_value": null,
+                                "ordinal_position": 2,
+                                "character_length": 100,
+                                "numeric_precision": null,
+                                "numeric_scale": null,
+                                "is_primary_key": false,
+                                "is_foreign_key": false,
+                                "comment": null
+                            },
+                            {
+                                "name": "city_id",
+                                "data_type": "integer",
+                                "nullable": true,
+                                "default_value": null,
+                                "ordinal_position": 3,
+                                "character_length": null,
+                                "numeric_precision": 32,
+                                "numeric_scale": 0,
+                                "is_primary_key": false,
+                                "is_foreign_key": true,
+                                "comment": null
+                            }
+                        ],
+                        "primary_keys": [
+                            {
+                                "constraint_name": "warehouse_pkey",
+                                "columns": [
+                                    "warehouse_id"
+                                ]
+                            }
+                        ],
+                        "foreign_keys": [
+                            {
+                                "constraint_name": "warehouse_city_id_fkey",
+                                "column": "city_id",
+                                "referenced_schema": "bronze",
+                                "referenced_table": "city",
+                                "referenced_column": "city_id"
+                            }
+                        ],
+                        "indexes": [
+                            {
+                                "index_name": "warehouse_pkey",
+                                "definition": "CREATE UNIQUE INDEX warehouse_pkey ON bronze.warehouse USING btree (warehouse_id)"
+                            }
+                        ],
+                        "constraints": [
+                            {
+                                "constraint_name": "warehouse_city_id_fkey",
+                                "constraint_type": "FOREIGN KEY"
+                            },
+                            {
+                                "constraint_name": "warehouse_pkey",
+                                "constraint_type": "PRIMARY KEY"
+                            },
+                            {
+                                "constraint_name": "warehouse_warehouse_id_not_null",
+                                "constraint_type": "CHECK"
+                            }
+                        ],
+                        "statistics": {
+                            "row_estimate": 0,
+                            "dead_row_estimate": 0,
+                            "last_analyze": null,
+                            "last_autoanalyze": null
+                        }
+                    }
+                ],
+                "views": [],
+                "functions": [],
+                "procedures": [],
+                "triggers": []
+            }
+        ]
+    },
+    "profile": null
+}

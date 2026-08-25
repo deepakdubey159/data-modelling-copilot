@@ -1,0 +1,229 @@
+{
+    "relationships": {
+        "database_name": "datamodel",
+        "nodes": [
+            {
+                "schema_name": "bronze",
+                "table_name": "customer",
+                "table_type": "BASE TABLE",
+                "is_orphan": false,
+                "inbound_relationship_count": 1,
+                "outbound_relationship_count": 0,
+                "depth": 0
+            },
+            {
+                "schema_name": "bronze",
+                "table_name": "order_item",
+                "table_type": "BASE TABLE",
+                "is_orphan": false,
+                "inbound_relationship_count": 0,
+                "outbound_relationship_count": 1,
+                "depth": 2
+            },
+            {
+                "schema_name": "bronze",
+                "table_name": "order_product",
+                "table_type": "BASE TABLE",
+                "is_orphan": false,
+                "inbound_relationship_count": 0,
+                "outbound_relationship_count": 2,
+                "depth": 2
+            },
+            {
+                "schema_name": "bronze",
+                "table_name": "orders",
+                "table_type": "BASE TABLE",
+                "is_orphan": false,
+                "inbound_relationship_count": 2,
+                "outbound_relationship_count": 1,
+                "depth": 1
+            },
+            {
+                "schema_name": "bronze",
+                "table_name": "product",
+                "table_type": "BASE TABLE",
+                "is_orphan": false,
+                "inbound_relationship_count": 1,
+                "outbound_relationship_count": 0,
+                "depth": 0
+            }
+        ],
+        "relationships": [
+            {
+                "id": "bronze.order_item(order_id)->bronze.orders(order_id)",
+                "constraint_name": "fk_order",
+                "source_schema": "bronze",
+                "source_table": "order_item",
+                "source_columns": [
+                    "order_id"
+                ],
+                "target_schema": "bronze",
+                "target_table": "orders",
+                "target_columns": [
+                    "order_id"
+                ],
+                "relationship_type": "NON_IDENTIFYING",
+                "cardinality": "MANY_TO_ONE",
+                "cardinality_source": "STRUCTURAL",
+                "discovery_method": "DECLARED",
+                "confidence": 1.0,
+                "confidence_band": "CERTAIN",
+                "is_self_referencing": false,
+                "is_optional": false,
+                "is_identifying": false,
+                "evidence": [
+                    "declared foreign key constraint 'fk_order'"
+                ]
+            },
+            {
+                "id": "bronze.order_product(order_id)->bronze.orders(order_id)",
+                "constraint_name": "fk_op_order",
+                "source_schema": "bronze",
+                "source_table": "order_product",
+                "source_columns": [
+                    "order_id"
+                ],
+                "target_schema": "bronze",
+                "target_table": "orders",
+                "target_columns": [
+                    "order_id"
+                ],
+                "relationship_type": "IDENTIFYING",
+                "cardinality": "MANY_TO_ONE",
+                "cardinality_source": "STRUCTURAL",
+                "discovery_method": "DECLARED",
+                "confidence": 1.0,
+                "confidence_band": "CERTAIN",
+                "is_self_referencing": false,
+                "is_optional": false,
+                "is_identifying": true,
+                "evidence": [
+                    "declared foreign key constraint 'fk_op_order'",
+                    "source columns are a proper subset of the primary key (order_id, product_id)"
+                ]
+            },
+            {
+                "id": "bronze.order_product(product_id)->bronze.product(product_id)",
+                "constraint_name": "fk_op_product",
+                "source_schema": "bronze",
+                "source_table": "order_product",
+                "source_columns": [
+                    "product_id"
+                ],
+                "target_schema": "bronze",
+                "target_table": "product",
+                "target_columns": [
+                    "product_id"
+                ],
+                "relationship_type": "IDENTIFYING",
+                "cardinality": "MANY_TO_ONE",
+                "cardinality_source": "STRUCTURAL",
+                "discovery_method": "DECLARED",
+                "confidence": 1.0,
+                "confidence_band": "CERTAIN",
+                "is_self_referencing": false,
+                "is_optional": false,
+                "is_identifying": true,
+                "evidence": [
+                    "declared foreign key constraint 'fk_op_product'",
+                    "source columns are a proper subset of the primary key (order_id, product_id)"
+                ]
+            },
+            {
+                "id": "bronze.orders(customer_id)->bronze.customer(customer_id)",
+                "constraint_name": "fk_customer",
+                "source_schema": "bronze",
+                "source_table": "orders",
+                "source_columns": [
+                    "customer_id"
+                ],
+                "target_schema": "bronze",
+                "target_table": "customer",
+                "target_columns": [
+                    "customer_id"
+                ],
+                "relationship_type": "NON_IDENTIFYING",
+                "cardinality": "MANY_TO_ONE",
+                "cardinality_source": "STRUCTURAL",
+                "discovery_method": "DECLARED",
+                "confidence": 1.0,
+                "confidence_band": "CERTAIN",
+                "is_self_referencing": false,
+                "is_optional": false,
+                "is_identifying": false,
+                "evidence": [
+                    "declared foreign key constraint 'fk_customer'"
+                ]
+            },
+            {
+                "id": "bronze.orders(order_id)<->bronze.product(product_id)",
+                "constraint_name": null,
+                "source_schema": "bronze",
+                "source_table": "orders",
+                "source_columns": [
+                    "order_id"
+                ],
+                "target_schema": "bronze",
+                "target_table": "product",
+                "target_columns": [
+                    "product_id"
+                ],
+                "relationship_type": "MANY_TO_MANY_LOGICAL",
+                "cardinality": "MANY_TO_MANY",
+                "cardinality_source": "STRUCTURAL",
+                "discovery_method": "DERIVED_JUNCTION",
+                "confidence": 1.0,
+                "confidence_band": "CERTAIN",
+                "is_self_referencing": false,
+                "is_optional": false,
+                "is_identifying": true,
+                "evidence": [
+                    "derived from junction table 'bronze.order_product'",
+                    "junction primary key (order_id, product_id) is composed entirely of foreign keys",
+                    "junction carries 2 payload column(s) - an associative entity, not a pure link table"
+                ]
+            }
+        ],
+        "junction_tables": [
+            {
+                "schema_name": "bronze",
+                "table_name": "order_product",
+                "connected_tables": [
+                    "bronze.orders",
+                    "bronze.product"
+                ],
+                "key_columns": [
+                    "order_id",
+                    "product_id"
+                ],
+                "payload_columns": [
+                    "quantity",
+                    "selling_price"
+                ],
+                "is_pure": false
+            }
+        ],
+        "dependency_order": [
+            "bronze.customer",
+            "bronze.product",
+            "bronze.orders",
+            "bronze.order_item",
+            "bronze.order_product"
+        ],
+        "cycles": [],
+        "orphan_tables": [],
+        "summary": {
+            "total_relationships": 5,
+            "declared_count": 4,
+            "inferred_count": 0,
+            "derived_count": 1,
+            "junction_table_count": 1,
+            "self_referencing_count": 0,
+            "orphan_table_count": 0,
+            "cycle_count": 0,
+            "max_dependency_depth": 2,
+            "tables_analyzed": 5,
+            "columns_analyzed": 50
+        }
+    }
+}
