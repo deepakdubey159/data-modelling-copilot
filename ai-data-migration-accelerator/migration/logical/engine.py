@@ -31,11 +31,13 @@ from __future__ import annotations
 import logging
 import re
 
+from migration.canonical.models import MetadataPackage
 from migration.conceptual.models import (
     ConceptualEntity,
     ConceptualModel,
     ConceptualModelPackage,
 )
+from migration.metadata.source_lookup import resolve_source_column
 from migration.logical.models import (
     AttributeRole,
     EntityKind,
@@ -101,10 +103,16 @@ _ALTERNATE_KEY_KEYWORDS = (
 class LogicalModelEngine:
     """Derives a `LogicalModelPackage` from a conceptual model."""
 
-    def __init__(self, package: ConceptualModelPackage, source_artifact: str = "business_model.json"):
+    def __init__(
+        self,
+        package: ConceptualModelPackage,
+        source_artifact: str = "business_model.json",
+        metadata: MetadataPackage | None = None,
+    ):
         self.package = package
         self.model: ConceptualModel = package.conceptual_model
         self.source_artifact = source_artifact
+        self.metadata = metadata
 
         self._entities: dict[str, LogicalEntity] = {}
         self._relationships: list[LogicalRelationship] = []
@@ -183,6 +191,7 @@ class LogicalModelEngine:
                 continue
             seen.add(name)
             in_key = name in entity.business_key
+            source_column = self._resolve_source_column(entity, name)
             attributes.append(
                 LogicalAttribute(
                     name=name,
@@ -190,6 +199,7 @@ class LogicalModelEngine:
                     optionality=Optionality.MANDATORY if in_key else Optionality.OPTIONAL,
                     role=AttributeRole.PRIMARY_KEY if in_key else AttributeRole.DESCRIPTIVE,
                     source_attribute=name,
+                    **_source_fields(source_column),
                 )
             )
 
@@ -206,6 +216,21 @@ class LogicalModelEngine:
             alternate_keys=alternate_keys,
             source_entities=[entity.name],
             source_tables=list(entity.source_tables),
+        )
+
+    def _resolve_source_column(self, entity: ConceptualEntity, attribute_name: str):
+        """Find the source column an attribute was derived from, if any.
+
+        Conservative by design: returns None (never a guess) when no
+        metadata was supplied, the entity declares no source tables, or the
+        attribute name does not resolve unambiguously to one column - the
+        physical model still gets a chance to resolve it independently, and
+        an unresolved attribute simply keeps its abstract-domain typing.
+        """
+        if self.metadata is None or not entity.source_tables:
+            return None
+        return resolve_source_column(
+            entity.source_tables, attribute_name, self.metadata.metadata
         )
 
     def _build_primary_key(
@@ -652,3 +677,21 @@ def _infer_type(name: str) -> LogicalDataType:
 
 def _slug(name: str) -> str:
     return re.sub(r"[^A-Za-z0-9]+", "_", name).strip("_").upper()
+
+
+def _source_fields(column) -> dict:
+    """Build the LogicalAttribute source_* kwargs from a resolved column.
+
+    Returns an empty dict (leaving every source_* field at its None
+    default) when no column was resolved.
+    """
+    if column is None:
+        return {}
+    return {
+        "source_data_type": column.data_type,
+        "source_length": column.character_length,
+        "source_precision": column.numeric_precision,
+        "source_scale": column.numeric_scale,
+        "source_nullable": column.nullable,
+        "source_default": column.default_value,
+    }

@@ -1,0 +1,857 @@
+{
+    "relationships": {
+        "database_name": "datamodel",
+        "nodes": [
+            {
+                "schema_name": "bronze",
+                "table_name": "audit_log",
+                "table_type": "BASE TABLE",
+                "is_orphan": true,
+                "inbound_relationship_count": 0,
+                "outbound_relationship_count": 0,
+                "depth": 0
+            },
+            {
+                "schema_name": "bronze",
+                "table_name": "category",
+                "table_type": "BASE TABLE",
+                "is_orphan": false,
+                "inbound_relationship_count": 1,
+                "outbound_relationship_count": 0,
+                "depth": 0
+            },
+            {
+                "schema_name": "bronze",
+                "table_name": "city",
+                "table_type": "BASE TABLE",
+                "is_orphan": false,
+                "inbound_relationship_count": 2,
+                "outbound_relationship_count": 1,
+                "depth": 2
+            },
+            {
+                "schema_name": "bronze",
+                "table_name": "country",
+                "table_type": "BASE TABLE",
+                "is_orphan": false,
+                "inbound_relationship_count": 1,
+                "outbound_relationship_count": 0,
+                "depth": 0
+            },
+            {
+                "schema_name": "bronze",
+                "table_name": "customer",
+                "table_type": "BASE TABLE",
+                "is_orphan": false,
+                "inbound_relationship_count": 1,
+                "outbound_relationship_count": 1,
+                "depth": 3
+            },
+            {
+                "schema_name": "bronze",
+                "table_name": "department",
+                "table_type": "BASE TABLE",
+                "is_orphan": false,
+                "inbound_relationship_count": 1,
+                "outbound_relationship_count": 0,
+                "depth": 0
+            },
+            {
+                "schema_name": "bronze",
+                "table_name": "employee",
+                "table_type": "BASE TABLE",
+                "is_orphan": false,
+                "inbound_relationship_count": 2,
+                "outbound_relationship_count": 2,
+                "depth": 1
+            },
+            {
+                "schema_name": "bronze",
+                "table_name": "inventory",
+                "table_type": "BASE TABLE",
+                "is_orphan": false,
+                "inbound_relationship_count": 0,
+                "outbound_relationship_count": 2,
+                "depth": 4
+            },
+            {
+                "schema_name": "bronze",
+                "table_name": "order_item",
+                "table_type": "BASE TABLE",
+                "is_orphan": false,
+                "inbound_relationship_count": 0,
+                "outbound_relationship_count": 2,
+                "depth": 5
+            },
+            {
+                "schema_name": "bronze",
+                "table_name": "orders",
+                "table_type": "BASE TABLE",
+                "is_orphan": false,
+                "inbound_relationship_count": 4,
+                "outbound_relationship_count": 2,
+                "depth": 4
+            },
+            {
+                "schema_name": "bronze",
+                "table_name": "payment",
+                "table_type": "BASE TABLE",
+                "is_orphan": false,
+                "inbound_relationship_count": 0,
+                "outbound_relationship_count": 1,
+                "depth": 5
+            },
+            {
+                "schema_name": "bronze",
+                "table_name": "product",
+                "table_type": "BASE TABLE",
+                "is_orphan": false,
+                "inbound_relationship_count": 4,
+                "outbound_relationship_count": 2,
+                "depth": 1
+            },
+            {
+                "schema_name": "bronze",
+                "table_name": "product_promotion",
+                "table_type": "BASE TABLE",
+                "is_orphan": false,
+                "inbound_relationship_count": 0,
+                "outbound_relationship_count": 2,
+                "depth": 2
+            },
+            {
+                "schema_name": "bronze",
+                "table_name": "promotion",
+                "table_type": "BASE TABLE",
+                "is_orphan": false,
+                "inbound_relationship_count": 1,
+                "outbound_relationship_count": 0,
+                "depth": 0
+            },
+            {
+                "schema_name": "bronze",
+                "table_name": "return_order",
+                "table_type": "BASE TABLE",
+                "is_orphan": false,
+                "inbound_relationship_count": 0,
+                "outbound_relationship_count": 2,
+                "depth": 5
+            },
+            {
+                "schema_name": "bronze",
+                "table_name": "shipment",
+                "table_type": "BASE TABLE",
+                "is_orphan": false,
+                "inbound_relationship_count": 0,
+                "outbound_relationship_count": 2,
+                "depth": 5
+            },
+            {
+                "schema_name": "bronze",
+                "table_name": "state",
+                "table_type": "BASE TABLE",
+                "is_orphan": false,
+                "inbound_relationship_count": 1,
+                "outbound_relationship_count": 1,
+                "depth": 1
+            },
+            {
+                "schema_name": "bronze",
+                "table_name": "supplier",
+                "table_type": "BASE TABLE",
+                "is_orphan": false,
+                "inbound_relationship_count": 1,
+                "outbound_relationship_count": 0,
+                "depth": 0
+            },
+            {
+                "schema_name": "bronze",
+                "table_name": "warehouse",
+                "table_type": "BASE TABLE",
+                "is_orphan": false,
+                "inbound_relationship_count": 2,
+                "outbound_relationship_count": 1,
+                "depth": 3
+            }
+        ],
+        "relationships": [
+            {
+                "id": "bronze.city(state_id)->bronze.state(state_id)",
+                "constraint_name": "city_state_id_fkey",
+                "source_schema": "bronze",
+                "source_table": "city",
+                "source_columns": [
+                    "state_id"
+                ],
+                "target_schema": "bronze",
+                "target_table": "state",
+                "target_columns": [
+                    "state_id"
+                ],
+                "relationship_type": "NON_IDENTIFYING",
+                "cardinality": "MANY_TO_ONE",
+                "cardinality_source": "STRUCTURAL",
+                "discovery_method": "DECLARED",
+                "confidence": 1.0,
+                "confidence_band": "CERTAIN",
+                "is_self_referencing": false,
+                "is_optional": false,
+                "is_identifying": false,
+                "evidence": [
+                    "declared foreign key constraint 'city_state_id_fkey'"
+                ]
+            },
+            {
+                "id": "bronze.customer(city_id)->bronze.city(city_id)",
+                "constraint_name": "customer_city_id_fkey",
+                "source_schema": "bronze",
+                "source_table": "customer",
+                "source_columns": [
+                    "city_id"
+                ],
+                "target_schema": "bronze",
+                "target_table": "city",
+                "target_columns": [
+                    "city_id"
+                ],
+                "relationship_type": "NON_IDENTIFYING",
+                "cardinality": "MANY_TO_ONE",
+                "cardinality_source": "STRUCTURAL",
+                "discovery_method": "DECLARED",
+                "confidence": 1.0,
+                "confidence_band": "CERTAIN",
+                "is_self_referencing": false,
+                "is_optional": true,
+                "is_identifying": false,
+                "evidence": [
+                    "declared foreign key constraint 'customer_city_id_fkey'"
+                ]
+            },
+            {
+                "id": "bronze.employee(department_id)->bronze.department(department_id)",
+                "constraint_name": "employee_department_id_fkey",
+                "source_schema": "bronze",
+                "source_table": "employee",
+                "source_columns": [
+                    "department_id"
+                ],
+                "target_schema": "bronze",
+                "target_table": "department",
+                "target_columns": [
+                    "department_id"
+                ],
+                "relationship_type": "NON_IDENTIFYING",
+                "cardinality": "MANY_TO_ONE",
+                "cardinality_source": "STRUCTURAL",
+                "discovery_method": "DECLARED",
+                "confidence": 1.0,
+                "confidence_band": "CERTAIN",
+                "is_self_referencing": false,
+                "is_optional": true,
+                "is_identifying": false,
+                "evidence": [
+                    "declared foreign key constraint 'employee_department_id_fkey'"
+                ]
+            },
+            {
+                "id": "bronze.employee(manager_id)->bronze.employee(employee_id)",
+                "constraint_name": "employee_manager_id_fkey",
+                "source_schema": "bronze",
+                "source_table": "employee",
+                "source_columns": [
+                    "manager_id"
+                ],
+                "target_schema": "bronze",
+                "target_table": "employee",
+                "target_columns": [
+                    "employee_id"
+                ],
+                "relationship_type": "SELF_REFERENCING",
+                "cardinality": "MANY_TO_ONE",
+                "cardinality_source": "STRUCTURAL",
+                "discovery_method": "DECLARED",
+                "confidence": 1.0,
+                "confidence_band": "CERTAIN",
+                "is_self_referencing": true,
+                "is_optional": true,
+                "is_identifying": false,
+                "evidence": [
+                    "declared foreign key constraint 'employee_manager_id_fkey'"
+                ]
+            },
+            {
+                "id": "bronze.inventory(product_id)->bronze.product(product_id)",
+                "constraint_name": "inventory_product_id_fkey",
+                "source_schema": "bronze",
+                "source_table": "inventory",
+                "source_columns": [
+                    "product_id"
+                ],
+                "target_schema": "bronze",
+                "target_table": "product",
+                "target_columns": [
+                    "product_id"
+                ],
+                "relationship_type": "IDENTIFYING",
+                "cardinality": "MANY_TO_ONE",
+                "cardinality_source": "STRUCTURAL",
+                "discovery_method": "DECLARED",
+                "confidence": 1.0,
+                "confidence_band": "CERTAIN",
+                "is_self_referencing": false,
+                "is_optional": false,
+                "is_identifying": true,
+                "evidence": [
+                    "declared foreign key constraint 'inventory_product_id_fkey'",
+                    "source columns are a proper subset of the primary key (warehouse_id, product_id)"
+                ]
+            },
+            {
+                "id": "bronze.inventory(warehouse_id)->bronze.warehouse(warehouse_id)",
+                "constraint_name": "inventory_warehouse_id_fkey",
+                "source_schema": "bronze",
+                "source_table": "inventory",
+                "source_columns": [
+                    "warehouse_id"
+                ],
+                "target_schema": "bronze",
+                "target_table": "warehouse",
+                "target_columns": [
+                    "warehouse_id"
+                ],
+                "relationship_type": "IDENTIFYING",
+                "cardinality": "MANY_TO_ONE",
+                "cardinality_source": "STRUCTURAL",
+                "discovery_method": "DECLARED",
+                "confidence": 1.0,
+                "confidence_band": "CERTAIN",
+                "is_self_referencing": false,
+                "is_optional": false,
+                "is_identifying": true,
+                "evidence": [
+                    "declared foreign key constraint 'inventory_warehouse_id_fkey'",
+                    "source columns are a proper subset of the primary key (warehouse_id, product_id)"
+                ]
+            },
+            {
+                "id": "bronze.order_item(order_id)->bronze.orders(order_id)",
+                "constraint_name": "order_item_order_id_fkey",
+                "source_schema": "bronze",
+                "source_table": "order_item",
+                "source_columns": [
+                    "order_id"
+                ],
+                "target_schema": "bronze",
+                "target_table": "orders",
+                "target_columns": [
+                    "order_id"
+                ],
+                "relationship_type": "IDENTIFYING",
+                "cardinality": "MANY_TO_ONE",
+                "cardinality_source": "STRUCTURAL",
+                "discovery_method": "DECLARED",
+                "confidence": 1.0,
+                "confidence_band": "CERTAIN",
+                "is_self_referencing": false,
+                "is_optional": false,
+                "is_identifying": true,
+                "evidence": [
+                    "declared foreign key constraint 'order_item_order_id_fkey'",
+                    "source columns are a proper subset of the primary key (order_id, line_number)"
+                ]
+            },
+            {
+                "id": "bronze.order_item(product_id)->bronze.product(product_id)",
+                "constraint_name": "order_item_product_id_fkey",
+                "source_schema": "bronze",
+                "source_table": "order_item",
+                "source_columns": [
+                    "product_id"
+                ],
+                "target_schema": "bronze",
+                "target_table": "product",
+                "target_columns": [
+                    "product_id"
+                ],
+                "relationship_type": "NON_IDENTIFYING",
+                "cardinality": "MANY_TO_ONE",
+                "cardinality_source": "STRUCTURAL",
+                "discovery_method": "DECLARED",
+                "confidence": 1.0,
+                "confidence_band": "CERTAIN",
+                "is_self_referencing": false,
+                "is_optional": true,
+                "is_identifying": false,
+                "evidence": [
+                    "declared foreign key constraint 'order_item_product_id_fkey'"
+                ]
+            },
+            {
+                "id": "bronze.orders(customer_id)->bronze.customer(customer_id)",
+                "constraint_name": "orders_customer_id_fkey",
+                "source_schema": "bronze",
+                "source_table": "orders",
+                "source_columns": [
+                    "customer_id"
+                ],
+                "target_schema": "bronze",
+                "target_table": "customer",
+                "target_columns": [
+                    "customer_id"
+                ],
+                "relationship_type": "NON_IDENTIFYING",
+                "cardinality": "MANY_TO_ONE",
+                "cardinality_source": "STRUCTURAL",
+                "discovery_method": "DECLARED",
+                "confidence": 1.0,
+                "confidence_band": "CERTAIN",
+                "is_self_referencing": false,
+                "is_optional": true,
+                "is_identifying": false,
+                "evidence": [
+                    "declared foreign key constraint 'orders_customer_id_fkey'"
+                ]
+            },
+            {
+                "id": "bronze.orders(sales_rep_id)->bronze.employee(employee_id)",
+                "constraint_name": "orders_sales_rep_id_fkey",
+                "source_schema": "bronze",
+                "source_table": "orders",
+                "source_columns": [
+                    "sales_rep_id"
+                ],
+                "target_schema": "bronze",
+                "target_table": "employee",
+                "target_columns": [
+                    "employee_id"
+                ],
+                "relationship_type": "NON_IDENTIFYING",
+                "cardinality": "MANY_TO_ONE",
+                "cardinality_source": "STRUCTURAL",
+                "discovery_method": "DECLARED",
+                "confidence": 1.0,
+                "confidence_band": "CERTAIN",
+                "is_self_referencing": false,
+                "is_optional": true,
+                "is_identifying": false,
+                "evidence": [
+                    "declared foreign key constraint 'orders_sales_rep_id_fkey'"
+                ]
+            },
+            {
+                "id": "bronze.payment(order_id)->bronze.orders(order_id)",
+                "constraint_name": "payment_order_id_fkey",
+                "source_schema": "bronze",
+                "source_table": "payment",
+                "source_columns": [
+                    "order_id"
+                ],
+                "target_schema": "bronze",
+                "target_table": "orders",
+                "target_columns": [
+                    "order_id"
+                ],
+                "relationship_type": "NON_IDENTIFYING",
+                "cardinality": "MANY_TO_ONE",
+                "cardinality_source": "STRUCTURAL",
+                "discovery_method": "DECLARED",
+                "confidence": 1.0,
+                "confidence_band": "CERTAIN",
+                "is_self_referencing": false,
+                "is_optional": true,
+                "is_identifying": false,
+                "evidence": [
+                    "declared foreign key constraint 'payment_order_id_fkey'"
+                ]
+            },
+            {
+                "id": "bronze.product(category_id)->bronze.category(category_id)",
+                "constraint_name": "product_category_id_fkey",
+                "source_schema": "bronze",
+                "source_table": "product",
+                "source_columns": [
+                    "category_id"
+                ],
+                "target_schema": "bronze",
+                "target_table": "category",
+                "target_columns": [
+                    "category_id"
+                ],
+                "relationship_type": "NON_IDENTIFYING",
+                "cardinality": "MANY_TO_ONE",
+                "cardinality_source": "STRUCTURAL",
+                "discovery_method": "DECLARED",
+                "confidence": 1.0,
+                "confidence_band": "CERTAIN",
+                "is_self_referencing": false,
+                "is_optional": true,
+                "is_identifying": false,
+                "evidence": [
+                    "declared foreign key constraint 'product_category_id_fkey'"
+                ]
+            },
+            {
+                "id": "bronze.product(product_id)<->bronze.promotion(promotion_id)",
+                "constraint_name": null,
+                "source_schema": "bronze",
+                "source_table": "product",
+                "source_columns": [
+                    "product_id"
+                ],
+                "target_schema": "bronze",
+                "target_table": "promotion",
+                "target_columns": [
+                    "promotion_id"
+                ],
+                "relationship_type": "MANY_TO_MANY_LOGICAL",
+                "cardinality": "MANY_TO_MANY",
+                "cardinality_source": "STRUCTURAL",
+                "discovery_method": "DERIVED_JUNCTION",
+                "confidence": 1.0,
+                "confidence_band": "CERTAIN",
+                "is_self_referencing": false,
+                "is_optional": false,
+                "is_identifying": true,
+                "evidence": [
+                    "derived from junction table 'bronze.product_promotion'",
+                    "junction primary key (product_id, promotion_id) is composed entirely of foreign keys"
+                ]
+            },
+            {
+                "id": "bronze.product(product_id)<->bronze.warehouse(warehouse_id)",
+                "constraint_name": null,
+                "source_schema": "bronze",
+                "source_table": "product",
+                "source_columns": [
+                    "product_id"
+                ],
+                "target_schema": "bronze",
+                "target_table": "warehouse",
+                "target_columns": [
+                    "warehouse_id"
+                ],
+                "relationship_type": "MANY_TO_MANY_LOGICAL",
+                "cardinality": "MANY_TO_MANY",
+                "cardinality_source": "STRUCTURAL",
+                "discovery_method": "DERIVED_JUNCTION",
+                "confidence": 1.0,
+                "confidence_band": "CERTAIN",
+                "is_self_referencing": false,
+                "is_optional": false,
+                "is_identifying": true,
+                "evidence": [
+                    "derived from junction table 'bronze.inventory'",
+                    "junction primary key (warehouse_id, product_id) is composed entirely of foreign keys",
+                    "junction carries 2 payload column(s) - an associative entity, not a pure link table"
+                ]
+            },
+            {
+                "id": "bronze.product(supplier_id)->bronze.supplier(supplier_id)",
+                "constraint_name": "product_supplier_id_fkey",
+                "source_schema": "bronze",
+                "source_table": "product",
+                "source_columns": [
+                    "supplier_id"
+                ],
+                "target_schema": "bronze",
+                "target_table": "supplier",
+                "target_columns": [
+                    "supplier_id"
+                ],
+                "relationship_type": "NON_IDENTIFYING",
+                "cardinality": "MANY_TO_ONE",
+                "cardinality_source": "STRUCTURAL",
+                "discovery_method": "DECLARED",
+                "confidence": 1.0,
+                "confidence_band": "CERTAIN",
+                "is_self_referencing": false,
+                "is_optional": true,
+                "is_identifying": false,
+                "evidence": [
+                    "declared foreign key constraint 'product_supplier_id_fkey'"
+                ]
+            },
+            {
+                "id": "bronze.product_promotion(product_id)->bronze.product(product_id)",
+                "constraint_name": "product_promotion_product_id_fkey",
+                "source_schema": "bronze",
+                "source_table": "product_promotion",
+                "source_columns": [
+                    "product_id"
+                ],
+                "target_schema": "bronze",
+                "target_table": "product",
+                "target_columns": [
+                    "product_id"
+                ],
+                "relationship_type": "IDENTIFYING",
+                "cardinality": "MANY_TO_ONE",
+                "cardinality_source": "STRUCTURAL",
+                "discovery_method": "DECLARED",
+                "confidence": 1.0,
+                "confidence_band": "CERTAIN",
+                "is_self_referencing": false,
+                "is_optional": false,
+                "is_identifying": true,
+                "evidence": [
+                    "declared foreign key constraint 'product_promotion_product_id_fkey'",
+                    "source columns are a proper subset of the primary key (product_id, promotion_id)"
+                ]
+            },
+            {
+                "id": "bronze.product_promotion(promotion_id)->bronze.promotion(promotion_id)",
+                "constraint_name": "product_promotion_promotion_id_fkey",
+                "source_schema": "bronze",
+                "source_table": "product_promotion",
+                "source_columns": [
+                    "promotion_id"
+                ],
+                "target_schema": "bronze",
+                "target_table": "promotion",
+                "target_columns": [
+                    "promotion_id"
+                ],
+                "relationship_type": "IDENTIFYING",
+                "cardinality": "MANY_TO_ONE",
+                "cardinality_source": "STRUCTURAL",
+                "discovery_method": "DECLARED",
+                "confidence": 1.0,
+                "confidence_band": "CERTAIN",
+                "is_self_referencing": false,
+                "is_optional": false,
+                "is_identifying": true,
+                "evidence": [
+                    "declared foreign key constraint 'product_promotion_promotion_id_fkey'",
+                    "source columns are a proper subset of the primary key (product_id, promotion_id)"
+                ]
+            },
+            {
+                "id": "bronze.return_order(order_id)->bronze.orders(order_id)",
+                "constraint_name": "return_order_order_id_fkey",
+                "source_schema": "bronze",
+                "source_table": "return_order",
+                "source_columns": [
+                    "order_id"
+                ],
+                "target_schema": "bronze",
+                "target_table": "orders",
+                "target_columns": [
+                    "order_id"
+                ],
+                "relationship_type": "NON_IDENTIFYING",
+                "cardinality": "MANY_TO_ONE",
+                "cardinality_source": "STRUCTURAL",
+                "discovery_method": "DECLARED",
+                "confidence": 1.0,
+                "confidence_band": "CERTAIN",
+                "is_self_referencing": false,
+                "is_optional": true,
+                "is_identifying": false,
+                "evidence": [
+                    "declared foreign key constraint 'return_order_order_id_fkey'"
+                ]
+            },
+            {
+                "id": "bronze.return_order(product_id)->bronze.product(product_id)",
+                "constraint_name": "return_order_product_id_fkey",
+                "source_schema": "bronze",
+                "source_table": "return_order",
+                "source_columns": [
+                    "product_id"
+                ],
+                "target_schema": "bronze",
+                "target_table": "product",
+                "target_columns": [
+                    "product_id"
+                ],
+                "relationship_type": "NON_IDENTIFYING",
+                "cardinality": "MANY_TO_ONE",
+                "cardinality_source": "STRUCTURAL",
+                "discovery_method": "DECLARED",
+                "confidence": 1.0,
+                "confidence_band": "CERTAIN",
+                "is_self_referencing": false,
+                "is_optional": true,
+                "is_identifying": false,
+                "evidence": [
+                    "declared foreign key constraint 'return_order_product_id_fkey'"
+                ]
+            },
+            {
+                "id": "bronze.shipment(order_id)->bronze.orders(order_id)",
+                "constraint_name": "shipment_order_id_fkey",
+                "source_schema": "bronze",
+                "source_table": "shipment",
+                "source_columns": [
+                    "order_id"
+                ],
+                "target_schema": "bronze",
+                "target_table": "orders",
+                "target_columns": [
+                    "order_id"
+                ],
+                "relationship_type": "NON_IDENTIFYING",
+                "cardinality": "MANY_TO_ONE",
+                "cardinality_source": "STRUCTURAL",
+                "discovery_method": "DECLARED",
+                "confidence": 1.0,
+                "confidence_band": "CERTAIN",
+                "is_self_referencing": false,
+                "is_optional": true,
+                "is_identifying": false,
+                "evidence": [
+                    "declared foreign key constraint 'shipment_order_id_fkey'"
+                ]
+            },
+            {
+                "id": "bronze.shipment(warehouse_id)->bronze.warehouse(warehouse_id)",
+                "constraint_name": "shipment_warehouse_id_fkey",
+                "source_schema": "bronze",
+                "source_table": "shipment",
+                "source_columns": [
+                    "warehouse_id"
+                ],
+                "target_schema": "bronze",
+                "target_table": "warehouse",
+                "target_columns": [
+                    "warehouse_id"
+                ],
+                "relationship_type": "NON_IDENTIFYING",
+                "cardinality": "MANY_TO_ONE",
+                "cardinality_source": "STRUCTURAL",
+                "discovery_method": "DECLARED",
+                "confidence": 1.0,
+                "confidence_band": "CERTAIN",
+                "is_self_referencing": false,
+                "is_optional": true,
+                "is_identifying": false,
+                "evidence": [
+                    "declared foreign key constraint 'shipment_warehouse_id_fkey'"
+                ]
+            },
+            {
+                "id": "bronze.state(country_id)->bronze.country(country_id)",
+                "constraint_name": "fk_state_country",
+                "source_schema": "bronze",
+                "source_table": "state",
+                "source_columns": [
+                    "country_id"
+                ],
+                "target_schema": "bronze",
+                "target_table": "country",
+                "target_columns": [
+                    "country_id"
+                ],
+                "relationship_type": "NON_IDENTIFYING",
+                "cardinality": "MANY_TO_ONE",
+                "cardinality_source": "STRUCTURAL",
+                "discovery_method": "DECLARED",
+                "confidence": 1.0,
+                "confidence_band": "CERTAIN",
+                "is_self_referencing": false,
+                "is_optional": false,
+                "is_identifying": false,
+                "evidence": [
+                    "declared foreign key constraint 'fk_state_country'"
+                ]
+            },
+            {
+                "id": "bronze.warehouse(city_id)->bronze.city(city_id)",
+                "constraint_name": "warehouse_city_id_fkey",
+                "source_schema": "bronze",
+                "source_table": "warehouse",
+                "source_columns": [
+                    "city_id"
+                ],
+                "target_schema": "bronze",
+                "target_table": "city",
+                "target_columns": [
+                    "city_id"
+                ],
+                "relationship_type": "NON_IDENTIFYING",
+                "cardinality": "MANY_TO_ONE",
+                "cardinality_source": "STRUCTURAL",
+                "discovery_method": "DECLARED",
+                "confidence": 1.0,
+                "confidence_band": "CERTAIN",
+                "is_self_referencing": false,
+                "is_optional": true,
+                "is_identifying": false,
+                "evidence": [
+                    "declared foreign key constraint 'warehouse_city_id_fkey'"
+                ]
+            }
+        ],
+        "junction_tables": [
+            {
+                "schema_name": "bronze",
+                "table_name": "inventory",
+                "connected_tables": [
+                    "bronze.product",
+                    "bronze.warehouse"
+                ],
+                "key_columns": [
+                    "warehouse_id",
+                    "product_id"
+                ],
+                "payload_columns": [
+                    "quantity",
+                    "reorder_level"
+                ],
+                "is_pure": false
+            },
+            {
+                "schema_name": "bronze",
+                "table_name": "product_promotion",
+                "connected_tables": [
+                    "bronze.product",
+                    "bronze.promotion"
+                ],
+                "key_columns": [
+                    "product_id",
+                    "promotion_id"
+                ],
+                "payload_columns": [],
+                "is_pure": true
+            }
+        ],
+        "dependency_order": [
+            "bronze.audit_log",
+            "bronze.category",
+            "bronze.country",
+            "bronze.department",
+            "bronze.promotion",
+            "bronze.supplier",
+            "bronze.employee",
+            "bronze.product",
+            "bronze.state",
+            "bronze.city",
+            "bronze.product_promotion",
+            "bronze.customer",
+            "bronze.warehouse",
+            "bronze.inventory",
+            "bronze.orders",
+            "bronze.order_item",
+            "bronze.payment",
+            "bronze.return_order",
+            "bronze.shipment"
+        ],
+        "cycles": [],
+        "orphan_tables": [
+            "bronze.audit_log"
+        ],
+        "summary": {
+            "total_relationships": 23,
+            "declared_count": 21,
+            "inferred_count": 0,
+            "derived_count": 2,
+            "junction_table_count": 2,
+            "self_referencing_count": 1,
+            "orphan_table_count": 1,
+            "cycle_count": 0,
+            "max_dependency_depth": 5,
+            "tables_analyzed": 19,
+            "columns_analyzed": 84
+        }
+    }
+}

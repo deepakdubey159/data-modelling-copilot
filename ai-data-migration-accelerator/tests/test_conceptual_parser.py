@@ -92,6 +92,47 @@ def test_domain_referencing_unknown_entity_is_rejected():
         parse_conceptual_model(json.dumps(payload))
 
 
+def test_domain_referencing_sales_employee_is_rejected():
+    """Reproduces the reported failure: a domain lists an entity name that
+    reads as plausible business vocabulary but was never defined in
+    entities[]. This must fail loudly rather than be silently dropped or
+    fuzzy-matched to an unrelated entity like 'Customer'."""
+    payload = json.loads(valid_response_json())
+    payload["domains"][0]["name"] = "Sales and Orders"
+    payload["domains"][0]["entities"].append("Sales Employee")
+
+    with pytest.raises(
+        ConceptualModelParseError,
+        match=r"Domain 'Sales and Orders' lists entity 'Sales Employee', which is not "
+        r"defined in the model",
+    ):
+        parse_conceptual_model(json.dumps(payload))
+
+
+def test_domain_with_valid_exact_entity_references_parses():
+    """The positive counterpart: every domain entity name matches an
+    entities[].name exactly across the whole model, so parsing succeeds and
+    no name is altered."""
+    payload = json.loads(valid_response_json())
+    payload["domains"] = [
+        {
+            "name": "Sales and Orders",
+            "description": "Customer demand and its fulfilment.",
+            "entities": ["Customer", "Order"],
+        },
+        {
+            "name": "Product Management",
+            "description": "The catalogue of sellable goods.",
+            "entities": ["Product"],
+        },
+    ]
+
+    model = parse_conceptual_model(json.dumps(payload))
+
+    assert model.domains[0].entities == ["Customer", "Order"]
+    assert model.domains[1].entities == ["Product"]
+
+
 def test_relationship_to_unknown_entity_is_rejected():
     payload = json.loads(valid_response_json())
     payload["entities"][0]["relationships"][0]["related_entity"] = "Shipment"

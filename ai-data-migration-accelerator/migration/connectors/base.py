@@ -28,12 +28,21 @@ class ConnectorError(Exception):
 class BaseConnector(ABC):
     """Abstract contract for a source database connector."""
 
-    def __init__(self, host: str, port: int, database: str, username: str, password: str):
+    def __init__(
+        self,
+        host: str,
+        port: int,
+        database: str,
+        username: str,
+        password: str,
+        connection_timeout: int = 30,
+    ):
         self.host = host
         self.port = port
         self.database = database
         self.username = username
         self.password = password
+        self.connection_timeout = connection_timeout
         self._is_connected: bool = False
 
     # -- Lifecycle -----------------------------------------------------

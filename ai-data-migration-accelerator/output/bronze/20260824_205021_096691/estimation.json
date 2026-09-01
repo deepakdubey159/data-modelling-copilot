@@ -1,0 +1,94 @@
+{
+    "estimation_result": {
+        "source_type": "postgres",
+        "target_type": "databricks",
+        "complexity_level": "MEDIUM",
+        "complexity_factors": {
+            "table_count": 18,
+            "total_columns": 57,
+            "primary_key_relationships": 18,
+            "foreign_key_relationships": 0,
+            "complex_relationships": 0,
+            "unique_constraints": 3,
+            "check_constraints": 2,
+            "large_tables": 0,
+            "views_count": 0,
+            "procedures_count": 0,
+            "triggers_count": 0,
+            "datatype_conversions": 2,
+            "target_specific_complexity": 5,
+            "db2_legacy_datatypes": 0,
+            "db2_lob_columns": 0,
+            "db2_graphic_columns": 0,
+            "db2_decimal_columns": 0,
+            "db2_indexes": 0,
+            "db2_xml_columns": 0
+        },
+        "effort_components": [
+            {
+                "name": "Discovery & Assessment",
+                "effort_days": 5.9399999999999995,
+                "description": "Schema analysis, profiling, relationship discovery.",
+                "drivers": []
+            },
+            {
+                "name": "Modeling",
+                "effort_days": 3.8,
+                "description": "Logical and physical design.",
+                "drivers": []
+            },
+            {
+                "name": "DDL Generation",
+                "effort_days": 1.9,
+                "description": "SQL DDL generation and validation.",
+                "drivers": []
+            },
+            {
+                "name": "Data Conversion",
+                "effort_days": 2.6,
+                "description": "Type conversion, transformation logic.",
+                "drivers": []
+            },
+            {
+                "name": "Testing",
+                "effort_days": 6.6,
+                "description": "Functional, data, and integration testing.",
+                "drivers": []
+            },
+            {
+                "name": "Migration",
+                "effort_days": 2.9,
+                "description": "Live migration execution and cutover.",
+                "drivers": []
+            }
+        ],
+        "total_effort_days": 23.739999999999995,
+        "total_effort_weeks": 4.747999999999999,
+        "total_effort_months": 1.0790909090909089,
+        "discovery_effort_days": 5.9399999999999995,
+        "modeling_effort_days": 3.8,
+        "ddl_effort_days": 1.9,
+        "conversion_effort_days": 2.6,
+        "testing_effort_days": 6.6,
+        "migration_effort_days": 2.9,
+        "assumptions": [
+            "Schema contains 18 tables with 57 total columns.",
+            "Found 0 foreign key relationships.",
+            "0 tables classified as large (> 1M rows).",
+            "Datatype conversion required for 2 columns.",
+            "Estimates assume standard complexity for a production migration.",
+            "Team has experience with source and target database platforms.",
+            "No major data quality issues or cleansing requirements.",
+            "Infrastructure provisioning handled separately."
+        ],
+        "risks": [
+            "Datatype conversions (2) may have edge cases."
+        ],
+        "recommendations": [
+            "Establish comprehensive data validation before cutover."
+        ],
+        "confidence_level": "MEDIUM"
+    },
+    "generated_from": "physical_model.json",
+    "generated_by": "EffortEstimator"
+}

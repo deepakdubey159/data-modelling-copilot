@@ -42,6 +42,21 @@ _CODE_FENCE = re.compile(r"^\s*```(?:json)?\s*(.*?)\s*```\s*$", re.DOTALL)
 class ConceptualModelParseError(Exception):
     """Raised when a response cannot be turned into a valid model."""
 
+    @property
+    def duplicate_entity_names(self) -> list[str] | None:
+        """Extract duplicate names from the error message if this is a duplicate-names error.
+
+        Returns the names if the error is about duplicates, None otherwise."""
+        error_msg = str(self)
+        if "Response defined duplicate entity names:" in error_msg:
+            # Extract names from message like "Response defined duplicate entity names: Customer, Product"
+            prefix = "Response defined duplicate entity names: "
+            start = error_msg.find(prefix)
+            if start != -1:
+                names_str = error_msg[start + len(prefix) :]
+                return [name.strip() for name in names_str.split(",")]
+        return None
+
 
 def strip_code_fences(raw: str) -> str:
     """Remove a surrounding markdown code fence if present.
@@ -87,11 +102,40 @@ def parse_model(raw: str, model_class: type[T]) -> T:
         ) from exc
 
 
-def parse_conceptual_model(raw: str) -> ConceptualModel:
-    """Parse a conceptual model and verify its internal references."""
+def parse_conceptual_model(
+    raw: str,
+    expected_relationship_count: int = 0,
+    source_relationships=None,
+    known_tables: list[tuple[str, str]] | None = None,
+) -> ConceptualModel:
+    """Parse a conceptual model and verify its internal references.
+
+    Reconciles with source relationships to ensure no FK data loss.
+
+    Args:
+        raw: The LLM response JSON string
+        expected_relationship_count: Number of relationships discovered in source metadata.
+                                   If > 0, response must include relationships or an error is raised.
+        source_relationships: Optional RelationshipGraph to reconcile against.
+                             If provided, missing FKs are restored from source.
+        known_tables: Optional (schema, table) pairs from source metadata, used as a
+                     fallback to attribute a relationship to the right entity when an
+                     entity's declared `source_tables` doesn't cover it.
+    """
     model = parse_model(raw, ConceptualModel)
     _resolve_references(model)
+
+    # Reconcile with source relationships BEFORE validation
+    # This ensures LLM omissions are restored from the authoritative source
+    if source_relationships is not None and source_relationships.relationships:
+        from migration.conceptual.reconciler import reconcile_with_source_relationships
+
+        model = reconcile_with_source_relationships(
+            model, source_relationships, known_tables=known_tables
+        )
+
     _require_content(model)
+    _require_relationships(model, expected_relationship_count)
     return model
 
 
@@ -107,6 +151,28 @@ def _require_content(model: ConceptualModel) -> None:
         )
     if not model.summary.strip():
         raise ConceptualModelParseError("Response contained an empty summary.")
+
+
+def _require_relationships(model: ConceptualModel, expected_count: int) -> None:
+    """Validate that source relationships were mapped to entity.relationships.
+
+    When source FKs exist, the LLM response MUST include them in entity.relationships.
+    This prevents silent data loss when the model omits relationships.
+    """
+    if expected_count == 0:
+        # No source relationships to preserve
+        return
+
+    # Count relationships in the response
+    actual_count = sum(len(entity.relationships) for entity in model.entities)
+
+    if actual_count == 0:
+        raise ConceptualModelParseError(
+            f"Response omitted all source relationships. "
+            f"Expected at least {expected_count} relationship(s) from source metadata, "
+            f"but entity.relationships arrays were all empty. "
+            f"The LLM must map declared database foreign keys to entity.relationships."
+        )
 
 
 def _resolve_references(model: ConceptualModel) -> None:

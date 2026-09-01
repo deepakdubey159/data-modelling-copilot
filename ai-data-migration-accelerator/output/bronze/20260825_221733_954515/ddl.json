@@ -1,0 +1,227 @@
+{
+    "ddl_script": {
+        "database_name": "datamodel",
+        "target_type": "databricks",
+        "table_creation_statements": [
+            {
+                "statement": "CREATE TABLE IF NOT EXISTS `dblearn`.`bronze`.`customer` (\n  `city` STRING COMMENT 'Source: city | Physical type: STRING',\n  `country` STRING COMMENT 'Source: country | Physical type: STRING',\n  `credit_limit` DECIMAL(12,2) COMMENT 'Source: credit_limit | Physical type: DECIMAL',\n  `customer_code` STRING NOT NULL COMMENT 'Source: customer_code | Physical type: STRING',\n  `customer_status` STRING COMMENT 'Source: customer_status | Physical type: STRING',\n  `date_of_birth` DATE COMMENT 'Source: date_of_birth | Physical type: DATE',\n  `email` STRING COMMENT 'Source: email | Physical type: STRING',\n  `first_name` STRING NOT NULL COMMENT 'Source: first_name | Physical type: STRING',\n  `gender` STRING COMMENT 'Source: gender | Physical type: STRING',\n  `is_active` BOOLEAN COMMENT 'Source: is_active | Physical type: BOOLEAN',\n  `last_name` STRING COMMENT 'Source: last_name | Physical type: STRING',\n  `phone_number` STRING COMMENT 'Source: phone_number | Physical type: STRING',\n  `postal_code` STRING COMMENT 'Source: postal_code | Physical type: STRING',\n  `state` STRING COMMENT 'Source: state | Physical type: STRING',\n  CONSTRAINT `pk_customer` PRIMARY KEY (`customer_code`)\n)\n;",
+                "description": "Create table customer",
+                "source_table": "customer",
+                "statement_type": "CREATE"
+            },
+            {
+                "statement": "CREATE TABLE IF NOT EXISTS `dblearn`.`bronze`.`order` (\n  `created_by` STRING COMMENT 'Source: created_by | Physical type: STRING',\n  `created_date` TIMESTAMP COMMENT 'Source: created_date | Physical type: TIMESTAMP',\n  `customer_code` STRING NOT NULL COMMENT 'Source: customer_code | Physical type: STRING',\n  `discount_amount` DECIMAL(12,2) COMMENT 'Source: discount_amount | Physical type: DECIMAL',\n  `order_date` TIMESTAMP COMMENT 'Source: order_date | Physical type: TIMESTAMP',\n  `order_number` STRING NOT NULL COMMENT 'Source: order_number | Physical type: STRING',\n  `order_status` STRING COMMENT 'Source: order_status | Physical type: STRING',\n  `payment_method` STRING COMMENT 'Source: payment_method | Physical type: STRING',\n  `remarks` STRING COMMENT 'Source: remarks | Physical type: STRING',\n  `shipped_date` TIMESTAMP COMMENT 'Source: shipped_date | Physical type: TIMESTAMP',\n  `shipping_amount` DECIMAL(12,2) COMMENT 'Source: shipping_amount | Physical type: DECIMAL',\n  `tax_amount` DECIMAL(12,2) COMMENT 'Source: tax_amount | Physical type: DECIMAL',\n  `total_amount` DECIMAL(12,2) COMMENT 'Source: total_amount | Physical type: DECIMAL',\n  CONSTRAINT `pk_order` PRIMARY KEY (`order_number`)\n)\n;",
+                "description": "Create table order",
+                "source_table": "order",
+                "statement_type": "CREATE"
+            },
+            {
+                "statement": "CREATE TABLE IF NOT EXISTS `dblearn`.`bronze`.`order_item` (\n  `order_item_id` BIGINT NOT NULL COMMENT 'Source: order_item_id | Physical type: INTEGER',\n  `order_number` STRING NOT NULL COMMENT 'Source: order_number | Physical type: STRING',\n  `product_name` STRING COMMENT 'Source: product_name | Physical type: STRING',\n  `quantity` INT NOT NULL COMMENT 'Source: quantity | Physical type: INTEGER',\n  `total_price` DECIMAL(12,2) COMMENT 'Source: total_price | Physical type: DECIMAL',\n  `unit_price` DECIMAL(10,2) COMMENT 'Source: unit_price | Physical type: DECIMAL',\n  CONSTRAINT `pk_order_item` PRIMARY KEY (`order_item_id`)\n)\n;",
+                "description": "Create table order_item",
+                "source_table": "order_item",
+                "statement_type": "CREATE"
+            },
+            {
+                "statement": "CREATE TABLE IF NOT EXISTS `dblearn`.`bronze`.`order_line_item` (\n  `order_id` BIGINT NOT NULL COMMENT 'Source: order_id | Physical type: INTEGER',\n  `product_name` STRING NOT NULL COMMENT 'Source: product_name | Physical type: STRING',\n  `quantity` INT NOT NULL COMMENT 'Source: quantity | Physical type: INTEGER',\n  `total_price` DECIMAL(12,2) COMMENT 'Source: total_price | Physical type: DECIMAL',\n  `unit_price` DECIMAL(10,2) COMMENT 'Source: unit_price | Physical type: DECIMAL',\n  CONSTRAINT `pk_order_line_item` PRIMARY KEY (`order_id`, `product_name`)\n)\n;",
+                "description": "Create table order_line_item",
+                "source_table": "order_line_item",
+                "statement_type": "CREATE"
+            },
+            {
+                "statement": "CREATE TABLE IF NOT EXISTS `dblearn`.`bronze`.`order_product` (\n  `order_id` BIGINT NOT NULL COMMENT 'Source: order_id | Physical type: INTEGER',\n  `order_number` STRING NOT NULL COMMENT 'Source: order_number | Physical type: STRING',\n  `product_code` STRING NOT NULL COMMENT 'Source: product_code | Physical type: STRING',\n  `product_id` BIGINT NOT NULL COMMENT 'Source: product_id | Physical type: INTEGER',\n  `quantity` INT COMMENT 'Source: quantity | Physical type: INTEGER',\n  `selling_price` DECIMAL(10,2) COMMENT 'Source: selling_price | Physical type: DECIMAL',\n  CONSTRAINT `pk_order_product` PRIMARY KEY (`order_id`, `product_id`)\n)\n;",
+                "description": "Create table order_product",
+                "source_table": "order_product",
+                "statement_type": "CREATE"
+            },
+            {
+                "statement": "CREATE TABLE IF NOT EXISTS `dblearn`.`bronze`.`order_product_association` (\n  `order_number` STRING NOT NULL COMMENT 'Source: order_number | Physical type: STRING',\n  `product_code` STRING NOT NULL COMMENT 'Source: product_code | Physical type: STRING',\n  CONSTRAINT `pk_order_product_association` PRIMARY KEY (`order_number`, `product_code`)\n)\n;",
+                "description": "Create table order_product_association",
+                "source_table": "order_product_association",
+                "statement_type": "CREATE"
+            },
+            {
+                "statement": "CREATE TABLE IF NOT EXISTS `dblearn`.`bronze`.`product` (\n  `category` STRING COMMENT 'Source: category | Physical type: STRING',\n  `created_date` TIMESTAMP COMMENT 'Source: created_date | Physical type: TIMESTAMP',\n  `is_active` BOOLEAN COMMENT 'Source: is_active | Physical type: BOOLEAN',\n  `price` DECIMAL(10,2) COMMENT 'Source: price | Physical type: DECIMAL',\n  `product_code` STRING NOT NULL COMMENT 'Source: product_code | Physical type: STRING',\n  `product_name` STRING COMMENT 'Source: product_name | Physical type: STRING',\n  `stock_quantity` INT COMMENT 'Source: stock_quantity | Physical type: INTEGER',\n  `supplier_name` STRING COMMENT 'Source: supplier_name | Physical type: STRING',\n  CONSTRAINT `pk_product` PRIMARY KEY (`product_code`)\n)\n;",
+                "description": "Create table product",
+                "source_table": "product",
+                "statement_type": "CREATE"
+            }
+        ],
+        "constraint_statements": [
+            {
+                "statement": "ALTER TABLE `dblearn`.`bronze`.`order` ADD CONSTRAINT `fk_order_customer_customer_code` FOREIGN KEY (`customer_code`) REFERENCES `dblearn`.`bronze`.`customer`(`customer_code`);",
+                "description": "Add foreign key fk_order_customer_customer_code",
+                "source_table": "order",
+                "statement_type": "ALTER"
+            },
+            {
+                "statement": "ALTER TABLE `dblearn`.`bronze`.`order_item` ADD CONSTRAINT `ck_order_item_quantity` CHECK (quantity >= 0);",
+                "description": "Add check constraint ck_order_item_quantity",
+                "source_table": "order_item",
+                "statement_type": "ALTER"
+            },
+            {
+                "statement": "ALTER TABLE `dblearn`.`bronze`.`order_item` ADD CONSTRAINT `fk_order_item_order_order_number` FOREIGN KEY (`order_number`) REFERENCES `dblearn`.`bronze`.`order`(`order_number`);",
+                "description": "Add foreign key fk_order_item_order_order_number",
+                "source_table": "order_item",
+                "statement_type": "ALTER"
+            },
+            {
+                "statement": "ALTER TABLE `dblearn`.`bronze`.`order_line_item` ADD CONSTRAINT `ck_order_line_item_quantity` CHECK (quantity >= 0);",
+                "description": "Add check constraint ck_order_line_item_quantity",
+                "source_table": "order_line_item",
+                "statement_type": "ALTER"
+            },
+            {
+                "statement": "ALTER TABLE `dblearn`.`bronze`.`order_product` ADD CONSTRAINT `ck_order_product_quantity` CHECK (quantity >= 0);",
+                "description": "Add check constraint ck_order_product_quantity",
+                "source_table": "order_product",
+                "statement_type": "ALTER"
+            },
+            {
+                "statement": "ALTER TABLE `dblearn`.`bronze`.`order_product` ADD CONSTRAINT `fk_order_product_order_order_number` FOREIGN KEY (`order_number`) REFERENCES `dblearn`.`bronze`.`order`(`order_number`);",
+                "description": "Add foreign key fk_order_product_order_order_number",
+                "source_table": "order_product",
+                "statement_type": "ALTER"
+            },
+            {
+                "statement": "ALTER TABLE `dblearn`.`bronze`.`order_product` ADD CONSTRAINT `fk_order_product_product_product_code` FOREIGN KEY (`product_code`) REFERENCES `dblearn`.`bronze`.`product`(`product_code`);",
+                "description": "Add foreign key fk_order_product_product_product_code",
+                "source_table": "order_product",
+                "statement_type": "ALTER"
+            },
+            {
+                "statement": "ALTER TABLE `dblearn`.`bronze`.`order_product_association` ADD CONSTRAINT `fk_order_product_association_order_order_number` FOREIGN KEY (`order_number`) REFERENCES `dblearn`.`bronze`.`order`(`order_number`);",
+                "description": "Add foreign key fk_order_product_association_order_order_number",
+                "source_table": "order_product_association",
+                "statement_type": "ALTER"
+            },
+            {
+                "statement": "ALTER TABLE `dblearn`.`bronze`.`order_product_association` ADD CONSTRAINT `fk_order_product_association_product_product_code` FOREIGN KEY (`product_code`) REFERENCES `dblearn`.`bronze`.`product`(`product_code`);",
+                "description": "Add foreign key fk_order_product_association_product_product_code",
+                "source_table": "order_product_association",
+                "statement_type": "ALTER"
+            }
+        ],
+        "index_statements": [
+            {
+                "statement": "-- Index recommendation (idx_customer_email): UNIQUE INDEX on `dblearn`.`bronze`.`customer`(email) - Delta Lake has no CREATE INDEX; consider Z-ORDER BY or a generated column instead | Enforces the alternate key.",
+                "description": "Index recommendation for idx_customer_email",
+                "source_table": "`dblearn`.`bronze`.`customer`",
+                "statement_type": "COMMENT"
+            },
+            {
+                "statement": "-- Index recommendation (idx_customer_phone_number): UNIQUE INDEX on `dblearn`.`bronze`.`customer`(phone_number) - Delta Lake has no CREATE INDEX; consider Z-ORDER BY or a generated column instead | Enforces the alternate key.",
+                "description": "Index recommendation for idx_customer_phone_number",
+                "source_table": "`dblearn`.`bronze`.`customer`",
+                "statement_type": "COMMENT"
+            },
+            {
+                "statement": "-- Index recommendation (idx_customer_pk): UNIQUE INDEX on `dblearn`.`bronze`.`customer`(customer_code) - Delta Lake has no CREATE INDEX; consider Z-ORDER BY or a generated column instead | Enforces and serves lookups on the primary key.",
+                "description": "Index recommendation for idx_customer_pk",
+                "source_table": "`dblearn`.`bronze`.`customer`",
+                "statement_type": "COMMENT"
+            },
+            {
+                "statement": "-- Index recommendation (idx_customer_postal_code): UNIQUE INDEX on `dblearn`.`bronze`.`customer`(postal_code) - Delta Lake has no CREATE INDEX; consider Z-ORDER BY or a generated column instead | Enforces the alternate key.",
+                "description": "Index recommendation for idx_customer_postal_code",
+                "source_table": "`dblearn`.`bronze`.`customer`",
+                "statement_type": "COMMENT"
+            },
+            {
+                "statement": "-- Index recommendation (idx_order_customer_code): INDEX on `dblearn`.`bronze`.`order`(customer_code) - Delta Lake has no CREATE INDEX; consider Z-ORDER BY or a generated column instead | Foreign keys are joined on constantly and are scanned when the parent is deleted; an unindexed foreign key is a common cause of slow joins and lock escalation.",
+                "description": "Index recommendation for idx_order_customer_code",
+                "source_table": "`dblearn`.`bronze`.`order`",
+                "statement_type": "COMMENT"
+            },
+            {
+                "statement": "-- Index recommendation (idx_order_pk): UNIQUE INDEX on `dblearn`.`bronze`.`order`(order_number) - Delta Lake has no CREATE INDEX; consider Z-ORDER BY or a generated column instead | Enforces and serves lookups on the primary key.",
+                "description": "Index recommendation for idx_order_pk",
+                "source_table": "`dblearn`.`bronze`.`order`",
+                "statement_type": "COMMENT"
+            },
+            {
+                "statement": "-- Index recommendation (idx_order_item_order_number): INDEX on `dblearn`.`bronze`.`order_item`(order_number) - Delta Lake has no CREATE INDEX; consider Z-ORDER BY or a generated column instead | Foreign keys are joined on constantly and are scanned when the parent is deleted; an unindexed foreign key is a common cause of slow joins and lock escalation.",
+                "description": "Index recommendation for idx_order_item_order_number",
+                "source_table": "`dblearn`.`bronze`.`order_item`",
+                "statement_type": "COMMENT"
+            },
+            {
+                "statement": "-- Index recommendation (idx_order_item_pk): UNIQUE INDEX on `dblearn`.`bronze`.`order_item`(order_item_id) - Delta Lake has no CREATE INDEX; consider Z-ORDER BY or a generated column instead | Enforces and serves lookups on the primary key.",
+                "description": "Index recommendation for idx_order_item_pk",
+                "source_table": "`dblearn`.`bronze`.`order_item`",
+                "statement_type": "COMMENT"
+            },
+            {
+                "statement": "-- Index recommendation (idx_order_line_item_pk): UNIQUE INDEX on `dblearn`.`bronze`.`order_line_item`(order_id, product_name) - Delta Lake has no CREATE INDEX; consider Z-ORDER BY or a generated column instead | Enforces and serves lookups on the primary key.",
+                "description": "Index recommendation for idx_order_line_item_pk",
+                "source_table": "`dblearn`.`bronze`.`order_line_item`",
+                "statement_type": "COMMENT"
+            },
+            {
+                "statement": "-- Index recommendation (idx_order_product_order_number): INDEX on `dblearn`.`bronze`.`order_product`(order_number) - Delta Lake has no CREATE INDEX; consider Z-ORDER BY or a generated column instead | Foreign keys are joined on constantly and are scanned when the parent is deleted; an unindexed foreign key is a common cause of slow joins and lock escalation.",
+                "description": "Index recommendation for idx_order_product_order_number",
+                "source_table": "`dblearn`.`bronze`.`order_product`",
+                "statement_type": "COMMENT"
+            },
+            {
+                "statement": "-- Index recommendation (idx_order_product_pk): UNIQUE INDEX on `dblearn`.`bronze`.`order_product`(order_id, product_id) - Delta Lake has no CREATE INDEX; consider Z-ORDER BY or a generated column instead | Enforces and serves lookups on the primary key.",
+                "description": "Index recommendation for idx_order_product_pk",
+                "source_table": "`dblearn`.`bronze`.`order_product`",
+                "statement_type": "COMMENT"
+            },
+            {
+                "statement": "-- Index recommendation (idx_order_product_product_code): INDEX on `dblearn`.`bronze`.`order_product`(product_code) - Delta Lake has no CREATE INDEX; consider Z-ORDER BY or a generated column instead | Foreign keys are joined on constantly and are scanned when the parent is deleted; an unindexed foreign key is a common cause of slow joins and lock escalation.",
+                "description": "Index recommendation for idx_order_product_product_code",
+                "source_table": "`dblearn`.`bronze`.`order_product`",
+                "statement_type": "COMMENT"
+            },
+            {
+                "statement": "-- Index recommendation (idx_order_product_association): UNIQUE INDEX on `dblearn`.`bronze`.`order_product_association`(order_number, product_code) - Delta Lake has no CREATE INDEX; consider Z-ORDER BY or a generated column instead | Enforces and serves lookups on the primary key.",
+                "description": "Index recommendation for idx_order_product_association",
+                "source_table": "`dblearn`.`bronze`.`order_product_association`",
+                "statement_type": "COMMENT"
+            },
+            {
+                "statement": "-- Index recommendation (idx_order_product_association): INDEX on `dblearn`.`bronze`.`order_product_association`(product_code) - Delta Lake has no CREATE INDEX; consider Z-ORDER BY or a generated column instead | Foreign keys are joined on constantly and are scanned when the parent is deleted; an unindexed foreign key is a common cause of slow joins and lock escalation.",
+                "description": "Index recommendation for idx_order_product_association",
+                "source_table": "`dblearn`.`bronze`.`order_product_association`",
+                "statement_type": "COMMENT"
+            },
+            {
+                "statement": "-- Index recommendation (idx_product_pk): UNIQUE INDEX on `dblearn`.`bronze`.`product`(product_code) - Delta Lake has no CREATE INDEX; consider Z-ORDER BY or a generated column instead | Enforces and serves lookups on the primary key.",
+                "description": "Index recommendation for idx_product_pk",
+                "source_table": "`dblearn`.`bronze`.`product`",
+                "statement_type": "COMMENT"
+            }
+        ],
+        "comment_statements": [],
+        "partition_clustering_statements": [
+            {
+                "statement": "-- Partition/Clustering Recommendation: CLUSTER BY: order_number | Rationale: Master data is looked up by key; clustering on it keeps those reads to a minimum of blocks.",
+                "description": "Partition/clustering recommendation",
+                "source_table": "order",
+                "statement_type": "COMMENT"
+            },
+            {
+                "statement": "-- Partition/Clustering Recommendation: CLUSTER BY: order_number | Rationale: Clustering on order_number co-locates rows that are joined and filtered together.",
+                "description": "Partition/clustering recommendation",
+                "source_table": "order_item",
+                "statement_type": "COMMENT"
+            },
+            {
+                "statement": "-- Partition/Clustering Recommendation: CLUSTER BY: product_code, order_number | Rationale: Clustering on product_code, order_number co-locates rows that are joined and filtered together.",
+                "description": "Partition/clustering recommendation",
+                "source_table": "order_product",
+                "statement_type": "COMMENT"
+            },
+            {
+                "statement": "-- Partition/Clustering Recommendation: CLUSTER BY: order_number, product_code | Rationale: Clustering on order_number, product_code co-locates rows that are joined and filtered together.",
+                "description": "Partition/clustering recommendation",
+                "source_table": "order_product_association",
+                "statement_type": "COMMENT"
+            }
+        ]
+    },
+    "generated_from": "physical_model.json",
+    "generated_by": "DatabricksDDLGenerator"
+}

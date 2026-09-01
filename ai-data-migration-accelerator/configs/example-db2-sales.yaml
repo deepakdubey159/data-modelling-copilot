@@ -1,0 +1,56 @@
+# Example Configuration: DB2 Sales Database Migration
+# Copy this to config.yaml and customize for your environment
+#
+# All credentials come from environment variables:
+#   SOURCE_DB_PASSWORD       - DB2 password
+#   DATABRICKS_HOST          - Azure Databricks workspace URL
+#   DATABRICKS_TOKEN         - Databricks personal access token
+#   DATABRICKS_HTTP_PATH     - SQL warehouse/cluster HTTP path
+#   DATABRICKS_WORKSPACE_PATH - Where to publish DDL files
+#   ANTHROPIC_API_KEY        - Claude API key (optional)
+
+project:
+  name: db2_sales_migration_to_databricks
+  output_directory: output/db2/
+
+source:
+  type: db2                    # DB2 as source
+  host: your-db2-server.com
+  port: 50000                  # Standard DB2 port
+  database: SALESDB
+  username: db2admin
+  password: ""                 # Will be loaded from SOURCE_DB_PASSWORD env var
+  schema:
+    - SALES                    # Schema to migrate
+    - PROMOTIONS
+  connection_timeout: 30
+
+target:
+  type: databricks
+  host_env: DATABRICKS_HOST           # Read from env var
+  token_env: DATABRICKS_TOKEN         # Read from env var
+  http_path_env: DATABRICKS_HTTP_PATH # Read from env var
+  workspace_path_env: DATABRICKS_WORKSPACE_PATH
+  catalog: dblearn                    # Unity Catalog name
+  schema: sales_bronze                # Target schema (separates different runs)
+
+llm:
+  provider: anthropic
+  model: claude-opus-5                # Best quality, slower
+  # model: claude-haiku-4-5-20251001  # Fast, good for testing
+  max_tokens: 32000
+  effort: high                        # low=fast, high=thorough, max=exhaustive
+  api_key_env: ANTHROPIC_API_KEY
+
+artifacts:
+  profile: true               # Analyze data statistics
+  relationships: true         # Discover foreign key relationships
+  conceptual_model: true      # AI-generated business understanding
+  logical_model: true         # Normalized data model
+  physical_model: true        # Databricks-optimized design
+  ddl: true                   # CREATE TABLE statements
+  dml: true                   # Data movement scripts
+  estimation: true            # Effort/cost estimates
+
+logging:
+  level: INFO                 # INFO, DEBUG (verbose), WARNING, ERROR

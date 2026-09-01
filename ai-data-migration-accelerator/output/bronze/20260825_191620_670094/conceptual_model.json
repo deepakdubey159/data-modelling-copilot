@@ -1,0 +1,549 @@
+{
+    "conceptual_model": {
+        "database_name": "datamodel",
+        "summary": "A comprehensive retail and supply chain management system that tracks products, inventory across warehouses, customer orders, payments, shipments, returns, and promotional activities. The system also manages employee and organizational structures with departments and reporting hierarchies, along with geographic master data (countries, states, cities). Audit logging tracks all data changes for compliance.",
+        "domains": [
+            {
+                "name": "Geography",
+                "description": "Master data for locations where customers, warehouses, and suppliers operate.",
+                "entities": [
+                    "Country",
+                    "State",
+                    "City"
+                ]
+            },
+            {
+                "name": "Organization",
+                "description": "Internal company structure including employees, departments, and reporting relationships.",
+                "entities": [
+                    "Department",
+                    "Employee"
+                ]
+            },
+            {
+                "name": "Product Master",
+                "description": "Product catalog, categorization, supplier relationships, and inventory management.",
+                "entities": [
+                    "Product",
+                    "Category",
+                    "Supplier",
+                    "Inventory",
+                    "Promotion"
+                ]
+            },
+            {
+                "name": "Sales",
+                "description": "Customer information, order capture, order line items, and payment processing.",
+                "entities": [
+                    "Customer",
+                    "Order",
+                    "Order Item",
+                    "Payment"
+                ]
+            },
+            {
+                "name": "Fulfillment",
+                "description": "Shipment and return processing for orders.",
+                "entities": [
+                    "Shipment",
+                    "Return Order"
+                ]
+            },
+            {
+                "name": "Audit & Compliance",
+                "description": "System audit logging for tracking changes to data.",
+                "entities": [
+                    "Audit Log"
+                ]
+            }
+        ],
+        "entities": [
+            {
+                "name": "Country",
+                "description": "Sovereign nations and territories where the business operates or has customers and suppliers.",
+                "business_key": [
+                    "country_code"
+                ],
+                "attributes": [
+                    "country_name",
+                    "created_at"
+                ],
+                "relationships": [
+                    {
+                        "related_entity": "State",
+                        "verb_phrase": "references",
+                        "cardinality": "ONE_TO_MANY",
+                        "is_optional": false,
+                        "description": "Restored from source metadata: State references Country."
+                    }
+                ],
+                "source_tables": [
+                    "bronze.country"
+                ]
+            },
+            {
+                "name": "State",
+                "description": "States or provinces within countries used for geographic organization of customers and warehouses.",
+                "business_key": [
+                    "state_name",
+                    "country_id"
+                ],
+                "attributes": [
+                    "state_name"
+                ],
+                "relationships": [
+                    {
+                        "related_entity": "City",
+                        "verb_phrase": "references",
+                        "cardinality": "ONE_TO_MANY",
+                        "is_optional": false,
+                        "description": "Restored from source metadata: City references State."
+                    }
+                ],
+                "source_tables": [
+                    "bronze.state"
+                ]
+            },
+            {
+                "name": "City",
+                "description": "Cities within states, the primary geographic unit for customer location and warehouse placement.",
+                "business_key": [
+                    "city_name",
+                    "state_id"
+                ],
+                "attributes": [
+                    "city_name"
+                ],
+                "relationships": [
+                    {
+                        "related_entity": "Customer",
+                        "verb_phrase": "references",
+                        "cardinality": "ONE_TO_MANY",
+                        "is_optional": true,
+                        "description": "Restored from source metadata: Customer references City."
+                    },
+                    {
+                        "related_entity": "Warehouse",
+                        "verb_phrase": "references",
+                        "cardinality": "ONE_TO_MANY",
+                        "is_optional": true,
+                        "description": "Restored from source metadata: Warehouse references City."
+                    }
+                ],
+                "source_tables": [
+                    "bronze.city"
+                ]
+            },
+            {
+                "name": "Department",
+                "description": "Organizational departments within the company (Finance, Support, etc.) that group employees.",
+                "business_key": [
+                    "department_name"
+                ],
+                "attributes": [
+                    "department_name"
+                ],
+                "relationships": [
+                    {
+                        "related_entity": "Employee",
+                        "verb_phrase": "references",
+                        "cardinality": "ONE_TO_MANY",
+                        "is_optional": true,
+                        "description": "Restored from source metadata: Employee references Department."
+                    }
+                ],
+                "source_tables": [
+                    "bronze.department"
+                ]
+            },
+            {
+                "name": "Employee",
+                "description": "Company staff members with role, compensation, and hierarchical reporting structure.",
+                "business_key": [
+                    "email"
+                ],
+                "attributes": [
+                    "first_name",
+                    "last_name",
+                    "salary",
+                    "hire_date"
+                ],
+                "relationships": [
+                    {
+                        "related_entity": "Employee",
+                        "verb_phrase": "contains",
+                        "cardinality": "ONE_TO_MANY",
+                        "is_optional": true,
+                        "description": "Restored from source metadata: Employee references Employee."
+                    },
+                    {
+                        "related_entity": "Order",
+                        "verb_phrase": "references",
+                        "cardinality": "ONE_TO_MANY",
+                        "is_optional": true,
+                        "description": "Restored from source metadata: Order references Employee."
+                    }
+                ],
+                "source_tables": [
+                    "bronze.employee"
+                ]
+            },
+            {
+                "name": "Category",
+                "description": "Product categories used to classify and organize the product catalog (Accessories, Storage, etc.).",
+                "business_key": [
+                    "category_name"
+                ],
+                "attributes": [
+                    "category_name"
+                ],
+                "relationships": [
+                    {
+                        "related_entity": "Product",
+                        "verb_phrase": "references",
+                        "cardinality": "ONE_TO_MANY",
+                        "is_optional": true,
+                        "description": "Restored from source metadata: Product references Category."
+                    }
+                ],
+                "source_tables": [
+                    "bronze.category"
+                ]
+            },
+            {
+                "name": "Supplier",
+                "description": "External vendors who supply products to the organization.",
+                "business_key": [
+                    "supplier_name"
+                ],
+                "attributes": [
+                    "contact_name",
+                    "email",
+                    "phone"
+                ],
+                "relationships": [
+                    {
+                        "related_entity": "Product",
+                        "verb_phrase": "references",
+                        "cardinality": "ONE_TO_MANY",
+                        "is_optional": true,
+                        "description": "Restored from source metadata: Product references Supplier."
+                    }
+                ],
+                "source_tables": [
+                    "bronze.supplier"
+                ]
+            },
+            {
+                "name": "Product",
+                "description": "Goods sold and inventoried by the business, with pricing, supplier sourcing, and category classification.",
+                "business_key": [
+                    "sku"
+                ],
+                "attributes": [
+                    "product_name",
+                    "unit_price",
+                    "status"
+                ],
+                "relationships": [
+                    {
+                        "related_entity": "Inventory",
+                        "verb_phrase": "references",
+                        "cardinality": "ONE_TO_MANY",
+                        "is_optional": false,
+                        "description": "Restored from source metadata: Inventory references Product."
+                    },
+                    {
+                        "related_entity": "Order Item",
+                        "verb_phrase": "references",
+                        "cardinality": "ONE_TO_MANY",
+                        "is_optional": true,
+                        "description": "Restored from source metadata: Order Item references Product."
+                    },
+                    {
+                        "related_entity": "Return Order",
+                        "verb_phrase": "references",
+                        "cardinality": "ONE_TO_MANY",
+                        "is_optional": true,
+                        "description": "Restored from source metadata: Return Order references Product."
+                    }
+                ],
+                "source_tables": [
+                    "bronze.product"
+                ]
+            },
+            {
+                "name": "Promotion",
+                "description": "Discount and promotional campaigns that can be applied to products.",
+                "business_key": [
+                    "promotion_name"
+                ],
+                "attributes": [
+                    "discount_percent"
+                ],
+                "relationships": [
+                    {
+                        "related_entity": "Product",
+                        "verb_phrase": "references",
+                        "cardinality": "MANY_TO_MANY",
+                        "is_optional": false,
+                        "description": "Restored from source metadata: Product references Promotion."
+                    }
+                ],
+                "source_tables": [
+                    "bronze.promotion"
+                ]
+            },
+            {
+                "name": "Inventory",
+                "description": "Stock levels of products held at specific warehouses, with reorder thresholds for supply chain management.",
+                "business_key": [
+                    "product_id",
+                    "warehouse_id"
+                ],
+                "attributes": [
+                    "quantity",
+                    "reorder_level"
+                ],
+                "relationships": [],
+                "source_tables": [
+                    "bronze.inventory"
+                ]
+            },
+            {
+                "name": "Warehouse",
+                "description": "Physical distribution centers that hold inventory and ship orders to customers.",
+                "business_key": [
+                    "warehouse_name"
+                ],
+                "attributes": [
+                    "warehouse_name"
+                ],
+                "relationships": [
+                    {
+                        "related_entity": "Inventory",
+                        "verb_phrase": "references",
+                        "cardinality": "ONE_TO_MANY",
+                        "is_optional": false,
+                        "description": "Restored from source metadata: Inventory references Warehouse."
+                    },
+                    {
+                        "related_entity": "Product",
+                        "verb_phrase": "references",
+                        "cardinality": "MANY_TO_MANY",
+                        "is_optional": false,
+                        "description": "Restored from source metadata: Product references Warehouse."
+                    },
+                    {
+                        "related_entity": "Shipment",
+                        "verb_phrase": "references",
+                        "cardinality": "ONE_TO_MANY",
+                        "is_optional": true,
+                        "description": "Restored from source metadata: Shipment references Warehouse."
+                    }
+                ],
+                "source_tables": [
+                    "bronze.warehouse"
+                ]
+            },
+            {
+                "name": "Customer",
+                "description": "End customers who purchase products and place orders.",
+                "business_key": [
+                    "customer_number"
+                ],
+                "attributes": [
+                    "first_name",
+                    "last_name",
+                    "email",
+                    "phone",
+                    "credit_limit",
+                    "status"
+                ],
+                "relationships": [
+                    {
+                        "related_entity": "Order",
+                        "verb_phrase": "references",
+                        "cardinality": "ONE_TO_MANY",
+                        "is_optional": true,
+                        "description": "Restored from source metadata: Order references Customer."
+                    }
+                ],
+                "source_tables": [
+                    "bronze.customer"
+                ]
+            },
+            {
+                "name": "Order",
+                "description": "Sales transactions placed by customers, managed by sales representatives and tracked through fulfillment.",
+                "business_key": [
+                    "order_id"
+                ],
+                "attributes": [
+                    "order_date",
+                    "order_status"
+                ],
+                "relationships": [
+                    {
+                        "related_entity": "Order Item",
+                        "verb_phrase": "references",
+                        "cardinality": "ONE_TO_MANY",
+                        "is_optional": false,
+                        "description": "Restored from source metadata: Order Item references Order."
+                    },
+                    {
+                        "related_entity": "Payment",
+                        "verb_phrase": "references",
+                        "cardinality": "ONE_TO_MANY",
+                        "is_optional": true,
+                        "description": "Restored from source metadata: Payment references Order."
+                    },
+                    {
+                        "related_entity": "Return Order",
+                        "verb_phrase": "references",
+                        "cardinality": "ONE_TO_MANY",
+                        "is_optional": true,
+                        "description": "Restored from source metadata: Return Order references Order."
+                    },
+                    {
+                        "related_entity": "Shipment",
+                        "verb_phrase": "references",
+                        "cardinality": "ONE_TO_MANY",
+                        "is_optional": true,
+                        "description": "Restored from source metadata: Shipment references Order."
+                    }
+                ],
+                "source_tables": [
+                    "bronze.orders"
+                ]
+            },
+            {
+                "name": "Order Item",
+                "description": "Individual line items within an order, specifying products, quantities, and unit prices.",
+                "business_key": [
+                    "order_id",
+                    "line_number"
+                ],
+                "attributes": [
+                    "quantity",
+                    "unit_price"
+                ],
+                "relationships": [],
+                "source_tables": [
+                    "bronze.order_item"
+                ]
+            },
+            {
+                "name": "Payment",
+                "description": "Payment transactions received for orders, with method and date tracking.",
+                "business_key": [
+                    "payment_id"
+                ],
+                "attributes": [
+                    "payment_method",
+                    "payment_date",
+                    "amount"
+                ],
+                "relationships": [],
+                "source_tables": [
+                    "bronze.payment"
+                ]
+            },
+            {
+                "name": "Shipment",
+                "description": "Shipment records tracking the dispatch of orders from warehouses with tracking information.",
+                "business_key": [
+                    "tracking_number"
+                ],
+                "attributes": [
+                    "shipped_date",
+                    "tracking_number"
+                ],
+                "relationships": [],
+                "source_tables": [
+                    "bronze.shipment"
+                ]
+            },
+            {
+                "name": "Return Order",
+                "description": "Product returns initiated by customers for orders, with reason tracking.",
+                "business_key": [
+                    "return_id"
+                ],
+                "attributes": [
+                    "return_reason"
+                ],
+                "relationships": [],
+                "source_tables": [
+                    "bronze.return_order"
+                ]
+            },
+            {
+                "name": "Audit Log",
+                "description": "System audit trail recording all data modifications for compliance and traceability.",
+                "business_key": [
+                    "audit_id"
+                ],
+                "attributes": [
+                    "table_name",
+                    "operation",
+                    "user_name",
+                    "operation_timestamp"
+                ],
+                "relationships": [],
+                "source_tables": [
+                    "bronze.audit_log"
+                ]
+            }
+        ],
+        "business_rules": [
+            "Each city belongs to exactly one state.",
+            "Each state belongs to exactly one country.",
+            "Each employee may optionally belong to one department.",
+            "An employee may optionally report to another employee (manager), forming a hierarchical reporting structure; at most 10% of employees lack a manager (likely executives or top-level staff).",
+            "Each customer may optionally be located in a city; if not provided, city is unknown or handled separately.",
+            "Each product belongs to one category and is supplied by one supplier, both optional in the data model.",
+            "A product may be available in multiple warehouses; each warehouse maintains a specific quantity and reorder level for that product.",
+            "A product can be promoted through multiple promotions simultaneously, and a promotion can apply to multiple products (many-to-many relationship).",
+            "Each order is placed by one customer and managed by one sales representative (employee), both optional in recorded data.",
+            "An order consists of one or more line items, each specifying a product, quantity, and unit price.",
+            "An order may be paid through one or more payments (optional payment recorded in data).",
+            "An order may generate one or more shipments from one or more warehouses (optional in recorded data).",
+            "An order may have one or more returns, each optionally citing a specific product and return reason.",
+            "Payment methods are constrained to a controlled vocabulary (observed: UPI).",
+            "Order statuses are constrained to a controlled vocabulary (observed: DELIVERED).",
+            "Customer and product statuses are constrained to a controlled vocabulary (observed: ACTIVE).",
+            "All data changes (INSERT operations observed) are logged in the audit trail with timestamp and user."
+        ],
+        "assumptions": [
+            "Employee.manager_id self-reference indicates that manager is also an employee; 10% null rate suggests optional reporting (some employees may not have a manager assigned).",
+            "The relationship between Product and Promotion is many-to-many (declared in relationships), implemented by the pure link table bronze.product_promotion with no additional attributes beyond the two foreign keys.",
+            "Inventory is modeled as an entity rather than a pure relationship because it carries business attributes (quantity and reorder_level) beyond just linking Product and Warehouse.",
+            "Customer.city_id is optional (nullable), suggesting some customers may not have a city recorded or may be served outside any city-based location.",
+            "Order.customer_id and Order.sales_rep_id are both optional in the data, which is atypical for a sales system; this may reflect a data quality issue or orders placed without explicit customer/rep assignment during initial load.",
+            "Payment records are optional per order (nullable foreign key), suggesting orders may exist without payment recorded yet, or payment processing is decoupled from order placement.",
+            "Shipment records are optional per order (nullable order_id), which is reasonable during partial order fulfillment or returns processing.",
+            "Return Order references Order optionally, suggesting returns can be created without a parent order link in the data model, which may reflect data quality or business process variation.",
+            "Product.supplier_id and Product.category_id are both optional, suggesting some products may be imported without complete master data or are in transition.",
+            "Audit log is an orphan table with no foreign keys, indicating it is populated independently by triggers or middleware; it tracks INSERT operations at minimum and possibly other DML.",
+            "Geographic hierarchy (Country \u2192 State \u2192 City) is assumed to represent a standard political/administrative hierarchy based on naming and structure; countries are uniquely identified by country_code.",
+            "Sales representative is modeled as an Employee role rather than a separate entity, reflecting that sales reps are internal staff members.",
+            "The data sample shows all records with sample counts of 10 distinct values and small tables, consistent with a test or demo dataset; actual cardinalities and value distributions in production may differ significantly.",
+            "No customer return authority (RMA) master entity exists; returns are recorded as standalone events linked to orders and products.",
+            "No explicit contract, quote, or opportunity entities; the system appears to move directly from customer to order (no pipeline stage management visible)."
+        ],
+        "recommendations": [
+            "Clarify the optionality of Order.customer_id and Order.sales_rep_id: in a functioning sales system, every order should have a customer and a sales representative. Consider adding NOT NULL constraints or business logic to enforce this.",
+            "Add a separate Sales Representative or Sales Role entity if the organization needs to track sales performance, commission, or territory separately from general employee attributes.",
+            "Consider adding an explicit Return Reason master entity (reference table) instead of storing free-text return_reason, to enable consistent reporting and analysis of return root causes.",
+            "Implement a Payment Status or Payment Type entity to capture the lifecycle of payments (Pending, Completed, Failed) and formalize payment method enumeration beyond the observed UPI value.",
+            "Add an Order Status master entity to explicitly define allowed order statuses (e.g., Pending, Processing, Shipped, Delivered, Returned) rather than relying on implicit understanding.",
+            "Create a Warehouse Location or Warehouse Address entity if warehouses have multiple facilities or detailed address information beyond city; currently warehouse is minimal.",
+            "Consider adding a Product SKU or Product Code validation rule; the SKU column is the business key and should be unique and immutable.",
+            "Add audit trail metadata to the main entities (created_at, updated_at, created_by, updated_by) if not already present, rather than relying solely on the external audit_log for complete history.",
+            "Evaluate whether customers need a separate Billing Address and Shipping Address, or whether a single city-level location is sufficient for the business model.",
+            "Review the many-to-many Product-Promotion relationship and Product-Warehouse relationship for performance and reporting impact; consider whether promotion effectivity dates or warehouse inventory aging are needed."
+        ]
+    },
+    "generated_by": "claude-haiku-4-5-20251001"
+}

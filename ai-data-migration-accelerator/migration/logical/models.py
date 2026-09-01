@@ -116,6 +116,21 @@ class LogicalAttribute(BaseModel):
 
     description: Optional[str] = None
 
+    source_data_type: Optional[str] = None
+    """The source database's own type name for this attribute, verbatim
+    (e.g. 'VARCHAR', 'DECIMAL'), when a confident match to a source column
+    was found. Traceability only - `data_type` above remains the abstract
+    business domain; this is the structural fact underneath it, carried
+    through so it is never lost by the time the physical model needs it."""
+
+    source_length: Optional[int] = None
+    source_precision: Optional[int] = None
+    source_scale: Optional[int] = None
+    source_nullable: Optional[bool] = None
+    source_default: Optional[str] = None
+    """The source's raw default expression, verbatim, for traceability
+    only - not necessarily valid syntax on any target."""
+
 
 class LogicalKey(BaseModel):
     name: str

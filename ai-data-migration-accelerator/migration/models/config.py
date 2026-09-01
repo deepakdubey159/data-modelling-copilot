@@ -32,6 +32,7 @@ class SourceType(str, Enum):
     DATABRICKS = "databricks"
     BIGQUERY = "bigquery"
     REDSHIFT = "redshift"
+    DB2 = "db2"
 
 
 class TargetType(str, Enum):
@@ -96,6 +97,9 @@ class SourceConfig(BaseModel):
     username: str = Field(..., min_length=1)
     password: str = Field(default="")
     schema_: list[str] = Field(default_factory=list, alias="schema")
+    connection_timeout: int = Field(default=30, gt=0)
+    """Connection timeout in seconds. Each connector uses its driver's native
+    timeout mechanism (psycopg connect_timeout for PostgreSQL, ConnTimeout for DB2, etc.)"""
 
     model_config = {"populate_by_name": True}
 
@@ -108,9 +112,50 @@ class SourceConfig(BaseModel):
 
 
 class TargetConfig(BaseModel):
-    """Migration target platform details."""
+    """Migration target platform details.
+
+    Connection fields are optional because DDL *generation* (the default
+    artifact pipeline) needs none of them - only `type`. They become
+    required in practice when a caller asks to *execute* DDL against a live
+    Databricks workspace; that check happens where execution is requested,
+    not here, so generating DDL without a target workspace configured keeps
+    working exactly as before.
+    """
 
     type: TargetType
+
+    host_env: str = Field(default="DATABRICKS_HOST", min_length=1)
+    """Environment variable holding the workspace URL (e.g. Azure Databricks
+    workspace host). Never read from config.yaml directly - only the
+    variable *name* lives there."""
+
+    token_env: str = Field(default="DATABRICKS_TOKEN", min_length=1)
+    """Environment variable holding the personal access token / service
+    principal secret used to authenticate to the workspace."""
+
+    http_path_env: str = Field(default="DATABRICKS_HTTP_PATH", min_length=1)
+    """Environment variable holding the SQL warehouse/cluster HTTP path."""
+
+    workspace_path_env: str | None = Field(default="DATABRICKS_WORKSPACE_PATH", min_length=1)
+    """Environment variable holding the Databricks Workspace path for publishing SQL files.
+    Required only for --publish-ddl, not for DDL generation or execution."""
+
+    catalog: str | None = Field(default=None)
+    """Unity Catalog catalog to create schemas/tables in. Required only for
+    live execution against Databricks, not for DDL generation."""
+
+    schema: str | None = Field(default=None)
+    """Databricks schema (database) to create tables in. When specified,
+    generated DDL uses fully qualified names: catalog.schema.table.
+    Optional and independent of source.schema."""
+
+    enable_clustering: bool = Field(default=False)
+    """Whether generated DDL may include executable PARTITIONED BY / CLUSTER
+    BY clauses. Partition/clustering candidates are a deterministic
+    heuristic recommendation, not a guarantee the configured Databricks
+    runtime supports every variant (e.g. liquid clustering requires a
+    minimum DBR version); defaulting to False keeps them as non-executable
+    comments until the operator confirms the target runtime supports it."""
 
 
 class LLMConfig(BaseModel):

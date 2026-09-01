@@ -1,0 +1,1154 @@
+{
+    "logical_model": {
+        "database_name": "datamodel",
+        "summary": "Logical design for datamodel, derived from the conceptual model. 7 entities carry 6 relationships: 1 associative entities resolve many-to-many relationships and 0 entities are identified through a parent. 0 entities required a surrogate identifier because no business key was recorded. Attributes are typed against abstract domains and carry no platform-specific length, precision or storage.",
+        "subject_areas": [
+            {
+                "name": "Customer Management",
+                "description": "Core customer identity, contact information, and credit management.",
+                "entities": [
+                    "Customer"
+                ]
+            },
+            {
+                "name": "Product Catalog",
+                "description": "Product definitions, inventory levels, and supplier relationships.",
+                "entities": [
+                    "Product"
+                ]
+            },
+            {
+                "name": "Order Fulfillment",
+                "description": "Order creation, line item tracking, status, and shipping.",
+                "entities": [
+                    "Order",
+                    "Order Line Item",
+                    "Order Product",
+                    "Order Product Association"
+                ]
+            },
+            {
+                "name": "Unassigned",
+                "description": "Entities the conceptual model placed in no domain.",
+                "entities": [
+                    "Order Item"
+                ]
+            }
+        ],
+        "entities": [
+            {
+                "name": "Customer",
+                "description": "A party who places orders and purchases products. Identified by a unique customer code.",
+                "kind": "FUNDAMENTAL",
+                "subject_area": "Customer Management",
+                "attributes": [
+                    {
+                        "name": "customer_code",
+                        "data_type": "TEXT",
+                        "optionality": "MANDATORY",
+                        "role": "PRIMARY_KEY",
+                        "references_entity": null,
+                        "source_attribute": "customer_code",
+                        "description": null,
+                        "source_data_type": "character varying",
+                        "source_length": 20,
+                        "source_precision": null,
+                        "source_scale": null,
+                        "source_nullable": false,
+                        "source_default": null
+                    },
+                    {
+                        "name": "first_name",
+                        "data_type": "TEXT",
+                        "optionality": "OPTIONAL",
+                        "role": "DESCRIPTIVE",
+                        "references_entity": null,
+                        "source_attribute": "first_name",
+                        "description": null,
+                        "source_data_type": "character varying",
+                        "source_length": 100,
+                        "source_precision": null,
+                        "source_scale": null,
+                        "source_nullable": false,
+                        "source_default": null
+                    },
+                    {
+                        "name": "last_name",
+                        "data_type": "TEXT",
+                        "optionality": "OPTIONAL",
+                        "role": "DESCRIPTIVE",
+                        "references_entity": null,
+                        "source_attribute": "last_name",
+                        "description": null,
+                        "source_data_type": "character varying",
+                        "source_length": 100,
+                        "source_precision": null,
+                        "source_scale": null,
+                        "source_nullable": true,
+                        "source_default": null
+                    },
+                    {
+                        "name": "email",
+                        "data_type": "EMAIL",
+                        "optionality": "OPTIONAL",
+                        "role": "ALTERNATE_KEY",
+                        "references_entity": null,
+                        "source_attribute": "email",
+                        "description": null,
+                        "source_data_type": "character varying",
+                        "source_length": 255,
+                        "source_precision": null,
+                        "source_scale": null,
+                        "source_nullable": true,
+                        "source_default": null
+                    },
+                    {
+                        "name": "phone_number",
+                        "data_type": "TEXT",
+                        "optionality": "OPTIONAL",
+                        "role": "ALTERNATE_KEY",
+                        "references_entity": null,
+                        "source_attribute": "phone_number",
+                        "description": null,
+                        "source_data_type": "character varying",
+                        "source_length": 20,
+                        "source_precision": null,
+                        "source_scale": null,
+                        "source_nullable": true,
+                        "source_default": null
+                    },
+                    {
+                        "name": "date_of_birth",
+                        "data_type": "TEXT",
+                        "optionality": "OPTIONAL",
+                        "role": "DESCRIPTIVE",
+                        "references_entity": null,
+                        "source_attribute": "date_of_birth",
+                        "description": null,
+                        "source_data_type": "date",
+                        "source_length": null,
+                        "source_precision": null,
+                        "source_scale": null,
+                        "source_nullable": true,
+                        "source_default": null
+                    },
+                    {
+                        "name": "gender",
+                        "data_type": "TEXT",
+                        "optionality": "OPTIONAL",
+                        "role": "DESCRIPTIVE",
+                        "references_entity": null,
+                        "source_attribute": "gender",
+                        "description": null,
+                        "source_data_type": "character varying",
+                        "source_length": 10,
+                        "source_precision": null,
+                        "source_scale": null,
+                        "source_nullable": true,
+                        "source_default": null
+                    },
+                    {
+                        "name": "city",
+                        "data_type": "TEXT",
+                        "optionality": "OPTIONAL",
+                        "role": "DESCRIPTIVE",
+                        "references_entity": null,
+                        "source_attribute": "city",
+                        "description": null,
+                        "source_data_type": "character varying",
+                        "source_length": 100,
+                        "source_precision": null,
+                        "source_scale": null,
+                        "source_nullable": true,
+                        "source_default": null
+                    },
+                    {
+                        "name": "state",
+                        "data_type": "TEXT",
+                        "optionality": "OPTIONAL",
+                        "role": "DESCRIPTIVE",
+                        "references_entity": null,
+                        "source_attribute": "state",
+                        "description": null,
+                        "source_data_type": "character varying",
+                        "source_length": 100,
+                        "source_precision": null,
+                        "source_scale": null,
+                        "source_nullable": true,
+                        "source_default": null
+                    },
+                    {
+                        "name": "country",
+                        "data_type": "TEXT",
+                        "optionality": "OPTIONAL",
+                        "role": "DESCRIPTIVE",
+                        "references_entity": null,
+                        "source_attribute": "country",
+                        "description": null,
+                        "source_data_type": "character varying",
+                        "source_length": 100,
+                        "source_precision": null,
+                        "source_scale": null,
+                        "source_nullable": true,
+                        "source_default": null
+                    },
+                    {
+                        "name": "postal_code",
+                        "data_type": "TEXT",
+                        "optionality": "OPTIONAL",
+                        "role": "ALTERNATE_KEY",
+                        "references_entity": null,
+                        "source_attribute": "postal_code",
+                        "description": null,
+                        "source_data_type": "character varying",
+                        "source_length": 20,
+                        "source_precision": null,
+                        "source_scale": null,
+                        "source_nullable": true,
+                        "source_default": null
+                    },
+                    {
+                        "name": "customer_status",
+                        "data_type": "TEXT",
+                        "optionality": "OPTIONAL",
+                        "role": "DESCRIPTIVE",
+                        "references_entity": null,
+                        "source_attribute": "customer_status",
+                        "description": null,
+                        "source_data_type": "character varying",
+                        "source_length": 20,
+                        "source_precision": null,
+                        "source_scale": null,
+                        "source_nullable": true,
+                        "source_default": "'ACTIVE'::character varying"
+                    },
+                    {
+                        "name": "credit_limit",
+                        "data_type": "TEXT",
+                        "optionality": "OPTIONAL",
+                        "role": "DESCRIPTIVE",
+                        "references_entity": null,
+                        "source_attribute": "credit_limit",
+                        "description": null,
+                        "source_data_type": "numeric",
+                        "source_length": null,
+                        "source_precision": 12,
+                        "source_scale": 2,
+                        "source_nullable": true,
+                        "source_default": "0"
+                    },
+                    {
+                        "name": "is_active",
+                        "data_type": "TEXT",
+                        "optionality": "OPTIONAL",
+                        "role": "DESCRIPTIVE",
+                        "references_entity": null,
+                        "source_attribute": "is_active",
+                        "description": null,
+                        "source_data_type": "boolean",
+                        "source_length": null,
+                        "source_precision": null,
+                        "source_scale": null,
+                        "source_nullable": true,
+                        "source_default": "true"
+                    }
+                ],
+                "primary_key": {
+                    "name": "PK_CUSTOMER",
+                    "kind": "PRIMARY",
+                    "attributes": [
+                        "customer_code"
+                    ],
+                    "is_surrogate": false
+                },
+                "alternate_keys": [
+                    {
+                        "name": "AK_CUSTOMER_EMAIL",
+                        "kind": "ALTERNATE",
+                        "attributes": [
+                            "email"
+                        ],
+                        "is_surrogate": false
+                    },
+                    {
+                        "name": "AK_CUSTOMER_PHONE_NUMBER",
+                        "kind": "ALTERNATE",
+                        "attributes": [
+                            "phone_number"
+                        ],
+                        "is_surrogate": false
+                    },
+                    {
+                        "name": "AK_CUSTOMER_POSTAL_CODE",
+                        "kind": "ALTERNATE",
+                        "attributes": [
+                            "postal_code"
+                        ],
+                        "is_surrogate": false
+                    }
+                ],
+                "source_entities": [
+                    "Customer"
+                ],
+                "source_tables": [
+                    "bronze.customer"
+                ]
+            },
+            {
+                "name": "Order",
+                "description": "A customer purchase transaction containing one or more products, with order status, payment details, and fulfillment tracking.",
+                "kind": "FUNDAMENTAL",
+                "subject_area": "Order Fulfillment",
+                "attributes": [
+                    {
+                        "name": "order_number",
+                        "data_type": "TEXT",
+                        "optionality": "MANDATORY",
+                        "role": "PRIMARY_KEY",
+                        "references_entity": null,
+                        "source_attribute": "order_number",
+                        "description": null,
+                        "source_data_type": "character varying",
+                        "source_length": 30,
+                        "source_precision": null,
+                        "source_scale": null,
+                        "source_nullable": false,
+                        "source_default": null
+                    },
+                    {
+                        "name": "order_date",
+                        "data_type": "TEXT",
+                        "optionality": "OPTIONAL",
+                        "role": "DESCRIPTIVE",
+                        "references_entity": null,
+                        "source_attribute": "order_date",
+                        "description": null,
+                        "source_data_type": "timestamp without time zone",
+                        "source_length": null,
+                        "source_precision": null,
+                        "source_scale": null,
+                        "source_nullable": true,
+                        "source_default": "CURRENT_TIMESTAMP"
+                    },
+                    {
+                        "name": "order_status",
+                        "data_type": "TEXT",
+                        "optionality": "OPTIONAL",
+                        "role": "DESCRIPTIVE",
+                        "references_entity": null,
+                        "source_attribute": "order_status",
+                        "description": null,
+                        "source_data_type": "character varying",
+                        "source_length": 20,
+                        "source_precision": null,
+                        "source_scale": null,
+                        "source_nullable": true,
+                        "source_default": "'NEW'::character varying"
+                    },
+                    {
+                        "name": "payment_method",
+                        "data_type": "TEXT",
+                        "optionality": "OPTIONAL",
+                        "role": "DESCRIPTIVE",
+                        "references_entity": null,
+                        "source_attribute": "payment_method",
+                        "description": null,
+                        "source_data_type": "character varying",
+                        "source_length": 30,
+                        "source_precision": null,
+                        "source_scale": null,
+                        "source_nullable": true,
+                        "source_default": null
+                    },
+                    {
+                        "name": "total_amount",
+                        "data_type": "TEXT",
+                        "optionality": "OPTIONAL",
+                        "role": "DESCRIPTIVE",
+                        "references_entity": null,
+                        "source_attribute": "total_amount",
+                        "description": null,
+                        "source_data_type": "numeric",
+                        "source_length": null,
+                        "source_precision": 12,
+                        "source_scale": 2,
+                        "source_nullable": true,
+                        "source_default": null
+                    },
+                    {
+                        "name": "tax_amount",
+                        "data_type": "TEXT",
+                        "optionality": "OPTIONAL",
+                        "role": "DESCRIPTIVE",
+                        "references_entity": null,
+                        "source_attribute": "tax_amount",
+                        "description": null,
+                        "source_data_type": "numeric",
+                        "source_length": null,
+                        "source_precision": 12,
+                        "source_scale": 2,
+                        "source_nullable": true,
+                        "source_default": null
+                    },
+                    {
+                        "name": "discount_amount",
+                        "data_type": "TEXT",
+                        "optionality": "OPTIONAL",
+                        "role": "DESCRIPTIVE",
+                        "references_entity": null,
+                        "source_attribute": "discount_amount",
+                        "description": null,
+                        "source_data_type": "numeric",
+                        "source_length": null,
+                        "source_precision": 12,
+                        "source_scale": 2,
+                        "source_nullable": true,
+                        "source_default": null
+                    },
+                    {
+                        "name": "shipping_amount",
+                        "data_type": "TEXT",
+                        "optionality": "OPTIONAL",
+                        "role": "DESCRIPTIVE",
+                        "references_entity": null,
+                        "source_attribute": "shipping_amount",
+                        "description": null,
+                        "source_data_type": "numeric",
+                        "source_length": null,
+                        "source_precision": 12,
+                        "source_scale": 2,
+                        "source_nullable": true,
+                        "source_default": null
+                    },
+                    {
+                        "name": "shipped_date",
+                        "data_type": "TEXT",
+                        "optionality": "OPTIONAL",
+                        "role": "DESCRIPTIVE",
+                        "references_entity": null,
+                        "source_attribute": "shipped_date",
+                        "description": null,
+                        "source_data_type": "timestamp without time zone",
+                        "source_length": null,
+                        "source_precision": null,
+                        "source_scale": null,
+                        "source_nullable": true,
+                        "source_default": null
+                    },
+                    {
+                        "name": "remarks",
+                        "data_type": "TEXT",
+                        "optionality": "OPTIONAL",
+                        "role": "DESCRIPTIVE",
+                        "references_entity": null,
+                        "source_attribute": "remarks",
+                        "description": null,
+                        "source_data_type": "text",
+                        "source_length": null,
+                        "source_precision": null,
+                        "source_scale": null,
+                        "source_nullable": true,
+                        "source_default": null
+                    },
+                    {
+                        "name": "created_by",
+                        "data_type": "TEXT",
+                        "optionality": "OPTIONAL",
+                        "role": "DESCRIPTIVE",
+                        "references_entity": null,
+                        "source_attribute": "created_by",
+                        "description": null,
+                        "source_data_type": "character varying",
+                        "source_length": 50,
+                        "source_precision": null,
+                        "source_scale": null,
+                        "source_nullable": true,
+                        "source_default": null
+                    },
+                    {
+                        "name": "created_date",
+                        "data_type": "TEXT",
+                        "optionality": "OPTIONAL",
+                        "role": "DESCRIPTIVE",
+                        "references_entity": null,
+                        "source_attribute": "created_date",
+                        "description": null,
+                        "source_data_type": "timestamp without time zone",
+                        "source_length": null,
+                        "source_precision": null,
+                        "source_scale": null,
+                        "source_nullable": true,
+                        "source_default": "CURRENT_TIMESTAMP"
+                    },
+                    {
+                        "name": "customer_code",
+                        "data_type": "IDENTIFIER",
+                        "optionality": "MANDATORY",
+                        "role": "FOREIGN_KEY",
+                        "references_entity": "Customer",
+                        "source_attribute": null,
+                        "description": "References Customer.",
+                        "source_data_type": null,
+                        "source_length": null,
+                        "source_precision": null,
+                        "source_scale": null,
+                        "source_nullable": null,
+                        "source_default": null
+                    }
+                ],
+                "primary_key": {
+                    "name": "PK_ORDER",
+                    "kind": "PRIMARY",
+                    "attributes": [
+                        "order_number"
+                    ],
+                    "is_surrogate": false
+                },
+                "alternate_keys": [],
+                "source_entities": [
+                    "Order"
+                ],
+                "source_tables": [
+                    "bronze.orders"
+                ]
+            },
+            {
+                "name": "Order Item",
+                "description": "A denormalized order line containing product and pricing details. This entity appears to duplicate Order Product but retains product name as a text field rather than reference.",
+                "kind": "FUNDAMENTAL",
+                "subject_area": "",
+                "attributes": [
+                    {
+                        "name": "order_item_id",
+                        "data_type": "TEXT",
+                        "optionality": "MANDATORY",
+                        "role": "PRIMARY_KEY",
+                        "references_entity": null,
+                        "source_attribute": "order_item_id",
+                        "description": null,
+                        "source_data_type": "bigint",
+                        "source_length": null,
+                        "source_precision": 64,
+                        "source_scale": 0,
+                        "source_nullable": false,
+                        "source_default": "nextval('bronze.order_item_order_item_id_seq'::regclass)"
+                    },
+                    {
+                        "name": "product_name",
+                        "data_type": "TEXT",
+                        "optionality": "OPTIONAL",
+                        "role": "DESCRIPTIVE",
+                        "references_entity": null,
+                        "source_attribute": "product_name",
+                        "description": null,
+                        "source_data_type": "character varying",
+                        "source_length": 200,
+                        "source_precision": null,
+                        "source_scale": null,
+                        "source_nullable": true,
+                        "source_default": null
+                    },
+                    {
+                        "name": "quantity",
+                        "data_type": "WHOLE_NUMBER",
+                        "optionality": "OPTIONAL",
+                        "role": "DESCRIPTIVE",
+                        "references_entity": null,
+                        "source_attribute": "quantity",
+                        "description": null,
+                        "source_data_type": "integer",
+                        "source_length": null,
+                        "source_precision": 32,
+                        "source_scale": 0,
+                        "source_nullable": false,
+                        "source_default": null
+                    },
+                    {
+                        "name": "unit_price",
+                        "data_type": "TEXT",
+                        "optionality": "OPTIONAL",
+                        "role": "DESCRIPTIVE",
+                        "references_entity": null,
+                        "source_attribute": "unit_price",
+                        "description": null,
+                        "source_data_type": "numeric",
+                        "source_length": null,
+                        "source_precision": 10,
+                        "source_scale": 2,
+                        "source_nullable": true,
+                        "source_default": null
+                    },
+                    {
+                        "name": "total_price",
+                        "data_type": "TEXT",
+                        "optionality": "OPTIONAL",
+                        "role": "DESCRIPTIVE",
+                        "references_entity": null,
+                        "source_attribute": "total_price",
+                        "description": null,
+                        "source_data_type": "numeric",
+                        "source_length": null,
+                        "source_precision": 12,
+                        "source_scale": 2,
+                        "source_nullable": true,
+                        "source_default": null
+                    },
+                    {
+                        "name": "order_number",
+                        "data_type": "IDENTIFIER",
+                        "optionality": "MANDATORY",
+                        "role": "FOREIGN_KEY",
+                        "references_entity": "Order",
+                        "source_attribute": null,
+                        "description": "References Order.",
+                        "source_data_type": null,
+                        "source_length": null,
+                        "source_precision": null,
+                        "source_scale": null,
+                        "source_nullable": null,
+                        "source_default": null
+                    }
+                ],
+                "primary_key": {
+                    "name": "PK_ORDER_ITEM",
+                    "kind": "PRIMARY",
+                    "attributes": [
+                        "order_item_id"
+                    ],
+                    "is_surrogate": false
+                },
+                "alternate_keys": [],
+                "source_entities": [
+                    "Order Item"
+                ],
+                "source_tables": [
+                    "bronze.order_item"
+                ]
+            },
+            {
+                "name": "Order Line Item",
+                "description": "A line item within an order, capturing the product name, quantity ordered, and pricing at order time. Denormalizes product information at the point of order.",
+                "kind": "FUNDAMENTAL",
+                "subject_area": "Order Fulfillment",
+                "attributes": [
+                    {
+                        "name": "order_id",
+                        "data_type": "TEXT",
+                        "optionality": "MANDATORY",
+                        "role": "PRIMARY_KEY",
+                        "references_entity": null,
+                        "source_attribute": "order_id",
+                        "description": null,
+                        "source_data_type": "bigint",
+                        "source_length": null,
+                        "source_precision": 64,
+                        "source_scale": 0,
+                        "source_nullable": false,
+                        "source_default": null
+                    },
+                    {
+                        "name": "product_name",
+                        "data_type": "TEXT",
+                        "optionality": "MANDATORY",
+                        "role": "PRIMARY_KEY",
+                        "references_entity": null,
+                        "source_attribute": "product_name",
+                        "description": null,
+                        "source_data_type": "character varying",
+                        "source_length": 200,
+                        "source_precision": null,
+                        "source_scale": null,
+                        "source_nullable": true,
+                        "source_default": null
+                    },
+                    {
+                        "name": "quantity",
+                        "data_type": "WHOLE_NUMBER",
+                        "optionality": "OPTIONAL",
+                        "role": "DESCRIPTIVE",
+                        "references_entity": null,
+                        "source_attribute": "quantity",
+                        "description": null,
+                        "source_data_type": "integer",
+                        "source_length": null,
+                        "source_precision": 32,
+                        "source_scale": 0,
+                        "source_nullable": false,
+                        "source_default": null
+                    },
+                    {
+                        "name": "unit_price",
+                        "data_type": "TEXT",
+                        "optionality": "OPTIONAL",
+                        "role": "DESCRIPTIVE",
+                        "references_entity": null,
+                        "source_attribute": "unit_price",
+                        "description": null,
+                        "source_data_type": "numeric",
+                        "source_length": null,
+                        "source_precision": 10,
+                        "source_scale": 2,
+                        "source_nullable": true,
+                        "source_default": null
+                    },
+                    {
+                        "name": "total_price",
+                        "data_type": "TEXT",
+                        "optionality": "OPTIONAL",
+                        "role": "DESCRIPTIVE",
+                        "references_entity": null,
+                        "source_attribute": "total_price",
+                        "description": null,
+                        "source_data_type": "numeric",
+                        "source_length": null,
+                        "source_precision": 12,
+                        "source_scale": 2,
+                        "source_nullable": true,
+                        "source_default": null
+                    }
+                ],
+                "primary_key": {
+                    "name": "PK_ORDER_LINE_ITEM",
+                    "kind": "PRIMARY",
+                    "attributes": [
+                        "order_id",
+                        "product_name"
+                    ],
+                    "is_surrogate": false
+                },
+                "alternate_keys": [],
+                "source_entities": [
+                    "Order Line Item"
+                ],
+                "source_tables": [
+                    "bronze.order_item"
+                ]
+            },
+            {
+                "name": "Order Product",
+                "description": "A line item that links an order to a product with the quantity and selling price at the time of order. Serves as the transaction record for product fulfillment.",
+                "kind": "FUNDAMENTAL",
+                "subject_area": "Order Fulfillment",
+                "attributes": [
+                    {
+                        "name": "order_id",
+                        "data_type": "TEXT",
+                        "optionality": "MANDATORY",
+                        "role": "PRIMARY_KEY",
+                        "references_entity": null,
+                        "source_attribute": "order_id",
+                        "description": null,
+                        "source_data_type": "bigint",
+                        "source_length": null,
+                        "source_precision": 64,
+                        "source_scale": 0,
+                        "source_nullable": false,
+                        "source_default": null
+                    },
+                    {
+                        "name": "product_id",
+                        "data_type": "TEXT",
+                        "optionality": "MANDATORY",
+                        "role": "PRIMARY_KEY",
+                        "references_entity": null,
+                        "source_attribute": "product_id",
+                        "description": null,
+                        "source_data_type": "bigint",
+                        "source_length": null,
+                        "source_precision": 64,
+                        "source_scale": 0,
+                        "source_nullable": false,
+                        "source_default": null
+                    },
+                    {
+                        "name": "quantity",
+                        "data_type": "WHOLE_NUMBER",
+                        "optionality": "OPTIONAL",
+                        "role": "DESCRIPTIVE",
+                        "references_entity": null,
+                        "source_attribute": "quantity",
+                        "description": null,
+                        "source_data_type": "integer",
+                        "source_length": null,
+                        "source_precision": 32,
+                        "source_scale": 0,
+                        "source_nullable": true,
+                        "source_default": null
+                    },
+                    {
+                        "name": "selling_price",
+                        "data_type": "TEXT",
+                        "optionality": "OPTIONAL",
+                        "role": "DESCRIPTIVE",
+                        "references_entity": null,
+                        "source_attribute": "selling_price",
+                        "description": null,
+                        "source_data_type": "numeric",
+                        "source_length": null,
+                        "source_precision": 10,
+                        "source_scale": 2,
+                        "source_nullable": true,
+                        "source_default": null
+                    },
+                    {
+                        "name": "product_code",
+                        "data_type": "IDENTIFIER",
+                        "optionality": "MANDATORY",
+                        "role": "FOREIGN_KEY",
+                        "references_entity": "Product",
+                        "source_attribute": null,
+                        "description": "References Product.",
+                        "source_data_type": null,
+                        "source_length": null,
+                        "source_precision": null,
+                        "source_scale": null,
+                        "source_nullable": null,
+                        "source_default": null
+                    },
+                    {
+                        "name": "order_number",
+                        "data_type": "IDENTIFIER",
+                        "optionality": "MANDATORY",
+                        "role": "FOREIGN_KEY",
+                        "references_entity": "Order",
+                        "source_attribute": null,
+                        "description": "References Order.",
+                        "source_data_type": null,
+                        "source_length": null,
+                        "source_precision": null,
+                        "source_scale": null,
+                        "source_nullable": null,
+                        "source_default": null
+                    }
+                ],
+                "primary_key": {
+                    "name": "PK_ORDER_PRODUCT",
+                    "kind": "PRIMARY",
+                    "attributes": [
+                        "order_id",
+                        "product_id"
+                    ],
+                    "is_surrogate": false
+                },
+                "alternate_keys": [],
+                "source_entities": [
+                    "Order Product"
+                ],
+                "source_tables": [
+                    "bronze.order_product"
+                ]
+            },
+            {
+                "name": "Order Product Association",
+                "description": "Resolves the many-to-many relationship between Order and Product. Each occurrence records that one Order references one Product.",
+                "kind": "ASSOCIATIVE",
+                "subject_area": "Order Fulfillment",
+                "attributes": [
+                    {
+                        "name": "order_number",
+                        "data_type": "IDENTIFIER",
+                        "optionality": "MANDATORY",
+                        "role": "PRIMARY_KEY",
+                        "references_entity": "Order",
+                        "source_attribute": null,
+                        "description": null,
+                        "source_data_type": null,
+                        "source_length": null,
+                        "source_precision": null,
+                        "source_scale": null,
+                        "source_nullable": null,
+                        "source_default": null
+                    },
+                    {
+                        "name": "product_code",
+                        "data_type": "IDENTIFIER",
+                        "optionality": "MANDATORY",
+                        "role": "PRIMARY_KEY",
+                        "references_entity": "Product",
+                        "source_attribute": null,
+                        "description": null,
+                        "source_data_type": null,
+                        "source_length": null,
+                        "source_precision": null,
+                        "source_scale": null,
+                        "source_nullable": null,
+                        "source_default": null
+                    }
+                ],
+                "primary_key": {
+                    "name": "PK_ORDER_PRODUCT_ASSOCIATION",
+                    "kind": "PRIMARY",
+                    "attributes": [
+                        "order_number",
+                        "product_code"
+                    ],
+                    "is_surrogate": false
+                },
+                "alternate_keys": [],
+                "source_entities": [
+                    "Order",
+                    "Product"
+                ],
+                "source_tables": []
+            },
+            {
+                "name": "Product",
+                "description": "An item offered for sale. Tracked by product code, with inventory, pricing, category, and supplier information.",
+                "kind": "FUNDAMENTAL",
+                "subject_area": "Product Catalog",
+                "attributes": [
+                    {
+                        "name": "product_code",
+                        "data_type": "TEXT",
+                        "optionality": "MANDATORY",
+                        "role": "PRIMARY_KEY",
+                        "references_entity": null,
+                        "source_attribute": "product_code",
+                        "description": null,
+                        "source_data_type": "character varying",
+                        "source_length": 20,
+                        "source_precision": null,
+                        "source_scale": null,
+                        "source_nullable": true,
+                        "source_default": null
+                    },
+                    {
+                        "name": "product_name",
+                        "data_type": "TEXT",
+                        "optionality": "OPTIONAL",
+                        "role": "DESCRIPTIVE",
+                        "references_entity": null,
+                        "source_attribute": "product_name",
+                        "description": null,
+                        "source_data_type": "character varying",
+                        "source_length": 200,
+                        "source_precision": null,
+                        "source_scale": null,
+                        "source_nullable": true,
+                        "source_default": null
+                    },
+                    {
+                        "name": "category",
+                        "data_type": "TEXT",
+                        "optionality": "OPTIONAL",
+                        "role": "DESCRIPTIVE",
+                        "references_entity": null,
+                        "source_attribute": "category",
+                        "description": null,
+                        "source_data_type": "character varying",
+                        "source_length": 100,
+                        "source_precision": null,
+                        "source_scale": null,
+                        "source_nullable": true,
+                        "source_default": null
+                    },
+                    {
+                        "name": "price",
+                        "data_type": "AMOUNT",
+                        "optionality": "OPTIONAL",
+                        "role": "DESCRIPTIVE",
+                        "references_entity": null,
+                        "source_attribute": "price",
+                        "description": null,
+                        "source_data_type": "numeric",
+                        "source_length": null,
+                        "source_precision": 10,
+                        "source_scale": 2,
+                        "source_nullable": true,
+                        "source_default": null
+                    },
+                    {
+                        "name": "stock_quantity",
+                        "data_type": "TEXT",
+                        "optionality": "OPTIONAL",
+                        "role": "DESCRIPTIVE",
+                        "references_entity": null,
+                        "source_attribute": "stock_quantity",
+                        "description": null,
+                        "source_data_type": "integer",
+                        "source_length": null,
+                        "source_precision": 32,
+                        "source_scale": 0,
+                        "source_nullable": true,
+                        "source_default": null
+                    },
+                    {
+                        "name": "supplier_name",
+                        "data_type": "TEXT",
+                        "optionality": "OPTIONAL",
+                        "role": "DESCRIPTIVE",
+                        "references_entity": null,
+                        "source_attribute": "supplier_name",
+                        "description": null,
+                        "source_data_type": "character varying",
+                        "source_length": 100,
+                        "source_precision": null,
+                        "source_scale": null,
+                        "source_nullable": true,
+                        "source_default": null
+                    },
+                    {
+                        "name": "is_active",
+                        "data_type": "TEXT",
+                        "optionality": "OPTIONAL",
+                        "role": "DESCRIPTIVE",
+                        "references_entity": null,
+                        "source_attribute": "is_active",
+                        "description": null,
+                        "source_data_type": "boolean",
+                        "source_length": null,
+                        "source_precision": null,
+                        "source_scale": null,
+                        "source_nullable": true,
+                        "source_default": "true"
+                    },
+                    {
+                        "name": "created_date",
+                        "data_type": "TEXT",
+                        "optionality": "OPTIONAL",
+                        "role": "DESCRIPTIVE",
+                        "references_entity": null,
+                        "source_attribute": "created_date",
+                        "description": null,
+                        "source_data_type": "timestamp without time zone",
+                        "source_length": null,
+                        "source_precision": null,
+                        "source_scale": null,
+                        "source_nullable": true,
+                        "source_default": "CURRENT_TIMESTAMP"
+                    }
+                ],
+                "primary_key": {
+                    "name": "PK_PRODUCT",
+                    "kind": "PRIMARY",
+                    "attributes": [
+                        "product_code"
+                    ],
+                    "is_surrogate": false
+                },
+                "alternate_keys": [],
+                "source_entities": [
+                    "Product"
+                ],
+                "source_tables": [
+                    "bronze.product"
+                ]
+            }
+        ],
+        "relationships": [
+            {
+                "name": "Customer to Order",
+                "parent_entity": "Customer",
+                "child_entity": "Order",
+                "cardinality": "ONE_TO_MANY",
+                "optionality": "MANDATORY",
+                "is_identifying": false,
+                "foreign_key_attributes": [
+                    "customer_code"
+                ],
+                "verb_phrase": "references",
+                "derived_from": "conceptual relationship 'Customer references Order'"
+            },
+            {
+                "name": "Order to Order Item",
+                "parent_entity": "Order",
+                "child_entity": "Order Item",
+                "cardinality": "ONE_TO_MANY",
+                "optionality": "MANDATORY",
+                "is_identifying": false,
+                "foreign_key_attributes": [
+                    "order_number"
+                ],
+                "verb_phrase": "references",
+                "derived_from": "conceptual relationship 'Order references Order Item'"
+            },
+            {
+                "name": "Order to Order Product",
+                "parent_entity": "Order",
+                "child_entity": "Order Product",
+                "cardinality": "ONE_TO_MANY",
+                "optionality": "MANDATORY",
+                "is_identifying": false,
+                "foreign_key_attributes": [
+                    "order_number"
+                ],
+                "verb_phrase": "references",
+                "derived_from": "conceptual relationship 'Order references Order Product'"
+            },
+            {
+                "name": "Order to Order Product Association",
+                "parent_entity": "Order",
+                "child_entity": "Order Product Association",
+                "cardinality": "ONE_TO_MANY",
+                "optionality": "MANDATORY",
+                "is_identifying": true,
+                "foreign_key_attributes": [
+                    "order_number"
+                ],
+                "verb_phrase": "is referenced by",
+                "derived_from": "many-to-many between Order and Product"
+            },
+            {
+                "name": "Product to Order Product",
+                "parent_entity": "Product",
+                "child_entity": "Order Product",
+                "cardinality": "ONE_TO_MANY",
+                "optionality": "MANDATORY",
+                "is_identifying": false,
+                "foreign_key_attributes": [
+                    "product_code"
+                ],
+                "verb_phrase": "references",
+                "derived_from": "conceptual relationship 'Product references Order Product'"
+            },
+            {
+                "name": "Product to Order Product Association",
+                "parent_entity": "Product",
+                "child_entity": "Order Product Association",
+                "cardinality": "ONE_TO_MANY",
+                "optionality": "MANDATORY",
+                "is_identifying": true,
+                "foreign_key_attributes": [
+                    "product_code"
+                ],
+                "verb_phrase": "is referenced by",
+                "derived_from": "many-to-many between Order and Product"
+            }
+        ],
+        "normalization_actions": [
+            {
+                "normal_form": "1NF",
+                "entity": "Order Product Association",
+                "action": "Resolved many-to-many between Order and Product",
+                "rationale": "A many-to-many relationship cannot be represented without a repeating group. An associative entity keyed on both parents removes the repetition and gives the relationship a place to carry its own attributes later."
+            },
+            {
+                "normal_form": "2NF",
+                "entity": "Order Line Item",
+                "action": "Checked non-key attributes against the full composite key",
+                "rationale": "Order Line Item has a composite key, so every non-key attribute (quantity, unit_price, total_price) must depend on the whole key rather than part of it. No partial dependency was found."
+            },
+            {
+                "normal_form": "2NF",
+                "entity": "Order Product",
+                "action": "Checked non-key attributes against the full composite key",
+                "rationale": "Order Product has a composite key, so every non-key attribute (quantity, selling_price) must depend on the whole key rather than part of it. No partial dependency was found."
+            },
+            {
+                "normal_form": "3NF",
+                "entity": "Order Item",
+                "action": "Confirmed Order attributes are not repeated on Order Item",
+                "rationale": "Order Item references Order, which references Customer. The chain is already decomposed, so Customer's attributes reach Order Item by navigation rather than by duplication."
+            },
+            {
+                "normal_form": "3NF",
+                "entity": "Order Product",
+                "action": "Confirmed Order attributes are not repeated on Order Product",
+                "rationale": "Order Product references Order, which references Customer. The chain is already decomposed, so Customer's attributes reach Order Product by navigation rather than by duplication."
+            }
+        ],
+        "assumptions": []
+    },
+    "generated_from": "conceptual_model.json",
+    "generated_by": "claude-haiku-4-5-20251001"
+}

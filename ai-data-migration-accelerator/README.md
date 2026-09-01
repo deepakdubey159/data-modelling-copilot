@@ -278,3 +278,88 @@ Milestone 5: Target Adapter and Type Mapping — the target-side abstraction
 (`BaseTargetAdapter`, capability matrix, declarative type-mapping profiles)
 that turns the canonical model into platform-specific physical models and
 DDL.
+
+## Production deployment
+
+### Install
+
+```bash
+pip install .                              # DDL generation + dry-run only
+pip install ".[databricks]"                # + live Databricks execution
+```
+
+This installs the `migration-accelerator` console script (`migrate.py` also
+still works as a plain script for local development).
+
+### Configure via environment variables
+
+Nothing environment-specific belongs in `config.yaml` — every credential
+and endpoint is a `${VAR}` / `${VAR:-default}` reference resolved from the
+environment (or a local `.env`, see `.env.example`):
+
+```yaml
+source:
+  type: postgres
+  host: ${SOURCE_DB_HOST}
+  port: ${SOURCE_DB_PORT:-5432}
+  database: ${SOURCE_DB_NAME}
+  username: ${SOURCE_DB_USER}
+  password: ${SOURCE_DB_PASSWORD}
+  schema: [bronze, silver, gold]
+  connection_timeout: 10
+
+target:
+  type: databricks
+  host_env: DATABRICKS_HOST          # Azure Databricks workspace URL
+  token_env: DATABRICKS_TOKEN
+  http_path_env: DATABRICKS_HTTP_PATH
+  catalog: migration_catalog
+
+llm:
+  provider: anthropic                # or: openai
+  model: claude-haiku-4-5-20251001
+  api_key_env: ANTHROPIC_API_KEY
+```
+
+Provider selection is config-only — `llm.provider`/`llm.model` pick the
+adapter and model; the same `effort`/`max_tokens` settings are translated
+into whatever that provider's API actually accepts (e.g. Haiku 4.5 silently
+does not receive adaptive thinking or `effort`, since it doesn't support
+either). No provider-specific flags exist in config.yaml.
+
+### Commands
+
+```bash
+# Show the FK-derived migration order without touching any output (read-only)
+migration-accelerator --config config.yaml --plan
+
+# Run one schema
+migration-accelerator --config config.yaml --schema bronze
+
+# Run several schemas (each gets its own output/<schema>/<timestamp>/ folder)
+migration-accelerator --config config.yaml --schema bronze --schema silver
+
+# Rerun a schema that already completed (normally skipped)
+migration-accelerator --config config.yaml --schema bronze --force
+
+# Preview generated DDL against Databricks without executing it
+migration-accelerator --config config.yaml --execute-ddl output/bronze/20260101_000000/ddl.json
+
+# Actually execute that DDL against the configured Databricks workspace
+migration-accelerator --config config.yaml --execute-ddl output/bronze/20260101_000000/ddl.json --live
+```
+
+Omitting `--schema` runs every schema listed under `source.schema`, one at a
+time. A `.migration_status.json` file under the output directory tracks
+which schemas completed, so rerunning after a partial failure only retries
+the schemas that didn't finish — nothing already completed is regenerated
+unless `--force` is passed.
+
+### Migration order and dependency analysis
+
+`--plan` builds the canonical metadata (read-only, no writes) and runs a
+deterministic FK-dependency graph analysis — topological sort via Kahn's
+algorithm, cycle detection via DFS. No LLM is involved in computing order;
+the same metadata always produces the same recommendation. Circular
+dependencies are reported explicitly rather than silently resolved into an
+arbitrary order.

@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Logical Data Model — Enterprise AI Data Modernization Platform</title>
+<style>
+*,*::before,*::after{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:#f8fafc;color:#0f172a;font-family:-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'Noto Sans', sans-serif;
+ font-size:15px;line-height:1.6;-webkit-font-smoothing:antialiased}
+.page{max-width:1180px;margin:0 auto;padding:0 24px 72px}
+
+header.masthead{background:linear-gradient(135deg,#132a5e 0%,#1a56db 100%);
+ color:#fff;padding:38px 0 32px;margin-bottom:32px}
+header.masthead .inner{max-width:1180px;margin:0 auto;padding:0 24px}
+.platform{font-size:12px;letter-spacing:.14em;text-transform:uppercase;
+ opacity:.82;margin:0 0 6px;font-weight:600}
+header.masthead h1{margin:0;font-size:31px;line-height:1.2;font-weight:700;
+ letter-spacing:-.02em}
+.meta{display:flex;flex-wrap:wrap;gap:10px 32px;margin-top:22px}
+.meta div{min-width:120px}
+.meta dt{font-size:11px;letter-spacing:.09em;text-transform:uppercase;
+ opacity:.78;margin:0 0 2px}
+.meta dd{margin:0;font-size:14.5px;font-weight:600}
+
+.provenance{background:#fffbeb;border:1px solid #fcd9a4;border-left:4px solid #b45309;
+ border-radius:10px;padding:14px 18px;margin:0 0 30px;color:#713f12;font-size:13.5px}
+
+.section{margin:0 0 42px}
+.section h2{display:flex;align-items:center;gap:12px;font-size:20px;font-weight:700;
+ letter-spacing:-.01em;margin:0 0 6px;padding-bottom:12px;border-bottom:1px solid #e2e8f0}
+.section-index{display:inline-flex;align-items:center;justify-content:center;
+ width:26px;height:26px;border-radius:8px;background:#1a56db;color:#fff;
+ font-size:13px;font-weight:700;flex:none}
+.section-note{color:#64748b;font-size:13.5px;margin:0 0 18px}
+.prose p{margin:0 0 12px;font-size:15.5px;max-width:80ch}
+.empty{color:#64748b;font-style:italic}
+
+.grid{display:grid;gap:16px;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));
+ margin-top:18px}
+.grid-compact{grid-template-columns:repeat(auto-fill,minmax(228px,1fr))}
+.card{background:#ffffff;border:1px solid #e2e8f0;border-top:3px solid var(--accent);
+ border-radius:12px;padding:18px 18px 16px;box-shadow:0 1px 2px rgba(15,23,42,.05);
+ transition:box-shadow .15s ease,transform .15s ease}
+.card:hover{box-shadow:0 6px 18px rgba(15,23,42,.09);transform:translateY(-1px)}
+.card-head{display:flex;align-items:flex-start;justify-content:space-between;gap:10px}
+.card h3{margin:0;font-size:16px;font-weight:700;letter-spacing:-.01em}
+.card-badge{flex:none;font-size:11px;font-weight:700;padding:3px 9px;border-radius:20px;
+ white-space:nowrap}
+.card-subtitle{margin:3px 0 0;font-size:12px;font-weight:600;color:var(--accent);
+ letter-spacing:.03em;text-transform:uppercase}
+.card-body{margin:10px 0 0;font-size:14px;color:#334155}
+.card-fields{margin:14px 0 0;display:grid;gap:8px}
+.field{display:grid;grid-template-columns:96px 1fr;gap:10px;align-items:start}
+.field dt{font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:#64748b;
+ font-weight:600;padding-top:1px}
+.field dd{margin:0;font-size:13.5px}
+.tags{display:flex;flex-wrap:wrap;gap:6px;margin-top:13px}
+.tag{background:var(--accent-tint);color:var(--accent);border:1px solid var(--accent);
+ border-radius:6px;padding:2px 8px;font-size:11.5px;font-weight:600}
+
+.numbered{list-style:none;margin:18px 0 0;padding:0;display:grid;gap:10px}
+.numbered-card{display:flex;gap:14px;background:#ffffff;border:1px solid #e2e8f0;
+ border-radius:10px;padding:14px 16px}
+.numeral{flex:none;width:26px;height:26px;border-radius:8px;background:#1a56db;color:#fff;
+ display:inline-flex;align-items:center;justify-content:center;font-size:13px;font-weight:700}
+.numbered-card p{margin:2px 0 0;font-size:14.5px}
+
+.bullets{list-style:none;margin:18px 0 0;padding:0;display:grid;gap:10px;
+ grid-template-columns:repeat(auto-fill,minmax(340px,1fr))}
+.bullet-card{display:flex;gap:12px;background:#ffffff;border:1px solid #e2e8f0;
+ border-left:3px solid #1a56db;border-radius:10px;padding:14px 16px}
+.dot{flex:none;width:7px;height:7px;border-radius:50%;background:#1a56db;margin-top:8px}
+.bullet-card p{margin:0;font-size:14.5px}
+
+.legend{display:flex;flex-wrap:wrap;gap:8px 18px;margin:0 0 14px}
+.legend-item{display:inline-flex;align-items:center;gap:7px;font-size:12.5px;
+ font-weight:600;color:#334155}
+.swatch{width:13px;height:13px;border-radius:4px;border:1.5px solid}
+.diagram-frame{background:#ffffff;border:1px solid #e2e8f0;border-radius:12px;
+ padding:20px;overflow-x:auto;text-align:center;box-shadow:0 1px 2px rgba(15,23,42,.05)}
+.diagram{width:100%;height:auto;max-width:100%;display:block;margin:0 auto}
+.diagram-hint{color:#64748b;font-size:12.5px;margin:10px 0 0;text-align:center}
+
+.node-box{stroke-width:1.5;filter:url(#cardShadow)}
+.node-label{font-family:-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'Noto Sans', sans-serif;font-size:13px;font-weight:700;fill:#0f172a}
+.node-sublabel{font-family:-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'Noto Sans', sans-serif;font-size:10.5px;fill:#64748b}
+.node{cursor:default}
+.edge-line{fill:none;stroke:#94a3b8;stroke-width:1.5}
+.edge-hit{fill:none;stroke:transparent;stroke-width:14}
+.edge-label{font-family:-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'Noto Sans', sans-serif;font-size:10.5px;font-weight:600;fill:#475569;
+ paint-order:stroke;stroke:#ffffff;stroke-width:4px;stroke-linejoin:round}
+
+.diagram.focus .node,.diagram.focus .edge{opacity:.16;transition:opacity .12s ease}
+.diagram.focus .node.active,.diagram.focus .edge.active{opacity:1}
+.diagram.focus .edge.active .edge-line{stroke:#1a56db;stroke-width:2.4}
+.diagram.focus .edge.active .edge-label{fill:#132a5e}
+
+footer.report-footer{border-top:1px solid #e2e8f0;margin-top:12px;padding-top:20px;
+ color:#64748b;font-size:12.5px}
+
+@media (max-width:640px){
+ header.masthead h1{font-size:24px}
+ .grid,.bullets{grid-template-columns:1fr}
+ .field{grid-template-columns:1fr;gap:2px}
+}
+
+@media print{
+ body{background:#fff;font-size:11.5pt}
+ header.masthead{background:#132a5e !important;-webkit-print-color-adjust:exact;
+  print-color-adjust:exact}
+ .card,.numbered-card,.bullet-card,.diagram-frame{box-shadow:none;
+  break-inside:avoid;page-break-inside:avoid}
+ .card:hover{transform:none}
+ .section{break-inside:avoid-page}
+ .diagram-hint{display:none}
+ .diagram-frame{overflow:visible}
+}
+</style>
+</head>
+<body>
+<header class="masthead"><div class="inner"><p class="platform">Enterprise AI Data Modernization Platform</p><h1>Logical Data Model</h1><dl class="meta"><div><dt>Database</dt><dd>datamodel</dd></div><div><dt>Generated</dt><dd>25 Aug 2026, 22:17</dd></div><div><dt>Subject areas</dt><dd>4</dd></div><div><dt>Entities</dt><dd>7</dd></div><div><dt>Attributes</dt><dd>54</dd></div><div><dt>Relationships</dt><dd>6</dd></div></dl></div></header>
+<main class="page"><div class="provenance">Derived deterministically from conceptual_model.json. No AI was involved in this step: the conceptual model already carries the business judgement, and turning it into a normalized logical design is a set of transformation rules. Every design decision the derivation made appears under Normalization or Assumptions.</div><section class="section"><h2><span class="section-index">1</span>Executive Summary</h2><div class="prose"><p>Logical design for datamodel, derived from the conceptual model. 7 entities carry 6 relationships: 1 associative entities resolve many-to-many relationships and 0 entities are identified through a parent. 0 entities required a surrogate identifier because no business key was recorded. Attributes are typed against abstract domains and carry no platform-specific length, precision or storage.</p></div></section><section class="section"><h2><span class="section-index">2</span>Subject Areas</h2><p class="section-note">Groupings carried through from the conceptual model.</p><div class="grid"><article class="card" style="--accent:#1a56db;--accent-tint:#eff4ff"><div class="card-head"><h3>Customer Management</h3><span class="card-badge" style="background:#eff4ff;color:#1a56db">1 entities</span></div><p class="card-body">Core customer identity, contact information, and credit management.</p><div class="tags"><span class="tag">Customer</span></div></article><article class="card" style="--accent:#047857;--accent-tint:#ecfdf5"><div class="card-head"><h3>Product Catalog</h3><span class="card-badge" style="background:#ecfdf5;color:#047857">1 entities</span></div><p class="card-body">Product definitions, inventory levels, and supplier relationships.</p><div class="tags"><span class="tag">Product</span></div></article><article class="card" style="--accent:#b45309;--accent-tint:#fffbeb"><div class="card-head"><h3>Order Fulfillment</h3><span class="card-badge" style="background:#fffbeb;color:#b45309">4 entities</span></div><p class="card-body">Order creation, line item tracking, status, and shipping.</p><div class="tags"><span class="tag">Order</span><span class="tag">Order Line Item</span><span class="tag">Order Product</span><span class="tag">Order Product Association</span></div></article><article class="card" style="--accent:#6d28d9;--accent-tint:#f5f3ff"><div class="card-head"><h3>Unassigned</h3><span class="card-badge" style="background:#f5f3ff;color:#6d28d9">1 entities</span></div><p class="card-body">Entities the conceptual model placed in no domain.</p><div class="tags"><span class="tag">Order Item</span></div></article></div></section><section class="section"><h2><span class="section-index">3</span>Logical Entities</h2><p class="section-note">7 entities and 54 attributes. Domains are abstract: no lengths, precision or vendor types appear until the physical model.</p><div class="grid"><article class="card" style="--accent:#1a56db;--accent-tint:#eff4ff"><div class="card-head"><h3>Customer</h3><span class="card-badge" style="background:#eff4ff;color:#1a56db">Fundamental</span></div><p class="card-subtitle">Customer Management</p><p class="card-body">A party who places orders and purchases products. Identified by a unique customer code.</p><dl class="card-fields"><div class="field"><dt>Primary key</dt><dd>customer_code</dd></div><div class="field"><dt>Alternate keys</dt><dd>email; phone_number; postal_code</dd></div><div class="field"><dt>Attributes</dt><dd>first_name (text), last_name (text), date_of_birth (text), gender (text), city (text), state (text), country (text), customer_status (text), credit_limit (text), is_active (text)</dd></div><div class="field"><dt>Total</dt><dd>14 attributes</dd></div><div class="field"><dt>Derived from</dt><dd>bronze.customer</dd></div></dl></article><article class="card" style="--accent:#b45309;--accent-tint:#fffbeb"><div class="card-head"><h3>Order</h3><span class="card-badge" style="background:#fffbeb;color:#b45309">Fundamental</span></div><p class="card-subtitle">Order Fulfillment</p><p class="card-body">A customer purchase transaction containing one or more products, with order status, payment details, and fulfillment tracking.</p><dl class="card-fields"><div class="field"><dt>Primary key</dt><dd>order_number</dd></div><div class="field"><dt>Foreign keys</dt><dd>customer_code → Customer</dd></div><div class="field"><dt>Attributes</dt><dd>order_date (text), order_status (text), payment_method (text), total_amount (text), tax_amount (text), discount_amount (text), shipping_amount (text), shipped_date (text), remarks (text), created_by (text), created_date (text)</dd></div><div class="field"><dt>Total</dt><dd>13 attributes</dd></div><div class="field"><dt>Derived from</dt><dd>bronze.orders</dd></div></dl></article><article class="card" style="--accent:#1a56db;--accent-tint:#eff4ff"><div class="card-head"><h3>Order Item</h3><span class="card-badge" style="background:#eff4ff;color:#1a56db">Fundamental</span></div><p class="card-subtitle">Unassigned</p><p class="card-body">A denormalized order line containing product and pricing details. This entity appears to duplicate Order Product but retains product name as a text field rather than reference.</p><dl class="card-fields"><div class="field"><dt>Primary key</dt><dd>order_item_id</dd></div><div class="field"><dt>Foreign keys</dt><dd>order_number → Order</dd></div><div class="field"><dt>Attributes</dt><dd>product_name (text), quantity (whole number), unit_price (text), total_price (text)</dd></div><div class="field"><dt>Total</dt><dd>6 attributes</dd></div><div class="field"><dt>Derived from</dt><dd>bronze.order_item</dd></div></dl></article><article class="card" style="--accent:#b45309;--accent-tint:#fffbeb"><div class="card-head"><h3>Order Line Item</h3><span class="card-badge" style="background:#fffbeb;color:#b45309">Fundamental</span></div><p class="card-subtitle">Order Fulfillment</p><p class="card-body">A line item within an order, capturing the product name, quantity ordered, and pricing at order time. Denormalizes product information at the point of order.</p><dl class="card-fields"><div class="field"><dt>Primary key</dt><dd>order_id, product_name</dd></div><div class="field"><dt>Attributes</dt><dd>quantity (whole number), unit_price (text), total_price (text)</dd></div><div class="field"><dt>Total</dt><dd>5 attributes</dd></div><div class="field"><dt>Derived from</dt><dd>bronze.order_item</dd></div></dl></article><article class="card" style="--accent:#b45309;--accent-tint:#fffbeb"><div class="card-head"><h3>Order Product</h3><span class="card-badge" style="background:#fffbeb;color:#b45309">Fundamental</span></div><p class="card-subtitle">Order Fulfillment</p><p class="card-body">A line item that links an order to a product with the quantity and selling price at the time of order. Serves as the transaction record for product fulfillment.</p><dl class="card-fields"><div class="field"><dt>Primary key</dt><dd>order_id, product_id</dd></div><div class="field"><dt>Foreign keys</dt><dd>product_code → Product; order_number → Order</dd></div><div class="field"><dt>Attributes</dt><dd>quantity (whole number), selling_price (text)</dd></div><div class="field"><dt>Total</dt><dd>6 attributes</dd></div><div class="field"><dt>Derived from</dt><dd>bronze.order_product</dd></div></dl></article><article class="card" style="--accent:#b45309;--accent-tint:#fffbeb"><div class="card-head"><h3>Order Product Association</h3><span class="card-badge" style="background:#fffbeb;color:#b45309">Associative</span></div><p class="card-subtitle">Order Fulfillment</p><p class="card-body">Resolves the many-to-many relationship between Order and Product. Each occurrence records that one Order references one Product.</p><dl class="card-fields"><div class="field"><dt>Primary key</dt><dd>order_number, product_code</dd></div><div class="field"><dt>Attributes</dt><dd>None</dd></div><div class="field"><dt>Total</dt><dd>2 attributes</dd></div></dl></article><article class="card" style="--accent:#047857;--accent-tint:#ecfdf5"><div class="card-head"><h3>Product</h3><span class="card-badge" style="background:#ecfdf5;color:#047857">Fundamental</span></div><p class="card-subtitle">Product Catalog</p><p class="card-body">An item offered for sale. Tracked by product code, with inventory, pricing, category, and supplier information.</p><dl class="card-fields"><div class="field"><dt>Primary key</dt><dd>product_code</dd></div><div class="field"><dt>Attributes</dt><dd>product_name (text), category (text), price (amount), stock_quantity (text), supplier_name (text), is_active (text), created_date (text)</dd></div><div class="field"><dt>Total</dt><dd>8 attributes</dd></div><div class="field"><dt>Derived from</dt><dd>bronze.product</dd></div></dl></article></div></section><section class="section"><h2><span class="section-index">4</span>Logical Diagram</h2><p class="section-note">Entities coloured by subject area, keyed by their primary key. Arrows run from parent to child in the direction of the foreign key.</p><div class="legend"><span class="legend-item"><span class="swatch" style="background:#eff4ff;border-color:#1a56db"></span>Customer Management</span><span class="legend-item"><span class="swatch" style="background:#ecfdf5;border-color:#047857"></span>Product Catalog</span><span class="legend-item"><span class="swatch" style="background:#fffbeb;border-color:#b45309"></span>Order Fulfillment</span><span class="legend-item"><span class="swatch" style="background:#f5f3ff;border-color:#6d28d9"></span>Unassigned</span></div><div class="diagram-frame"><svg class="diagram" viewBox="0 0 740 464" role="img" aria-label="Conceptual data model diagram" xmlns="http://www.w3.org/2000/svg"><defs><marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#64748b" /></marker><filter id="cardShadow" x="-20%" y="-20%" width="140%" height="160%"><feDropShadow dx="0" dy="2" stdDeviation="2.5" flood-color="#0f172a" flood-opacity="0.14" /></filter></defs><g class="edges"><g class="edge" data-edge="0" data-from="Customer" data-to="Order"><path class="edge-hit" d="M 130.0,96.0 C 130.0,142.8 370.0,153.2 370.0,200.0" /><path class="edge-line" d="M 130.0,96.0 C 130.0,142.8 370.0,153.2 370.0,200.0" marker-end="url(#arrow)" /><text class="edge-label" x="250.0" y="148.0" text-anchor="middle" dominant-baseline="middle">references 1:N</text></g><g class="edge" data-edge="1" data-from="Order" data-to="Order Item"><path class="edge-hit" d="M 370.0,264.0 C 370.0,310.8 130.0,321.2 130.0,368.0" /><path class="edge-line" d="M 370.0,264.0 C 370.0,310.8 130.0,321.2 130.0,368.0" marker-end="url(#arrow)" /><text class="edge-label" x="250.0" y="316.0" text-anchor="middle" dominant-baseline="middle">references 1:N</text></g><g class="edge" data-edge="2" data-from="Order" data-to="Order Product"><path class="edge-hit" d="M 370.0,264.0 C 370.0,310.8 370.0,321.2 370.0,368.0" /><path class="edge-line" d="M 370.0,264.0 C 370.0,310.8 370.0,321.2 370.0,368.0" marker-end="url(#arrow)" /><text class="edge-label" x="370.0" y="316.0" text-anchor="middle" dominant-baseline="middle">references 1:N</text></g><g class="edge" data-edge="3" data-from="Order" data-to="Order Product Association"><path class="edge-hit" d="M 370.0,264.0 C 370.0,310.8 610.0,321.2 610.0,368.0" /><path class="edge-line" d="M 370.0,264.0 C 370.0,310.8 610.0,321.2 610.0,368.0" marker-end="url(#arrow)" /><text class="edge-label" x="490.0" y="316.0" text-anchor="middle" dominant-baseline="middle">is referenced by 1:N</text></g><g class="edge" data-edge="4" data-from="Product" data-to="Order Product"><path class="edge-hit" d="M 610.0,96.0 C 610.0,218.4 370.0,245.6 370.0,368.0" /><path class="edge-line" d="M 610.0,96.0 C 610.0,218.4 370.0,245.6 370.0,368.0" marker-end="url(#arrow)" /><text class="edge-label" x="490.0" y="232.0" text-anchor="middle" dominant-baseline="middle">references 1:N</text></g><g class="edge" data-edge="5" data-from="Product" data-to="Order Product Association"><path class="edge-hit" d="M 610.0,96.0 C 610.0,218.4 610.0,245.6 610.0,368.0" /><path class="edge-line" d="M 610.0,96.0 C 610.0,218.4 610.0,245.6 610.0,368.0" marker-end="url(#arrow)" /><text class="edge-label" x="610.0" y="232.0" text-anchor="middle" dominant-baseline="middle">is referenced by 1:N</text></g></g><g class="nodes"><g class="node" data-id="Customer"><title>Customer — Customer Management</title><rect class="node-box" x="32.0" y="32.0" width="196" height="64" rx="12" ry="12" fill="#eff4ff" stroke="#1a56db" /><rect class="node-tab" x="32.0" y="32.0" width="5" height="64" rx="2.5" ry="2.5" fill="#1a56db" /><text class="node-label" x="130.0" y="59.0" text-anchor="middle" dominant-baseline="middle">Customer</text><text class="node-sublabel" x="130.0" y="77.0" text-anchor="middle" dominant-baseline="middle">customer_code</text></g><g class="node" data-id="Order"><title>Order — Order Fulfillment</title><rect class="node-box" x="272.0" y="200.0" width="196" height="64" rx="12" ry="12" fill="#fffbeb" stroke="#b45309" /><rect class="node-tab" x="272.0" y="200.0" width="5" height="64" rx="2.5" ry="2.5" fill="#b45309" /><text class="node-label" x="370.0" y="227.0" text-anchor="middle" dominant-baseline="middle">Order</text><text class="node-sublabel" x="370.0" y="245.0" text-anchor="middle" dominant-baseline="middle">order_number</text></g><g class="node" data-id="Order Item"><title>Order Item</title><rect class="node-box" x="32.0" y="368.0" width="196" height="64" rx="12" ry="12" fill="#eff4ff" stroke="#1a56db" /><rect class="node-tab" x="32.0" y="368.0" width="5" height="64" rx="2.5" ry="2.5" fill="#1a56db" /><text class="node-label" x="130.0" y="395.0" text-anchor="middle" dominant-baseline="middle">Order Item</text><text class="node-sublabel" x="130.0" y="413.0" text-anchor="middle" dominant-baseline="middle">order_item_id</text></g><g class="node" data-id="Order Line Item"><title>Order Line Item — Order Fulfillment</title><rect class="node-box" x="272.0" y="32.0" width="196" height="64" rx="12" ry="12" fill="#fffbeb" stroke="#b45309" /><rect class="node-tab" x="272.0" y="32.0" width="5" height="64" rx="2.5" ry="2.5" fill="#b45309" /><text class="node-label" x="370.0" y="59.0" text-anchor="middle" dominant-baseline="middle">Order Line Item</text><text class="node-sublabel" x="370.0" y="77.0" text-anchor="middle" dominant-baseline="middle">order_id, product_name</text></g><g class="node" data-id="Order Product"><title>Order Product — Order Fulfillment</title><rect class="node-box" x="272.0" y="368.0" width="196" height="64" rx="12" ry="12" fill="#fffbeb" stroke="#b45309" /><rect class="node-tab" x="272.0" y="368.0" width="5" height="64" rx="2.5" ry="2.5" fill="#b45309" /><text class="node-label" x="370.0" y="395.0" text-anchor="middle" dominant-baseline="middle">Order Product</text><text class="node-sublabel" x="370.0" y="413.0" text-anchor="middle" dominant-baseline="middle">order_id, product_id</text></g><g class="node" data-id="Order Product Association"><title>Order Product Association — Order Fulfillment</title><rect class="node-box" x="512.0" y="368.0" width="196" height="64" rx="12" ry="12" fill="#fffbeb" stroke="#b45309" /><rect class="node-tab" x="512.0" y="368.0" width="5" height="64" rx="2.5" ry="2.5" fill="#b45309" /><text class="node-label" x="610.0" y="395.0" text-anchor="middle" dominant-baseline="middle">Order Product Associa…</text><text class="node-sublabel" x="610.0" y="413.0" text-anchor="middle" dominant-baseline="middle">order_number, product…</text></g><g class="node" data-id="Product"><title>Product — Product Catalog</title><rect class="node-box" x="512.0" y="32.0" width="196" height="64" rx="12" ry="12" fill="#ecfdf5" stroke="#047857" /><rect class="node-tab" x="512.0" y="32.0" width="5" height="64" rx="2.5" ry="2.5" fill="#047857" /><text class="node-label" x="610.0" y="59.0" text-anchor="middle" dominant-baseline="middle">Product</text><text class="node-sublabel" x="610.0" y="77.0" text-anchor="middle" dominant-baseline="middle">product_code</text></g></g></svg></div><p class="diagram-hint">Hover an entity to isolate its relationships. Use your browser zoom to enlarge.</p></section><section class="section"><h2><span class="section-index">5</span>Entity Relationships</h2><p class="section-note">An identifying relationship means the child cannot be identified without its parent.</p><div class="grid grid-compact"><article class="card" style="--accent:#1a56db;--accent-tint:#eff4ff"><div class="card-head"><h3>Customer → Order</h3><span class="card-badge" style="background:#eff4ff;color:#1a56db">Non-identifying</span></div><p class="card-subtitle">references</p><dl class="card-fields"><div class="field"><dt>Cardinality</dt><dd>one-to-many</dd></div><div class="field"><dt>Optionality</dt><dd>Mandatory</dd></div><div class="field"><dt>Foreign key</dt><dd>customer_code</dd></div></dl></article><article class="card" style="--accent:#b45309;--accent-tint:#fffbeb"><div class="card-head"><h3>Order → Order Item</h3><span class="card-badge" style="background:#fffbeb;color:#b45309">Non-identifying</span></div><p class="card-subtitle">references</p><dl class="card-fields"><div class="field"><dt>Cardinality</dt><dd>one-to-many</dd></div><div class="field"><dt>Optionality</dt><dd>Mandatory</dd></div><div class="field"><dt>Foreign key</dt><dd>order_number</dd></div></dl></article><article class="card" style="--accent:#b45309;--accent-tint:#fffbeb"><div class="card-head"><h3>Order → Order Product</h3><span class="card-badge" style="background:#fffbeb;color:#b45309">Non-identifying</span></div><p class="card-subtitle">references</p><dl class="card-fields"><div class="field"><dt>Cardinality</dt><dd>one-to-many</dd></div><div class="field"><dt>Optionality</dt><dd>Mandatory</dd></div><div class="field"><dt>Foreign key</dt><dd>order_number</dd></div></dl></article><article class="card" style="--accent:#b45309;--accent-tint:#fffbeb"><div class="card-head"><h3>Order → Order Product Association</h3><span class="card-badge" style="background:#fffbeb;color:#b45309">Identifying</span></div><p class="card-subtitle">is referenced by</p><dl class="card-fields"><div class="field"><dt>Cardinality</dt><dd>one-to-many</dd></div><div class="field"><dt>Optionality</dt><dd>Mandatory</dd></div><div class="field"><dt>Foreign key</dt><dd>order_number</dd></div></dl></article><article class="card" style="--accent:#047857;--accent-tint:#ecfdf5"><div class="card-head"><h3>Product → Order Product</h3><span class="card-badge" style="background:#ecfdf5;color:#047857">Non-identifying</span></div><p class="card-subtitle">references</p><dl class="card-fields"><div class="field"><dt>Cardinality</dt><dd>one-to-many</dd></div><div class="field"><dt>Optionality</dt><dd>Mandatory</dd></div><div class="field"><dt>Foreign key</dt><dd>product_code</dd></div></dl></article><article class="card" style="--accent:#047857;--accent-tint:#ecfdf5"><div class="card-head"><h3>Product → Order Product Association</h3><span class="card-badge" style="background:#ecfdf5;color:#047857">Identifying</span></div><p class="card-subtitle">is referenced by</p><dl class="card-fields"><div class="field"><dt>Cardinality</dt><dd>one-to-many</dd></div><div class="field"><dt>Optionality</dt><dd>Mandatory</dd></div><div class="field"><dt>Foreign key</dt><dd>product_code</dd></div></dl></article></div></section><section class="section"><h2><span class="section-index">6</span>Normalization</h2><p class="section-note">Actions taken and checks performed. Checks that found nothing are listed too, so a compliant design is distinguishable from one that was never examined.</p><ol class="numbered"><li class="numbered-card"><span class="numeral">1</span><p>1NF — Order Product Association: Resolved many-to-many between Order and Product. A many-to-many relationship cannot be represented without a repeating group. An associative entity keyed on both parents removes the repetition and gives the relationship a place to carry its own attributes later.</p></li><li class="numbered-card"><span class="numeral">2</span><p>2NF — Order Line Item: Checked non-key attributes against the full composite key. Order Line Item has a composite key, so every non-key attribute (quantity, unit_price, total_price) must depend on the whole key rather than part of it. No partial dependency was found.</p></li><li class="numbered-card"><span class="numeral">3</span><p>2NF — Order Product: Checked non-key attributes against the full composite key. Order Product has a composite key, so every non-key attribute (quantity, selling_price) must depend on the whole key rather than part of it. No partial dependency was found.</p></li><li class="numbered-card"><span class="numeral">4</span><p>3NF — Order Item: Confirmed Order attributes are not repeated on Order Item. Order Item references Order, which references Customer. The chain is already decomposed, so Customer&#x27;s attributes reach Order Item by navigation rather than by duplication.</p></li><li class="numbered-card"><span class="numeral">5</span><p>3NF — Order Product: Confirmed Order attributes are not repeated on Order Product. Order Product references Order, which references Customer. The chain is already decomposed, so Customer&#x27;s attributes reach Order Product by navigation rather than by duplication.</p></li></ol></section><section class="section"><h2><span class="section-index">7</span>Assumptions</h2><p class="section-note">Design decisions worth confirming with the business.</p><p class="empty">Nothing recorded.</p></section><footer class="report-footer">Generated by the Enterprise AI Data Modernization Platform. Logical design, diagram and layout rendered deterministically; attribute domains are abstract and independent of any target database.</footer></main>
+<script>
+(function () {
+  var svg = document.querySelector('.diagram');
+  if (!svg) return;
+  var nodes = Array.prototype.slice.call(svg.querySelectorAll('.node'));
+  var edges = Array.prototype.slice.call(svg.querySelectorAll('.edge'));
+
+  function clear() {
+    svg.classList.remove('focus');
+    nodes.concat(edges).forEach(function (el) { el.classList.remove('active'); });
+  }
+
+  function focus(id) {
+    var related = {};
+    related[id] = true;
+    edges.forEach(function (edge) {
+      var from = edge.getAttribute('data-from');
+      var to = edge.getAttribute('data-to');
+      if (from === id || to === id) {
+        edge.classList.add('active');
+        related[from] = true;
+        related[to] = true;
+      }
+    });
+    nodes.forEach(function (node) {
+      if (related[node.getAttribute('data-id')]) node.classList.add('active');
+    });
+    svg.classList.add('focus');
+  }
+
+  nodes.forEach(function (node) {
+    node.addEventListener('mouseenter', function () {
+      clear();
+      focus(node.getAttribute('data-id'));
+    });
+    node.addEventListener('mouseleave', clear);
+  });
+})();
+</script>
+</body>
+</html>
